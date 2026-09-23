@@ -1,0 +1,79 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Poppins', system-ui, -apple-system, sans-serif;
+
+  /* Brand colors */
+  --color-primary: #1557c0;
+  --color-primary-dark: #0f4499;
+  --color-primary-light: #e8eefb;
+  --color-secondary: #32b768;
+  --color-secondary-dark: #279154;
+  --color-secondary-light: #e7f8ee;
+  --color-accent-yellow: #f5b942;
+  --color-accent-coral: #f4776b;
+
+  /* Neutrals */
+  --color-surface: #ffffff;
+  --color-surface-alt: #f7fafc;
+  --color-ink: #172033;
+  --color-ink-soft: #667085;
+  --color-border-soft: #e7eaf0;
+
+  /* Radii */
+  --radius-btn: 11px;
+  --radius-card: 18px;
+  --radius-image: 22px;
+  --radius-hero: 26px;
+
+  /* Soft shadows */
+  --shadow-soft: 0 2px 10px rgba(23, 32, 51, 0.06);
+  --shadow-soft-lg: 0 12px 32px rgba(23, 32, 51, 0.09);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border-soft);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    font-family: var(--font-sans);
+    background-color: var(--color-surface);
+    color: var(--color-ink);
+    font-weight: 400;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    color: var(--color-ink);
+    line-height: 1.2;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
