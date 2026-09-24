@@ -1,5 +1,6 @@
 import { ImageIcon } from "lucide-react";
 
+import { useLanguage } from "@/i18n/useLanguage";
 import { cn } from "@/lib/utils";
 
 interface ImagePlaceholderProps {
@@ -12,6 +13,8 @@ export function ImagePlaceholder({
   className,
   content,
 }: ImagePlaceholderProps) {
+  const { t } = useLanguage();
+
   return (
     <div
       className={cn(
@@ -23,7 +26,8 @@ export function ImagePlaceholder({
         <ImageIcon className="h-12 w-12 text-primary/15" strokeWidth={1.5} />
       </div>
       <span className="absolute left-3 top-3 max-w-[42%] truncate rounded-full bg-white/85 px-3 py-1 text-[11px] font-medium text-ink-soft backdrop-blur-sm">
-        Photo à intégrer{content ? ` · ${content}` : ""}
+        {t("Photo à intégrer", "Photo to be added")}
+        {content ? ` · ${content}` : ""}
       </span>
     </div>
   );

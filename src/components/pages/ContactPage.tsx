@@ -7,60 +7,59 @@ import {
   Phone,
   Send,
 } from "lucide-react";
-import { type FormEvent, useEffect, useState } from "react";
+import { type FormEvent, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
-import { SCHOOL } from "@/data/school";
-
-const WHATSAPP_NUMBER = SCHOOL.contacts.whatsapp.join(" · ");
-const CONTACT_ITEMS = [
-  {
-    icon: Phone,
-    title: "Téléphones communiqués",
-    value: `Liste A : ${SCHOOL.contacts.phoneListA.join(" · ")}. Liste B : ${SCHOOL.contacts.phoneListB.join(" · ")}.`,
-    accent: "bg-primary-light text-primary",
-  },
-  {
-    icon: Mail,
-    title: "WhatsApp",
-    value: WHATSAPP_NUMBER,
-    accent: "bg-accent-yellow/20 text-ink",
-  },
-  {
-    icon: MapPin,
-    title: "Adresse",
-    value: `${SCHOOL.location.address}, ${SCHOOL.location.country}`,
-    accent: "bg-secondary-light text-secondary",
-  },
-  {
-    icon: Clock3,
-    title: "Email",
-    value: SCHOOL.contacts.email,
-    accent: "bg-accent-coral/15 text-ink",
-  },
-];
+import { useSchool } from "@/data/useSchool";
+import { useLanguage } from "@/i18n/useLanguage";
+import { usePageMeta } from "@/lib/usePageMeta";
 
 type FormStatus = "idle" | "loading" | "success" | "error";
 
 export function ContactPage() {
+  const { t } = useLanguage();
+  const school = useSchool();
   const [status, setStatus] = useState<FormStatus>("idle");
 
-  useEffect(() => {
-    document.title = `Contact | ${SCHOOL.shortName} — Bertoua, Cameroun`;
-    const description =
-      "Coordonnées du Groupe Scolaire Privé Bilingue La Pépinière à Bertoua, Cameroun.";
-    let meta = document.querySelector('meta[name="description"]');
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.setAttribute("name", "description");
-      document.head.appendChild(meta);
-    }
-    meta.setAttribute("content", description);
-  }, []);
+  const whatsappNumber = school.contacts.whatsapp.join(" · ");
+  const contactItems = [
+    {
+      icon: Phone,
+      title: t("Téléphones communiqués", "Phone numbers provided"),
+      value: `${t("Liste A", "List A")} : ${school.contacts.phoneListA.join(" · ")}. ${t("Liste B", "List B")} : ${school.contacts.phoneListB.join(" · ")}.`,
+      accent: "bg-primary-light text-primary",
+    },
+    {
+      icon: Mail,
+      title: "WhatsApp",
+      value: whatsappNumber,
+      accent: "bg-accent-yellow/20 text-ink",
+    },
+    {
+      icon: MapPin,
+      title: t("Adresse", "Address"),
+      value: `${school.location.address}, ${school.location.country}`,
+      accent: "bg-secondary-light text-secondary",
+    },
+    {
+      icon: Clock3,
+      title: "Email",
+      value: school.contacts.email,
+      accent: "bg-accent-coral/15 text-ink",
+    },
+  ];
+
+  usePageMeta(
+    `Contact | ${school.shortName} — ${school.location.city}, ${school.location.country}`,
+    t(
+      "Coordonnées du Groupe Scolaire Privé Bilingue La Pépinière à Bertoua, Cameroun.",
+      "Contact details of La Pépinière Bilingual Private School Group in Bertoua, Cameroon.",
+    ),
+  );
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -74,9 +73,15 @@ export function ContactPage() {
       <main>
         <PageHero
           eyebrow="CONTACT"
-          title="Parlons de l'avenir de votre enfant."
-          description="Une question, une visite ou un premier échange ? Retrouvez les coordonnées et l'adresse officielle de La Pépinière."
-          imageLabel="famille africaine et école"
+          title={t(
+            "Parlons de l'avenir de votre enfant.",
+            "Let's talk about your child's future.",
+          )}
+          description={t(
+            "Une question, une visite ou un premier échange ? Retrouvez les coordonnées et l'adresse officielle de La Pépinière.",
+            "A question, a visit or a first conversation? Find La Pépinière's contact details and official address.",
+          )}
+          imageLabel={t("famille africaine et école", "African family and school")}
         />
 
         <section className="relative overflow-hidden bg-surface px-6 py-20 lg:px-10 lg:py-28">
@@ -92,17 +97,20 @@ export function ContactPage() {
             <Reveal delay={0.08}>
               <div className="mx-auto max-w-2xl text-center">
                 <p className="text-sm font-medium tracking-[0.18em] text-primary">
-                  NOUS TROUVER
+                  {t("NOUS TROUVER", "FIND US")}
                 </p>
                 <h2 className="mt-3 text-3xl font-bold text-ink sm:text-4xl">
-                  Les informations utiles pour nous joindre.
+                  {t(
+                    "Les informations utiles pour nous joindre.",
+                    "Useful information to reach us.",
+                  )}
                 </h2>
               </div>
             </Reveal>
             <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-              {CONTACT_ITEMS.map(
+              {contactItems.map(
                 ({ icon: Icon, title, value, accent }, index) => (
-                  <Reveal key={title} delay={0.12 + index * 0.08}>
+                  <Reveal key={index} delay={0.12 + index * 0.08}>
                     <article className="group rounded-[24px_14px_24px_14px] border border-border-soft bg-surface-alt p-6 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:bg-white hover:shadow-soft-lg">
                       <span
                         className={`flex h-11 w-11 items-center justify-center rounded-full ${accent} transition-transform duration-300 group-hover:rotate-6 group-hover:scale-110`}
@@ -138,11 +146,13 @@ export function ContactPage() {
                     strokeWidth={1.7}
                   />
                   <h2 className="mt-8 text-2xl font-bold sm:text-3xl">
-                    Une question rapide ?
+                    {t("Une question rapide ?", "A quick question?")}
                   </h2>
                   <p className="mt-4 text-sm leading-relaxed text-white/80">
-                    WhatsApp communiqué par l'établissement. Les numéros de
-                    téléphone affichés ci-dessus doivent encore être confirmés.
+                    {t(
+                      "WhatsApp communiqué par l'établissement. Les numéros de téléphone affichés ci-dessus doivent encore être confirmés.",
+                      "WhatsApp number provided by the school. The phone numbers shown above still need to be confirmed.",
+                    )}
                   </p>
                 </div>
                 <a
@@ -150,7 +160,7 @@ export function ContactPage() {
                   className="mt-10 inline-flex w-fit items-center gap-2 rounded-btn bg-white px-5 py-3 text-sm font-medium text-primary transition-colors hover:bg-surface-alt"
                 >
                   <Send size={16} />
-                  {WHATSAPP_NUMBER}
+                  {whatsappNumber}
                 </a>
               </div>
             </Reveal>
@@ -160,21 +170,23 @@ export function ContactPage() {
                 className="rounded-[18px_34px_18px_34px] border border-border-soft bg-white p-6 shadow-soft-lg sm:p-9"
               >
                 <p className="text-sm font-medium tracking-[0.18em] text-primary">
-                  ÉCRIVEZ-NOUS
+                  {t("ÉCRIVEZ-NOUS", "WRITE TO US")}
                 </p>
                 <h2 className="mt-3 text-2xl font-bold text-ink sm:text-3xl">
-                  Envoyer un message
+                  {t("Envoyer un message", "Send a message")}
                 </h2>
                 <p className="mt-3 text-sm leading-relaxed text-ink-soft">
-                  Ce formulaire est prêt à être relié au service d'envoi de
-                  l'école.
+                  {t(
+                    "Ce formulaire est prêt à être relié au service d'envoi de l'école.",
+                    "This form is ready to be connected to the school's sending service.",
+                  )}
                 </p>
                 <form
                   onSubmit={handleSubmit}
                   className="mt-8 grid gap-5 sm:grid-cols-2"
                 >
                   <label className="text-sm font-medium text-ink">
-                    Nom
+                    {t("Nom", "Name")}
                     <input
                       required
                       name="name"
@@ -193,7 +205,7 @@ export function ContactPage() {
                     />
                   </label>
                   <label className="text-sm font-medium text-ink">
-                    Téléphone
+                    {t("Téléphone", "Phone")}
                     <input
                       required
                       type="tel"
@@ -203,7 +215,7 @@ export function ContactPage() {
                     />
                   </label>
                   <label className="text-sm font-medium text-ink">
-                    Sujet
+                    {t("Sujet", "Subject")}
                     <input
                       required
                       name="subject"
@@ -226,8 +238,8 @@ export function ContactPage() {
                       className="rounded-btn bg-primary px-6 py-3.5 text-sm font-medium text-white shadow-soft transition-colors hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       {status === "loading"
-                        ? "Envoi en cours..."
-                        : "Envoyer le message"}
+                        ? t("Envoi en cours...", "Sending...")
+                        : t("Envoyer le message", "Send message")}
                     </button>
                     {status === "success" && (
                       <p
@@ -235,12 +247,18 @@ export function ContactPage() {
                         className="flex items-center gap-2 text-sm text-secondary"
                       >
                         <CheckCircle2 size={17} />
-                        Message enregistré pour démonstration.
+                        {t(
+                          "Message enregistré pour démonstration.",
+                          "Message saved for demonstration.",
+                        )}
                       </p>
                     )}
                     {status === "error" && (
                       <p role="alert" className="text-sm text-accent-coral">
-                        Une erreur est survenue. Réessayez.
+                        {t(
+                          "Une erreur est survenue. Réessayez.",
+                          "An error occurred. Please try again.",
+                        )}
                       </p>
                     )}
                   </div>
@@ -260,11 +278,11 @@ export function ContactPage() {
               <div className="flex min-h-64 flex-col items-center justify-center rounded-[30px_14px_30px_14px] border border-dashed border-border-soft bg-surface-alt p-8 text-center shadow-soft">
                 <MapPin className="text-primary" size={30} strokeWidth={1.7} />
                 <h2 className="mt-4 text-xl font-bold text-ink">
-                  Localisation de l'école
+                  {t("Localisation de l'école", "School location")}
                 </h2>
                 <p className="mt-2 max-w-md text-sm leading-relaxed text-ink-soft">
-                  {SCHOOL.location.address}, {SCHOOL.location.city},{" "}
-                  {SCHOOL.location.country}
+                  {school.location.address}, {school.location.city},{" "}
+                  {school.location.country}
                 </p>
               </div>
             </Reveal>
@@ -279,17 +297,20 @@ export function ContactPage() {
           <div className="relative mx-auto flex max-w-6xl flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-sm font-medium tracking-[0.18em] text-white/80">
-                POUR ALLER PLUS LOIN
+                {t("POUR ALLER PLUS LOIN", "GO FURTHER")}
               </p>
               <h2 className="mt-3 text-2xl font-bold sm:text-3xl">
-                Préparez sereinement la prochaine étape.
+                {t(
+                  "Préparez sereinement la prochaine étape.",
+                  "Prepare calmly for the next step.",
+                )}
               </h2>
             </div>
             <Link
               to="/admissions"
               className="inline-flex shrink-0 items-center justify-center rounded-btn bg-white px-5 py-3 text-sm font-medium text-primary shadow-soft transition-colors hover:bg-surface-alt"
             >
-              Découvrir les admissions
+              {t("Découvrir les admissions", "Discover admissions")}
             </Link>
           </div>
         </section>

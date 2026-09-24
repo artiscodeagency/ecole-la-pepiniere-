@@ -1,5 +1,4 @@
 import { BellRing, CalendarDays, Megaphone, Sparkles } from "lucide-react";
-import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import { Footer } from "@/components/layout/Footer";
@@ -7,31 +6,37 @@ import { Header } from "@/components/layout/Header";
 import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
-import { SCHOOL } from "@/data/school";
+import { useSchool } from "@/data/useSchool";
+import { useLanguage } from "@/i18n/useLanguage";
+import { usePageMeta } from "@/lib/usePageMeta";
 
 export function NewsPage() {
-  useEffect(() => {
-    document.title = `Actualités | ${SCHOOL.shortName} — Bertoua, Cameroun`;
-    const description =
-      "Actualités, communiqués et informations aux parents du Groupe Scolaire Privé Bilingue La Pépinière à Bertoua.";
-    let meta = document.querySelector('meta[name="description"]');
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.setAttribute("name", "description");
-      document.head.appendChild(meta);
-    }
-    meta.setAttribute("content", description);
-  }, []);
+  const { t } = useLanguage();
+  const school = useSchool();
+
+  usePageMeta(
+    `${t("Actualités", "News")} | ${school.shortName} — ${school.location.city}, ${school.location.country}`,
+    t(
+      "Actualités, communiqués et informations aux parents du Groupe Scolaire Privé Bilingue La Pépinière à Bertoua.",
+      "News, announcements and information for parents from La Pépinière Bilingual Private School Group in Bertoua.",
+    ),
+  );
 
   return (
     <>
       <Header />
       <main>
         <PageHero
-          eyebrow="ACTUALITÉS"
-          title="La vie de l'école, au fil des jours."
-          description="Retrouvez ici les informations communiquées par La Pépinière pour les familles et la communauté scolaire."
-          imageLabel="vie de l'école"
+          eyebrow={t("ACTUALITÉS", "NEWS")}
+          title={t(
+            "La vie de l'école, au fil des jours.",
+            "School life, day by day.",
+          )}
+          description={t(
+            "Retrouvez ici les informations communiquées par La Pépinière pour les familles et la communauté scolaire.",
+            "Find here the information shared by La Pépinière for families and the school community.",
+          )}
+          imageLabel={t("vie de l'école", "school life")}
         />
         <section className="relative overflow-hidden bg-surface px-6 py-20 lg:px-10 lg:py-28">
           <div
@@ -47,16 +52,21 @@ export function NewsPage() {
               <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
                 <div>
                   <p className="text-sm font-medium tracking-[0.18em] text-primary">
-                    JOURNAL DE L'ÉCOLE
+                    {t("JOURNAL DE L'ÉCOLE", "SCHOOL JOURNAL")}
                   </p>
                   <h2 className="mt-3 text-3xl font-bold text-ink sm:text-4xl">
-                    Les informations de{" "}
+                    {t("Les informations de", "News from")}{" "}
                     <span className="text-secondary">La Pépinière</span>.
                   </h2>
                 </div>
                 <div className="flex items-center gap-3 rounded-[22px_12px_22px_12px] bg-surface-alt px-4 py-3 text-sm text-ink-soft shadow-soft">
                   <CalendarDays className="text-secondary" size={19} />
-                  <span>Les communiqués officiels seront publiés ici.</span>
+                  <span>
+                    {t(
+                      "Les communiqués officiels seront publiés ici.",
+                      "Official announcements will be published here.",
+                    )}
+                  </span>
                 </div>
               </div>
             </Reveal>
@@ -64,7 +74,10 @@ export function NewsPage() {
               <Reveal delay={0.12}>
                 <ImagePlaceholder
                   className="aspect-4/3 rounded-[24px_14px_24px_14px]"
-                  content="photo officielle d'actualité à intégrer"
+                  content={t(
+                    "photo officielle d'actualité à intégrer",
+                    "official news photo to be added",
+                  )}
                 />
               </Reveal>
               <Reveal delay={0.2}>
@@ -73,18 +86,26 @@ export function NewsPage() {
                     <Megaphone size={23} />
                   </span>
                   <h3 className="mt-6 text-2xl font-bold text-ink">
-                    Aucune actualité officielle publiée pour le moment.
+                    {t(
+                      "Aucune actualité officielle publiée pour le moment.",
+                      "No official news published at the moment.",
+                    )}
                   </h3>
                   <p className="mt-4 leading-relaxed text-ink-soft">
-                    Cette page est prête à recevoir les communications vérifiées
-                    de l'établissement. Aucun contenu de démonstration n'est
-                    présenté comme une actualité réelle.
+                    {t(
+                      "Cette page est prête à recevoir les communications vérifiées de l'établissement. Aucun contenu de démonstration n'est présenté comme une actualité réelle.",
+                      "This page is ready to receive the school's verified communications. No demonstration content is presented as real news.",
+                    )}
                   </p>
                   <Link
                     to="/contact"
                     className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-primary transition-colors hover:text-primary-dark"
                   >
-                    Contacter l'administration <BellRing size={16} />
+                    {t(
+                      "Contacter l'administration",
+                      "Contact the administration",
+                    )}{" "}
+                    <BellRing size={16} />
                   </Link>
                 </div>
               </Reveal>
@@ -100,20 +121,22 @@ export function NewsPage() {
             <Reveal delay={0.08}>
               <div className="mx-auto max-w-2xl text-center">
                 <p className="text-sm font-medium tracking-[0.18em] text-primary">
-                  À VENIR ICI
+                  {t("À VENIR ICI", "COMING HERE")}
                 </p>
                 <h2 className="mt-3 text-3xl font-bold text-ink sm:text-4xl">
-                  Les rubriques officielles.
+                  {t("Les rubriques officielles.", "The official categories.")}
                 </h2>
                 <p className="mt-5 text-lg leading-relaxed text-ink-soft">
-                  Les prochaines publications seront classées dans les
-                  catégories communiquées par l'école.
+                  {t(
+                    "Les prochaines publications seront classées dans les catégories communiquées par l'école.",
+                    "Upcoming posts will be sorted into the categories provided by the school.",
+                  )}
                 </p>
               </div>
             </Reveal>
             <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {SCHOOL.news.categories.map((category, index) => (
-                <Reveal key={category} delay={0.12 + index * 0.08}>
+              {school.news.categories.map((category, index) => (
+                <Reveal key={index} delay={0.12 + index * 0.08}>
                   <div className="group flex items-center gap-4 rounded-[22px_14px_22px_14px] border border-border-soft bg-white p-5 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-soft-lg">
                     <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-secondary-light text-sm font-bold text-secondary">
                       {String(index + 1).padStart(2, "0")}
@@ -137,18 +160,21 @@ export function NewsPage() {
               <div className="flex items-center gap-2 text-secondary-light">
                 <Sparkles size={19} />
                 <p className="text-sm font-medium tracking-[0.18em]">
-                  RESTEZ INFORMÉS
+                  {t("RESTEZ INFORMÉS", "STAY INFORMED")}
                 </p>
               </div>
               <h2 className="mt-3 text-2xl font-bold sm:text-3xl">
-                Pour toute information, l'administration reste à votre écoute.
+                {t(
+                  "Pour toute information, l'administration reste à votre écoute.",
+                  "For any information, the administration is here to listen.",
+                )}
               </h2>
             </div>
             <Link
               to="/contact"
               className="inline-flex shrink-0 items-center justify-center rounded-btn bg-white px-5 py-3 text-sm font-medium text-primary shadow-soft transition-colors hover:bg-surface-alt"
             >
-              Nous contacter
+              {t("Nous contacter", "Contact us")}
             </Link>
           </div>
         </section>

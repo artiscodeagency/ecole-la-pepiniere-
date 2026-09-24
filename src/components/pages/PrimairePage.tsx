@@ -5,7 +5,6 @@ import {
   Languages,
   School,
 } from "lucide-react";
-import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import { Footer } from "@/components/layout/Footer";
@@ -13,37 +12,57 @@ import { Header } from "@/components/layout/Header";
 import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
-import { SCHOOL } from "@/data/school";
+import { useSchool } from "@/data/useSchool";
+import { tr } from "@/i18n/types";
+import { useLanguage } from "@/i18n/useLanguage";
+import { usePageMeta } from "@/lib/usePageMeta";
 
 const PATHWAY_ICONS = [BookOpen, Languages];
-const PRIMARY_HOURS = [
-  { days: "Lundi – Jeudi", hours: SCHOOL.hours.primary.mondayToThursday },
-  { days: "Vendredi", hours: SCHOOL.hours.primary.friday },
+const GALLERY_CONTENT = [
+  tr("salle de classe", "classroom"),
+  tr("apprentissage en français", "learning in French"),
+  tr("learning in English", "learning in English"),
+  tr("vie scolaire", "school life"),
 ];
 
 export function PrimairePage() {
-  useEffect(() => {
-    document.title = `Primaire | ${SCHOOL.shortName} — Bertoua, Cameroun`;
-    const description =
-      "Le primaire du Groupe Scolaire Privé Bilingue La Pépinière à Bertoua : parcours francophone et anglophone selon le programme scolaire applicable.";
-    let meta = document.querySelector('meta[name="description"]');
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.setAttribute("name", "description");
-      document.head.appendChild(meta);
-    }
-    meta.setAttribute("content", description);
-  }, []);
+  const { t } = useLanguage();
+  const school = useSchool();
+
+  const primaryHours = [
+    {
+      days: t("Lundi – Jeudi", "Monday – Thursday"),
+      hours: school.hours.primary.mondayToThursday,
+    },
+    { days: t("Vendredi", "Friday"), hours: school.hours.primary.friday },
+  ];
+
+  usePageMeta(
+    `${t("Primaire", "Primary")} | ${school.shortName} — ${school.location.city}, ${school.location.country}`,
+    t(
+      "Le primaire du Groupe Scolaire Privé Bilingue La Pépinière à Bertoua : parcours francophone et anglophone selon le programme scolaire applicable.",
+      "The primary school of La Pépinière Bilingual Private School Group in Bertoua: French-speaking and English-speaking pathways following the applicable school curriculum.",
+    ),
+  );
 
   return (
     <>
       <Header />
       <main>
         <PageHero
-          eyebrow="PRIMAIRE"
-          title="Deux parcours pour apprendre et progresser."
-          description="La Pépinière propose un primaire francophone et un primaire anglophone, dans le cadre de son projet d'éducation bilingue."
-          imageLabel="élèves du primaire en apprentissage"
+          eyebrow={t("PRIMAIRE", "PRIMARY")}
+          title={t(
+            "Deux parcours pour apprendre et progresser.",
+            "Two pathways to learn and progress.",
+          )}
+          description={t(
+            "La Pépinière propose un primaire francophone et un primaire anglophone, dans le cadre de son projet d'éducation bilingue.",
+            "La Pépinière offers a French-speaking primary and an English-speaking primary, as part of its bilingual education project.",
+          )}
+          imageLabel={t(
+            "élèves du primaire en apprentissage",
+            "primary students learning",
+          )}
         />
 
         <section className="relative overflow-hidden bg-surface px-6 py-24 lg:px-10 lg:py-28">
@@ -59,25 +78,30 @@ export function PrimairePage() {
             <Reveal delay={0.08}>
               <div>
                 <p className="text-sm font-medium tracking-[0.18em] text-primary">
-                  NOTRE APPROCHE
+                  {t("NOTRE APPROCHE", "OUR APPROACH")}
                 </p>
                 <h2 className="mt-3 text-3xl font-bold text-ink sm:text-4xl">
-                  Une éducation bilingue tournée vers la réussite.
+                  {t(
+                    "Une éducation bilingue tournée vers la réussite.",
+                    "A bilingual education focused on success.",
+                  )}
                 </h2>
                 <div className="mt-6 space-y-5 text-lg leading-relaxed text-ink-soft">
                   <p>
-                    Au primaire, l'école poursuit sa mission de développer les
-                    connaissances, l'autonomie, la créativité et le sens des
-                    responsabilités de chaque enfant.
+                    {t(
+                      "Au primaire, l'école poursuit sa mission de développer les connaissances, l'autonomie, la créativité et le sens des responsabilités de chaque enfant.",
+                      "In primary school, the school continues its mission to develop each child's knowledge, independence, creativity and sense of responsibility.",
+                    )}
                   </p>
                   <p>
-                    Les apprentissages accompagnent aussi la maîtrise du
-                    français et de l'anglais, conformément à l'identité bilingue
-                    de La Pépinière.
+                    {t(
+                      "Les apprentissages accompagnent aussi la maîtrise du français et de l'anglais, conformément à l'identité bilingue de La Pépinière.",
+                      "Learning also supports proficiency in French and English, in line with La Pépinière's bilingual identity.",
+                    )}
                   </p>
                 </div>
                 <div className="mt-8 flex flex-wrap gap-3">
-                  {SCHOOL.values.map((value) => (
+                  {school.values.map((value) => (
                     <span
                       key={value}
                       className="rounded-full bg-primary-light px-4 py-2 text-sm font-medium text-primary transition-transform duration-200 hover:-translate-y-0.5"
@@ -91,7 +115,10 @@ export function PrimairePage() {
             <Reveal delay={0.18}>
               <ImagePlaceholder
                 className="relative z-10 aspect-4/3 w-full rounded-[18px_32px_18px_32px] shadow-soft-lg"
-                content="classe primaire africaine"
+                content={t(
+                  "classe primaire africaine",
+                  "African primary classroom",
+                )}
               />
             </Reveal>
           </div>
@@ -106,23 +133,28 @@ export function PrimairePage() {
             <Reveal delay={0.08}>
               <div className="mx-auto max-w-2xl text-center">
                 <p className="text-sm font-medium tracking-[0.18em] text-secondary">
-                  LES DEUX PARCOURS
+                  {t("LES DEUX PARCOURS", "THE TWO PATHWAYS")}
                 </p>
                 <h2 className="mt-3 text-3xl font-bold text-ink sm:text-4xl">
-                  Choisir la section qui correspond à votre enfant.
+                  {t(
+                    "Choisir la section qui correspond à votre enfant.",
+                    "Choose the section that suits your child.",
+                  )}
                 </h2>
                 <p className="mt-5 text-lg text-ink-soft">
-                  Deux sections primaires au sein d'un même établissement
-                  bilingue.
+                  {t(
+                    "Deux sections primaires au sein d'un même établissement bilingue.",
+                    "Two primary sections within the same bilingual school.",
+                  )}
                 </p>
               </div>
             </Reveal>
             <div className="mt-12 grid gap-6 md:grid-cols-2">
-              {SCHOOL.primary.pathways.map(
+              {school.primary.pathways.map(
                 ({ title, language, description }, index) => {
                   const Icon = PATHWAY_ICONS[index];
                   return (
-                    <Reveal key={title} delay={0.12 + index * 0.1}>
+                    <Reveal key={index} delay={0.12 + index * 0.1}>
                       <article className="group rounded-[28px_16px_28px_16px] border border-border-soft bg-white p-8 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-soft-lg">
                         <span className="flex h-13 w-13 items-center justify-center rounded-full bg-secondary-light text-secondary transition-transform duration-300 group-hover:rotate-6 group-hover:scale-105">
                           <Icon size={25} strokeWidth={1.8} />
@@ -154,20 +186,25 @@ export function PrimairePage() {
             <Reveal delay={0.08}>
               <div className="max-w-2xl">
                 <p className="text-sm font-medium tracking-[0.18em] text-primary">
-                  HORAIRES
+                  {t("HORAIRES", "SCHOOL HOURS")}
                 </p>
                 <h2 className="mt-3 text-3xl font-bold text-ink sm:text-4xl">
-                  Le rythme du primaire.
+                  {t(
+                    "Le rythme du primaire.",
+                    "The primary school's daily rhythm.",
+                  )}
                 </h2>
                 <p className="mt-5 text-lg leading-relaxed text-ink-soft">
-                  Les horaires communiqués par l'établissement pour les sections
-                  primaires.
+                  {t(
+                    "Les horaires communiqués par l'établissement pour les sections primaires.",
+                    "The hours provided by the school for the primary sections.",
+                  )}
                 </p>
               </div>
             </Reveal>
             <div className="mt-12 grid gap-6 md:grid-cols-2">
-              {PRIMARY_HOURS.map(({ days, hours }, index) => (
-                <Reveal key={days} delay={0.12 + index * 0.08}>
+              {primaryHours.map(({ days, hours }, index) => (
+                <Reveal key={index} delay={0.12 + index * 0.08}>
                   <article className="flex items-center gap-5 rounded-[28px_16px_28px_16px] border border-border-soft bg-surface-alt p-7 shadow-soft">
                     <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-primary-light text-primary">
                       <Clock3 size={24} strokeWidth={1.8} />
@@ -196,23 +233,31 @@ export function PrimairePage() {
             <Reveal delay={0.08}>
               <ImagePlaceholder
                 className="aspect-4/3 w-full rounded-[34px_18px_34px_18px] shadow-soft-lg"
-                content="élèves du primaire en classe"
+                content={t(
+                  "élèves du primaire en classe",
+                  "primary students in class",
+                )}
               />
             </Reveal>
             <Reveal delay={0.16}>
               <div>
                 <p className="text-sm font-medium tracking-[0.18em] text-secondary">
-                  REPÈRES PÉDAGOGIQUES
+                  {t("REPÈRES PÉDAGOGIQUES", "TEACHING PRINCIPLES")}
                 </p>
                 <h2 className="mt-3 text-3xl font-bold text-ink sm:text-4xl">
-                  Des valeurs qui accompagnent le parcours de chaque enfant.
+                  {t(
+                    "Des valeurs qui accompagnent le parcours de chaque enfant.",
+                    "Values that accompany every child's journey.",
+                  )}
                 </h2>
                 <p className="mt-6 text-lg leading-relaxed text-ink-soft">
-                  Discipline, travail, succès, respect, responsabilité et
-                  excellence sont les valeurs officielles de l'établissement.
+                  {t(
+                    "Discipline, travail, succès, respect, responsabilité et excellence sont les valeurs officielles de l'établissement.",
+                    "Discipline, hard work, success, respect, responsibility and excellence are the school's official values.",
+                  )}
                 </p>
                 <div className="mt-8 grid gap-3 sm:grid-cols-2">
-                  {SCHOOL.values.map((value, index) => (
+                  {school.values.map((value, index) => (
                     <div
                       key={value}
                       className="flex items-center gap-3 rounded-[18px_10px_18px_10px] border border-border-soft bg-white px-4 py-3 shadow-soft"
@@ -241,27 +286,25 @@ export function PrimairePage() {
           <div className="relative mx-auto max-w-6xl">
             <div className="mx-auto max-w-2xl text-center">
               <p className="text-sm font-medium tracking-[0.18em] text-primary">
-                UNE ÉCOLE, DEUX LANGUES
+                {t("UNE ÉCOLE, DEUX LANGUES", "ONE SCHOOL, TWO LANGUAGES")}
               </p>
               <h2 className="mt-3 text-3xl font-bold text-ink sm:text-4xl">
-                Découvrir le primaire à La Pépinière.
+                {t(
+                  "Découvrir le primaire à La Pépinière.",
+                  "Discover primary school at La Pépinière.",
+                )}
               </h2>
             </div>
             <div className="mt-12 grid grid-cols-2 gap-4 md:grid-cols-4">
-              {[
-                "salle de classe",
-                "apprentissage en français",
-                "learning in English",
-                "vie scolaire",
-              ].map((content, index) => (
+              {GALLERY_CONTENT.map((content, index) => (
                 <ImagePlaceholder
-                  key={content}
+                  key={content.fr}
                   className={
                     index % 2 === 0
                       ? "aspect-square rounded-[28px_14px_28px_14px]"
                       : "aspect-square rounded-[14px_28px_14px_28px]"
                   }
-                  content={content}
+                  content={t(content)}
                 />
               ))}
             </div>
@@ -276,10 +319,13 @@ export function PrimairePage() {
           <div className="relative mx-auto flex max-w-6xl flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div>
               <p className="text-sm font-medium tracking-[0.18em] text-white/80">
-                PROCHAINE ÉTAPE
+                {t("PROCHAINE ÉTAPE", "NEXT STEP")}
               </p>
               <h2 className="mt-3 text-3xl font-bold sm:text-4xl">
-                Préparez l'inscription de votre enfant.
+                {t(
+                  "Préparez l'inscription de votre enfant.",
+                  "Prepare your child's enrolment.",
+                )}
               </h2>
             </div>
             <Link
@@ -287,7 +333,7 @@ export function PrimairePage() {
               className="inline-flex items-center justify-center gap-2 self-start rounded-btn bg-white px-5 py-3 text-sm font-medium text-primary shadow-soft transition-colors hover:bg-surface-alt"
             >
               <School size={17} />
-              Découvrir les admissions
+              {t("Découvrir les admissions", "Discover admissions")}
             </Link>
           </div>
         </section>

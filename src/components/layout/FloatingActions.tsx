@@ -1,9 +1,12 @@
 import { ArrowUp, MessageCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 
+import { useLanguage } from "@/i18n/useLanguage";
+
 const WHATSAPP_HREF = "/contact#contact-form";
 
 export function FloatingActions() {
+  const { t } = useLanguage();
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
@@ -27,8 +30,8 @@ export function FloatingActions() {
       {showScrollTop && (
         <button
           type="button"
-          aria-label="Revenir en haut de la page"
-          title="Revenir en haut"
+          aria-label={t("Revenir en haut de la page", "Back to top of the page")}
+          title={t("Revenir en haut", "Back to top")}
           onClick={scrollToTop}
           className="flex h-11 w-11 items-center justify-center rounded-full border border-border-soft bg-white text-primary shadow-soft-lg transition-transform duration-200 hover:-translate-y-0.5 hover:bg-primary-light"
         >
@@ -38,8 +41,8 @@ export function FloatingActions() {
 
       <a
         href={WHATSAPP_HREF}
-        aria-label="Contacter l'école sur WhatsApp"
-        title="Nous contacter sur WhatsApp"
+        aria-label={t("Contacter l'école sur WhatsApp", "Contact the school on WhatsApp")}
+        title={t("Nous contacter sur WhatsApp", "Contact us on WhatsApp")}
         className="flex h-14 w-14 items-center justify-center rounded-full bg-secondary text-white shadow-soft-lg transition-transform duration-200 hover:-translate-y-1 hover:bg-secondary-dark"
       >
         <MessageCircle size={25} strokeWidth={2} />

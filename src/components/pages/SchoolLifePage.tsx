@@ -15,7 +15,6 @@ import {
   Sparkles,
   TentTree,
 } from "lucide-react";
-import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import { Footer } from "@/components/layout/Footer";
@@ -23,7 +22,10 @@ import { Header } from "@/components/layout/Header";
 import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
-import { SCHOOL } from "@/data/school";
+import { useSchool } from "@/data/useSchool";
+import { tr } from "@/i18n/types";
+import { useLanguage } from "@/i18n/useLanguage";
+import { usePageMeta } from "@/lib/usePageMeta";
 
 const FACILITY_ICONS = [
   School,
@@ -45,39 +47,91 @@ const ACTIVITY_ICONS = [
   School,
 ];
 const ACTIVITY_DESCRIPTIONS = [
-  "Découvrir et pratiquer autour de la cuisine.",
-  "S'initier aux activités agricoles.",
-  "Explorer les activités musicales.",
-  "Participer à des activités sportives.",
-  "Découvrir autrement à travers les excursions.",
-  "Rencontrer l'école lors de journées portes ouvertes.",
-  "Partager des activités culturelles.",
-  "Éveiller la curiosité par la découverte.",
+  tr(
+    "Découvrir et pratiquer autour de la cuisine.",
+    "Discover and practise cooking.",
+  ),
+  tr(
+    "S'initier aux activités agricoles.",
+    "Get started with farming activities.",
+  ),
+  tr("Explorer les activités musicales.", "Explore music activities."),
+  tr(
+    "Participer à des activités sportives.",
+    "Take part in sports activities.",
+  ),
+  tr(
+    "Découvrir autrement à travers les excursions.",
+    "Discover things differently through excursions.",
+  ),
+  tr(
+    "Rencontrer l'école lors de journées portes ouvertes.",
+    "Get to know the school during open days.",
+  ),
+  tr("Partager des activités culturelles.", "Share in cultural activities."),
+  tr(
+    "Éveiller la curiosité par la découverte.",
+    "Awaken curiosity through discovery.",
+  ),
 ];
 
 export function SchoolLifePage() {
-  useEffect(() => {
-    document.title = `Vie scolaire | ${SCHOOL.shortName} — Bertoua, Cameroun`;
-    const description =
-      "Découvrez les infrastructures, activités extrascolaires et le transport scolaire du Groupe Scolaire Privé Bilingue La Pépinière à Bertoua.";
-    let meta = document.querySelector('meta[name="description"]');
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.setAttribute("name", "description");
-      document.head.appendChild(meta);
-    }
-    meta.setAttribute("content", description);
-  }, []);
+  const { t } = useLanguage();
+  const school = useSchool();
+
+  const parentInfo = [
+    {
+      icon: Clock3,
+      title: t("Horaires scolaires", "School hours"),
+      text: t(
+        "Les horaires de la maternelle et du primaire sont disponibles sur leurs pages respectives.",
+        "Nursery and primary school hours are available on their respective pages.",
+      ),
+    },
+    {
+      icon: NotebookText,
+      title: t("Règlement intérieur", "Internal regulations"),
+      text: t(
+        "Règlement intérieur officiel — document à intégrer.",
+        "Official internal regulations — document to be added.",
+      ),
+    },
+    {
+      icon: CalendarDays,
+      title: t("Calendrier scolaire", "School calendar"),
+      text: t(
+        "Calendrier scolaire officiel — document à intégrer.",
+        "Official school calendar — document to be added.",
+      ),
+    },
+  ];
+
+  usePageMeta(
+    `${t("Vie scolaire", "School life")} | ${school.shortName} — ${school.location.city}, ${school.location.country}`,
+    t(
+      "Découvrez les infrastructures, activités extrascolaires et le transport scolaire du Groupe Scolaire Privé Bilingue La Pépinière à Bertoua.",
+      "Discover the facilities, extracurricular activities and school transport of La Pépinière Bilingual Private School Group in Bertoua.",
+    ),
+  );
 
   return (
     <>
       <Header />
       <main>
         <PageHero
-          eyebrow="VIE SCOLAIRE"
-          title="Bien plus qu'une salle de classe."
-          description="À La Pépinière, les enfants découvrent une vie scolaire rythmée par les activités, les rencontres et les espaces qui font vivre l'école."
-          imageLabel="enfants africains en activité"
+          eyebrow={t("VIE SCOLAIRE", "SCHOOL LIFE")}
+          title={t(
+            "Bien plus qu'une salle de classe.",
+            "Much more than a classroom.",
+          )}
+          description={t(
+            "À La Pépinière, les enfants découvrent une vie scolaire rythmée par les activités, les rencontres et les espaces qui font vivre l'école.",
+            "At La Pépinière, children experience a school life shaped by activities, encounters and the spaces that bring the school to life.",
+          )}
+          imageLabel={t(
+            "enfants africains en activité",
+            "African children at an activity",
+          )}
         />
 
         <section className="relative overflow-hidden bg-surface px-6 py-24 lg:px-10 lg:py-28">
@@ -93,20 +147,27 @@ export function SchoolLifePage() {
             <Reveal delay={0.08}>
               <div>
                 <p className="text-sm font-medium tracking-[0.18em] text-secondary">
-                  UN QUOTIDIEN VIVANT
+                  {t("UN QUOTIDIEN VIVANT", "A LIVELY EVERYDAY LIFE")}
                 </p>
                 <h2 className="mt-3 text-3xl font-bold text-ink sm:text-4xl">
-                  Des espaces et des moments pour grandir ensemble.
+                  {t(
+                    "Des espaces et des moments pour grandir ensemble.",
+                    "Spaces and moments to grow together.",
+                  )}
                 </h2>
                 <p className="mt-6 text-lg leading-relaxed text-ink-soft">
-                  La vie scolaire complète le parcours des enfants par des
-                  activités de découverte, culturelles, sportives et pratiques,
-                  dans les espaces de l'établissement.
+                  {t(
+                    "La vie scolaire complète le parcours des enfants par des activités de découverte, culturelles, sportives et pratiques, dans les espaces de l'établissement.",
+                    "School life complements children's learning with discovery, cultural, sports and hands-on activities in the school's spaces.",
+                  )}
                 </p>
                 <div className="mt-8 flex items-center gap-4 rounded-[24px_14px_24px_14px] border border-border-soft bg-surface-alt p-5 shadow-soft">
                   <Sparkles className="shrink-0 text-secondary" size={25} />
                   <p className="text-sm font-medium text-ink">
-                    Une école pensée pour apprendre, découvrir et partager.
+                    {t(
+                      "Une école pensée pour apprendre, découvrir et partager.",
+                      "A school designed to learn, discover and share.",
+                    )}
                   </p>
                 </div>
               </div>
@@ -114,7 +175,10 @@ export function SchoolLifePage() {
             <Reveal delay={0.18}>
               <ImagePlaceholder
                 className="relative z-10 aspect-4/3 w-full rounded-[34px_18px_34px_18px] shadow-soft-lg"
-                content="vie quotidienne des élèves"
+                content={t(
+                  "vie quotidienne des élèves",
+                  "students' daily life",
+                )}
               />
             </Reveal>
           </div>
@@ -129,18 +193,21 @@ export function SchoolLifePage() {
             <Reveal delay={0.08}>
               <div className="mx-auto max-w-2xl text-center">
                 <p className="text-sm font-medium tracking-[0.18em] text-primary">
-                  NOS INFRASTRUCTURES
+                  {t("NOS INFRASTRUCTURES", "OUR FACILITIES")}
                 </p>
                 <h2 className="mt-3 text-3xl font-bold text-ink sm:text-4xl">
-                  Des espaces au service de la vie de l'école.
+                  {t(
+                    "Des espaces au service de la vie de l'école.",
+                    "Spaces that serve school life.",
+                  )}
                 </h2>
               </div>
             </Reveal>
             <div className="mt-14 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7">
-              {SCHOOL.schoolLife.facilities.map((facility, index) => {
+              {school.schoolLife.facilities.map((facility, index) => {
                 const Icon = FACILITY_ICONS[index];
                 return (
-                  <Reveal key={facility} delay={0.12 + index * 0.07}>
+                  <Reveal key={index} delay={0.12 + index * 0.07}>
                     <article className="group flex min-h-40 flex-col items-center justify-center rounded-[24px_14px_24px_14px] border border-border-soft bg-white p-5 text-center shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-soft-lg">
                       <span className="flex h-11 w-11 items-center justify-center rounded-full bg-primary-light text-primary transition-transform duration-300 group-hover:rotate-6 group-hover:scale-110">
                         <Icon size={21} />
@@ -165,18 +232,21 @@ export function SchoolLifePage() {
             <Reveal delay={0.08}>
               <div className="mx-auto max-w-2xl text-center">
                 <p className="text-sm font-medium tracking-[0.18em] text-primary">
-                  ACTIVITÉS EXTRASCOLAIRES
+                  {t("ACTIVITÉS EXTRASCOLAIRES", "EXTRACURRICULAR ACTIVITIES")}
                 </p>
                 <h2 className="mt-3 text-3xl font-bold text-ink sm:text-4xl">
-                  Des occasions d'apprendre autrement.
+                  {t(
+                    "Des occasions d'apprendre autrement.",
+                    "Opportunities to learn differently.",
+                  )}
                 </h2>
               </div>
             </Reveal>
             <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-              {SCHOOL.schoolLife.activities.map((title, index) => {
+              {school.schoolLife.activities.map((title, index) => {
                 const Icon = ACTIVITY_ICONS[index];
                 return (
-                  <Reveal key={title} delay={0.12 + index * 0.08}>
+                  <Reveal key={index} delay={0.12 + index * 0.08}>
                     <article className="group rounded-[28px_16px_28px_16px] border border-border-soft bg-surface-alt p-6 transition-all duration-300 hover:-translate-y-1 hover:bg-white hover:shadow-soft">
                       <span className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary-light text-secondary transition-transform duration-300 group-hover:rotate-6 group-hover:scale-110">
                         <Icon size={20} />
@@ -185,7 +255,7 @@ export function SchoolLifePage() {
                         {title}
                       </h3>
                       <p className="mt-3 text-sm leading-relaxed text-ink-soft">
-                        {ACTIVITY_DESCRIPTIONS[index]}
+                        {t(ACTIVITY_DESCRIPTIONS[index])}
                       </p>
                     </article>
                   </Reveal>
@@ -204,22 +274,25 @@ export function SchoolLifePage() {
             <Reveal delay={0.08}>
               <ImagePlaceholder
                 className="aspect-4/3 w-full rounded-[18px_34px_18px_34px] shadow-soft-lg"
-                content="transport scolaire"
+                content={t("transport scolaire", "school transport")}
               />
             </Reveal>
             <Reveal delay={0.16}>
               <div>
                 <p className="text-sm font-medium tracking-[0.18em] text-secondary">
-                  TRANSPORT SCOLAIRE
+                  {t("TRANSPORT SCOLAIRE", "SCHOOL TRANSPORT")}
                 </p>
                 <h2 className="mt-3 text-3xl font-bold text-ink sm:text-4xl">
-                  Un service de transport selon la distance.
+                  {t(
+                    "Un service de transport selon la distance.",
+                    "A transport service priced by distance.",
+                  )}
                 </h2>
                 <p className="mt-6 text-lg leading-relaxed text-ink-soft">
-                  {SCHOOL.transport.description}
+                  {school.transport.description}
                 </p>
                 <div className="mt-8 grid grid-cols-3 gap-3">
-                  {SCHOOL.transport.tariffs.map((tariff, index) => (
+                  {school.transport.tariffs.map((tariff, index) => (
                     <div
                       key={tariff}
                       className="rounded-[18px_10px_18px_10px] bg-white px-3 py-4 text-center text-sm font-bold text-primary shadow-soft"
@@ -230,7 +303,10 @@ export function SchoolLifePage() {
                   ))}
                 </div>
                 <p className="mt-4 text-sm font-medium text-ink-soft">
-                  Tarifs annoncés selon la distance.
+                  {t(
+                    "Tarifs annoncés selon la distance.",
+                    "Fares announced according to distance.",
+                  )}
                 </p>
               </div>
             </Reveal>
@@ -247,10 +323,13 @@ export function SchoolLifePage() {
               <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                 <div>
                   <p className="text-sm font-medium tracking-[0.18em] text-primary">
-                    INFORMATIONS AUX PARENTS
+                    {t("INFORMATIONS AUX PARENTS", "INFORMATION FOR PARENTS")}
                   </p>
                   <h2 className="mt-3 text-3xl font-bold text-ink sm:text-4xl">
-                    Les documents et informations utiles.
+                    {t(
+                      "Les documents et informations utiles.",
+                      "Useful documents and information.",
+                    )}
                   </h2>
                 </div>
                 <CalendarDays
@@ -261,24 +340,8 @@ export function SchoolLifePage() {
               </div>
             </Reveal>
             <div className="mt-12 grid gap-5 md:grid-cols-3">
-              {[
-                {
-                  icon: Clock3,
-                  title: "Horaires scolaires",
-                  text: "Les horaires de la maternelle et du primaire sont disponibles sur leurs pages respectives.",
-                },
-                {
-                  icon: NotebookText,
-                  title: "Règlement intérieur",
-                  text: "Règlement intérieur officiel — document à intégrer.",
-                },
-                {
-                  icon: CalendarDays,
-                  title: "Calendrier scolaire",
-                  text: "Calendrier scolaire officiel — document à intégrer.",
-                },
-              ].map(({ icon: Icon, title, text }, index) => (
-                <Reveal key={title} delay={0.12 + index * 0.08}>
+              {parentInfo.map(({ icon: Icon, title, text }, index) => (
+                <Reveal key={index} delay={0.12 + index * 0.08}>
                   <article className="rounded-[22px_14px_22px_14px] border border-border-soft bg-surface-alt p-6">
                     <Icon className="text-secondary" size={23} />
                     <h3 className="mt-5 text-xl font-bold text-ink">{title}</h3>
@@ -300,17 +363,20 @@ export function SchoolLifePage() {
           <div className="relative mx-auto flex max-w-6xl flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div>
               <p className="text-sm font-medium tracking-[0.18em] text-white/80">
-                LA VIE À L'ÉCOLE
+                {t("LA VIE À L'ÉCOLE", "LIFE AT SCHOOL")}
               </p>
               <h2 className="mt-3 text-3xl font-bold sm:text-4xl">
-                Grandir, apprendre et partager chaque jour.
+                {t(
+                  "Grandir, apprendre et partager chaque jour.",
+                  "Grow, learn and share every day.",
+                )}
               </h2>
             </div>
             <Link
               to="/galerie"
               className="inline-flex items-center justify-center rounded-btn bg-white px-5 py-3 text-sm font-medium text-primary shadow-soft transition-colors hover:bg-surface-alt"
             >
-              Voir la galerie
+              {t("Voir la galerie", "View the gallery")}
             </Link>
           </div>
         </section>

@@ -2,7 +2,8 @@ import { BookOpen, Heart, Sprout } from "lucide-react";
 
 import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
 import { Reveal } from "@/components/ui/Reveal";
-import { SCHOOL } from "@/data/school";
+import { useSchool } from "@/data/useSchool";
+import { useLanguage } from "@/i18n/useLanguage";
 
 const VALUES = [
   {
@@ -23,6 +24,9 @@ const VALUES = [
 ];
 
 export function Welcome() {
+  const { t } = useLanguage();
+  const school = useSchool();
+
   return (
     <section
       id="notre-ecole"
@@ -35,14 +39,17 @@ export function Welcome() {
       <div className="mx-auto max-w-3xl text-center">
         <Reveal delay={0.05}>
           <p className="text-sm font-medium tracking-wide text-primary">
-            {SCHOOL.name}
+            {school.name}
           </p>
         </Reveal>
         <Reveal delay={0.12}>
           <h2 className="mt-3 text-3xl font-bold leading-tight text-ink sm:text-4xl">
-            Une éducation bilingue pour grandir avec{" "}
+            {t(
+              "Une éducation bilingue pour grandir avec",
+              "A bilingual education to grow with",
+            )}{" "}
             <span className="relative inline-block text-secondary">
-              discipline et confiance
+              {t("discipline et confiance", "discipline and confidence")}
               <span
                 aria-hidden
                 className="absolute -bottom-2 left-1/2 h-1.5 w-4/5 -translate-x-1/2 -rotate-2 rounded-full bg-accent-yellow/60"
@@ -57,18 +64,18 @@ export function Welcome() {
         <Reveal delay={0.15}>
           <ImagePlaceholder
             className="aspect-4/5 w-full rounded-image shadow-soft"
-            content="enseignant avec des enfants"
+            content={t("enseignant avec des enfants", "teacher with children")}
           />
         </Reveal>
 
         <Reveal delay={0.22}>
           <div>
             <p className="text-lg leading-relaxed text-ink-soft">
-              {SCHOOL.vision}
+              {school.vision}
             </p>
 
             <div className="mt-10 flex flex-wrap gap-8">
-              {SCHOOL.values.slice(0, 3).map((label, index) => {
+              {school.values.slice(0, 3).map((label, index) => {
                 const value = VALUES[index];
                 const Icon = value.icon;
                 return (

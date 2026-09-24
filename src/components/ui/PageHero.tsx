@@ -2,6 +2,7 @@ import { ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { Reveal } from "@/components/ui/Reveal";
+import { useLanguage } from "@/i18n/useLanguage";
 
 interface PageHeroProps {
   eyebrow: string;
@@ -16,6 +17,8 @@ export function PageHero({
   description,
   imageLabel,
 }: PageHeroProps) {
+  const { t } = useLanguage();
+
   return (
     <section className="relative overflow-hidden bg-surface-alt px-6 pb-20 pt-14 lg:px-10 lg:pb-28 lg:pt-20">
       <div
@@ -39,11 +42,11 @@ export function PageHero({
               {description}
             </p>
             <nav
-              aria-label="Fil d'Ariane"
+              aria-label={t("Fil d'Ariane", "Breadcrumb")}
               className="mt-8 flex items-center gap-2 text-sm text-ink-soft"
             >
               <Link to="/" className="transition-colors hover:text-primary">
-                Accueil
+                {t("Accueil", "Home")}
               </Link>
               <ChevronRight size={15} aria-hidden="true" />
               <span className="font-medium text-primary">{eyebrow}</span>
@@ -64,7 +67,7 @@ export function PageHero({
               <div className="aspect-4/3 overflow-hidden rounded-image">
                 <div className="flex h-full items-center justify-center bg-linear-to-br from-primary-light via-white to-secondary-light px-8 text-center transition-transform duration-500 ease-out group-hover:scale-105">
                   <span className="rounded-full bg-white/85 px-4 py-2 text-xs font-medium text-ink-soft shadow-soft">
-                    Photo à intégrer · {imageLabel}
+                    {t("Photo à intégrer", "Photo to be added")} · {imageLabel}
                   </span>
                 </div>
               </div>

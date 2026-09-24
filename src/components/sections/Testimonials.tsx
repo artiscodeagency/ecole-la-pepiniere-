@@ -2,36 +2,50 @@ import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import { Reveal } from "@/components/ui/Reveal";
+import { type Localized, tr } from "@/i18n/types";
+import { useLanguage } from "@/i18n/useLanguage";
 
 interface Testimonial {
   name: string;
-  role: string;
-  text: string;
+  role: Localized;
+  text: Localized;
   initials: string;
 }
+
+const PARENT_ROLE = tr("Parent d’élève", "Parent of a student");
 
 const TESTIMONIALS: Testimonial[] = [
   {
     name: "Sophie L.",
-    role: "Parent d’élève",
-    text: "Une école douce, attentive et exigeante à la fois. Mon enfant est heureux d’y aller chaque matin et nous avons vraiment l’impression qu’il grandit dans un environnement bienveillant.",
+    role: PARENT_ROLE,
+    text: tr(
+      "Une école douce, attentive et exigeante à la fois. Mon enfant est heureux d’y aller chaque matin et nous avons vraiment l’impression qu’il grandit dans un environnement bienveillant.",
+      "A gentle, attentive and demanding school all at once. My child is happy to go every morning and we truly feel they are growing up in a caring environment.",
+    ),
     initials: "SL",
   },
   {
     name: "Karim A.",
-    role: "Parent d’élève",
-    text: "Le cadre est rassurant et les équipes sont très présentes. On sent une vraie attention portée à chacun, tant sur le plan pédagogique que sur le bien-être des enfants.",
+    role: PARENT_ROLE,
+    text: tr(
+      "Le cadre est rassurant et les équipes sont très présentes. On sent une vraie attention portée à chacun, tant sur le plan pédagogique que sur le bien-être des enfants.",
+      "The setting is reassuring and the staff are very present. You can feel real attention given to each child, both academically and for their well-being.",
+    ),
     initials: "KA",
   },
   {
     name: "Claire M.",
-    role: "Parent d’élève",
-    text: "Nous avons choisi La Pépinière pour son équilibre entre exigence, chaleur humaine et apprentissage structuré. C’est exactement ce que nous cherchions pour nos enfants.",
+    role: PARENT_ROLE,
+    text: tr(
+      "Nous avons choisi La Pépinière pour son équilibre entre exigence, chaleur humaine et apprentissage structuré. C’est exactement ce que nous cherchions pour nos enfants.",
+      "We chose La Pépinière for its balance of high standards, human warmth and structured learning. It is exactly what we wanted for our children.",
+    ),
     initials: "CM",
   },
 ];
 
 export function Testimonials() {
+  const { t } = useLanguage();
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
@@ -65,10 +79,13 @@ export function Testimonials() {
       <Reveal delay={0.05}>
         <div className="mx-auto max-w-2xl text-center">
           <p className="text-sm font-medium tracking-wide text-primary">
-            TÉMOIGNAGES
+            {t("TÉMOIGNAGES", "TESTIMONIALS")}
           </p>
           <h2 className="mt-3 text-3xl font-bold leading-tight text-ink sm:text-4xl">
-            La confiance des parents compte.
+            {t(
+              "La confiance des parents compte.",
+              "Parents' trust matters.",
+            )}
           </h2>
         </div>
       </Reveal>
@@ -78,7 +95,7 @@ export function Testimonials() {
           <div className="mb-6 flex items-center justify-end gap-2">
             <button
               type="button"
-              aria-label="Témoignage précédent"
+              aria-label={t("Témoignage précédent", "Previous testimonial")}
               onClick={previous}
               className="flex h-10 w-10 items-center justify-center rounded-full border border-border-soft bg-white text-ink transition-colors hover:border-primary hover:text-primary"
             >
@@ -86,7 +103,7 @@ export function Testimonials() {
             </button>
             <button
               type="button"
-              aria-label="Témoignage suivant"
+              aria-label={t("Témoignage suivant", "Next testimonial")}
               onClick={next}
               className="flex h-10 w-10 items-center justify-center rounded-full border border-border-soft bg-white text-ink transition-colors hover:border-primary hover:text-primary"
             >
@@ -105,7 +122,7 @@ export function Testimonials() {
                   </div>
                   <div>
                     <p className="text-base font-semibold text-ink">{name}</p>
-                    <p className="text-sm text-ink-soft">{role}</p>
+                    <p className="text-sm text-ink-soft">{t(role)}</p>
                   </div>
                 </div>
 
@@ -121,7 +138,7 @@ export function Testimonials() {
                 </div>
 
                 <p className="mt-5 text-base leading-relaxed text-ink-soft">
-                  “{text}”
+                  “{t(text)}”
                 </p>
               </article>
             </Reveal>

@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { Reveal } from "@/components/ui/Reveal";
 import { SCHOOL_STATS } from "@/data/stats";
+import { useLanguage } from "@/i18n/useLanguage";
 
 function useCountUp(target: number, active: boolean, duration = 1600) {
   const [value, setValue] = useState(0);
@@ -51,6 +52,7 @@ function StatItem({ value, suffix, label, active, instant }: StatItemProps) {
 }
 
 export function Stats() {
+  const { t } = useLanguage();
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
   const prefersReducedMotion = useReducedMotion();
@@ -74,8 +76,9 @@ export function Stats() {
         <div className="relative mx-auto grid max-w-6xl grid-cols-2 gap-y-10 lg:grid-cols-4 lg:divide-x lg:divide-white/15">
           {SCHOOL_STATS.map((stat) => (
             <StatItem
-              key={stat.label}
+              key={stat.label.fr}
               {...stat}
+              label={t(stat.label)}
               active={isInView}
               instant={!!prefersReducedMotion}
             />

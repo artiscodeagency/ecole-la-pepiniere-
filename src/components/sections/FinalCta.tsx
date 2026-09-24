@@ -1,6 +1,10 @@
 import { Link } from "react-router-dom";
 
+import { useLanguage } from "@/i18n/useLanguage";
+
 export function FinalCta() {
+  const { t } = useLanguage();
+
   return (
     <section className="relative overflow-hidden bg-linear-to-br from-primary via-primary to-[#dfeaff] px-6 py-24 text-white lg:px-10 lg:py-32">
       <div
@@ -23,11 +27,16 @@ export function FinalCta() {
               ADMISSIONS
             </p>
             <h2 className="mt-4 text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">
-              Construisons ensemble les premières étapes de son avenir.
+              {t(
+                "Construisons ensemble les premières étapes de son avenir.",
+                "Let's build the first steps of their future together.",
+              )}
             </h2>
             <p className="mt-5 max-w-2xl text-base leading-relaxed text-white/85 sm:text-lg">
-              Une école où les enfants grandissent avec confiance, autonomie et
-              envie d’apprendre.
+              {t(
+                "Une école où les enfants grandissent avec confiance, autonomie et envie d’apprendre.",
+                "A school where children grow with confidence, independence and a desire to learn.",
+              )}
             </p>
           </div>
 
@@ -36,13 +45,13 @@ export function FinalCta() {
               to="/admissions"
               className="inline-flex items-center justify-center rounded-btn bg-white px-6 py-3.5 text-sm font-medium text-primary transition-colors hover:bg-surface-alt"
             >
-              Découvrir les admissions
+              {t("Découvrir les admissions", "Discover admissions")}
             </Link>
             <Link
               to="/contact"
               className="inline-flex items-center justify-center rounded-btn border border-white/30 bg-white/10 px-6 py-3.5 text-sm font-medium text-white transition-colors hover:bg-white/15"
             >
-              Nous contacter
+              {t("Nous contacter", "Contact us")}
             </Link>
           </div>
         </div>

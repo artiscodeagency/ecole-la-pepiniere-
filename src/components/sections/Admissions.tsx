@@ -11,73 +11,99 @@ import { type FormEvent, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { Reveal } from "@/components/ui/Reveal";
-import { SCHOOL } from "@/data/school";
+import { useSchool } from "@/data/useSchool";
+import { type Localized, tr } from "@/i18n/types";
+import { useLanguage } from "@/i18n/useLanguage";
 
 const BENEFITS = [
   {
     icon: Heart,
-    title: "Un environnement bienveillant",
-    text: "Un cadre attentif qui respecte le rythme et les besoins de chaque enfant.",
+    title: tr("Un environnement bienveillant", "A caring environment"),
+    text: tr(
+      "Un cadre attentif qui respecte le rythme et les besoins de chaque enfant.",
+      "An attentive setting that respects each child's pace and needs.",
+    ),
   },
   {
     icon: Users,
-    title: "Un accompagnement adapté",
-    text: "Une équipe disponible pour accompagner les familles à chaque étape.",
+    title: tr("Un accompagnement adapté", "Tailored support"),
+    text: tr(
+      "Une équipe disponible pour accompagner les familles à chaque étape.",
+      "A team available to support families at every step.",
+    ),
   },
   {
     icon: ShieldCheck,
-    title: "Un apprentissage structuré",
-    text: "Des repères clairs pour apprendre, progresser et prendre confiance.",
+    title: tr("Un apprentissage structuré", "Structured learning"),
+    text: tr(
+      "Des repères clairs pour apprendre, progresser et prendre confiance.",
+      "Clear guidelines to help children learn, progress and build confidence.",
+    ),
   },
   {
     icon: Sparkles,
-    title: "L'épanouissement au quotidien",
-    text: "Des expériences variées pour nourrir la curiosité et l’autonomie.",
+    title: tr("L'épanouissement au quotidien", "Everyday personal growth"),
+    text: tr(
+      "Des expériences variées pour nourrir la curiosité et l’autonomie.",
+      "Varied experiences to nurture curiosity and independence.",
+    ),
   },
 ];
 
-const STEPS = [
+const STEPS: [string, Localized, Localized][] = [
   [
     "01",
-    "Prendre contact",
-    "Le parent contacte l'école pour obtenir les premières informations.",
+    tr("Prendre contact", "Get in touch"),
+    tr(
+      "Le parent contacte l'école pour obtenir les premières informations.",
+      "Parents contact the school to get the first information.",
+    ),
   ],
   [
     "02",
-    "Découvrir l'école",
-    "Possibilité de visiter l'établissement et d'échanger avec l'équipe.",
+    tr("Découvrir l'école", "Discover the school"),
+    tr(
+      "Possibilité de visiter l'établissement et d'échanger avec l'équipe.",
+      "Option to visit the school and speak with the team.",
+    ),
   ],
   [
     "03",
-    "Déposer le dossier",
-    "Le parent fournit les documents nécessaires à l’inscription.",
+    tr("Déposer le dossier", "Submit the application"),
+    tr(
+      "Le parent fournit les documents nécessaires à l’inscription.",
+      "Parents provide the documents required for enrolment.",
+    ),
   ],
   [
     "04",
-    "Finaliser l'inscription",
-    "L’inscription est finalisée après validation du dossier.",
+    tr("Finaliser l'inscription", "Complete the enrolment"),
+    tr(
+      "L’inscription est finalisée après validation du dossier.",
+      "Enrolment is completed once the application has been approved.",
+    ),
   ],
 ];
 
-const DOCUMENTS = SCHOOL.admissions.documents;
-
-const FAQ = SCHOOL.admissions.faq;
-
 const LEVELS = [
-  "Petite Section",
-  "Moyenne Section",
-  "Grande Section",
-  "SIL",
-  "CP",
-  "CE1",
-  "CE2",
-  "CM1",
-  "CM2",
+  tr("Petite Section", "Small Section"),
+  tr("Moyenne Section", "Middle Section"),
+  tr("Grande Section", "Large Section"),
+  tr("SIL", "SIL"),
+  tr("CP", "CP"),
+  tr("CE1", "CE1"),
+  tr("CE2", "CE2"),
+  tr("CM1", "CM1"),
+  tr("CM2", "CM2"),
 ];
 
 type FormStatus = "idle" | "loading" | "success" | "error";
 
 export function Admissions() {
+  const { t } = useLanguage();
+  const school = useSchool();
+  const documents = school.admissions.documents;
+  const faq = school.admissions.faq;
   const [status, setStatus] = useState<FormStatus>("idle");
   const [openQuestion, setOpenQuestion] = useState<number | null>(null);
 
@@ -100,26 +126,30 @@ export function Admissions() {
                 ADMISSIONS
               </p>
               <h2 className="mt-3 max-w-3xl text-3xl font-bold leading-tight text-ink sm:text-4xl lg:text-5xl">
-                Préparer la prochaine étape de votre enfant.
+                {t(
+                  "Préparer la prochaine étape de votre enfant.",
+                  "Prepare your child's next step.",
+                )}
               </h2>
             </div>
             <p className="text-base leading-relaxed text-ink-soft sm:text-lg">
-              La Pépinière accompagne les enfants dans leur développement et
-              leurs apprentissages. Parlons ensemble du projet qui correspond à
-              votre famille.
+              {t(
+                "La Pépinière accompagne les enfants dans leur développement et leurs apprentissages. Parlons ensemble du projet qui correspond à votre famille.",
+                "La Pépinière supports children in their development and learning. Let's talk together about the plan that suits your family.",
+              )}
             </p>
             <div className="mt-7 flex flex-wrap gap-4">
               <Link
                 to="/admissions"
                 className="rounded-btn bg-primary px-6 py-3.5 text-sm font-medium text-white shadow-soft transition-colors hover:bg-primary-dark"
               >
-                Demander une inscription
+                {t("Demander une inscription", "Request enrolment")}
               </Link>
               <Link
                 to="/contact"
                 className="rounded-btn border border-border-soft bg-white px-6 py-3.5 text-sm font-medium text-ink transition-colors hover:bg-surface"
               >
-                Nous contacter
+                {t("Nous contacter", "Contact us")}
               </Link>
             </div>
           </div>
@@ -128,15 +158,17 @@ export function Admissions() {
         <div className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {BENEFITS.map(({ icon: Icon, title, text }) => (
             <article
-              key={title}
+              key={title.fr}
               className="rounded-card border border-border-soft bg-white p-6 shadow-soft"
             >
               <span className="flex h-11 w-11 items-center justify-center rounded-full bg-primary-light text-primary">
                 <Icon size={20} strokeWidth={1.8} />
               </span>
-              <h3 className="mt-5 text-base font-semibold text-ink">{title}</h3>
+              <h3 className="mt-5 text-base font-semibold text-ink">
+                {t(title)}
+              </h3>
               <p className="mt-2 text-sm leading-relaxed text-ink-soft">
-                {text}
+                {t(text)}
               </p>
             </article>
           ))}
@@ -144,10 +176,13 @@ export function Admissions() {
 
         <div className="mt-24">
           <p className="text-sm font-medium tracking-wide text-primary">
-            LE PARCOURS
+            {t("LE PARCOURS", "THE PROCESS")}
           </p>
           <h3 className="mt-3 text-2xl font-bold text-ink sm:text-3xl">
-            Une inscription en quatre étapes.
+            {t(
+              "Une inscription en quatre étapes.",
+              "Enrolment in four steps.",
+            )}
           </h3>
           <div className="mt-10 grid gap-6 lg:grid-cols-4">
             {STEPS.map(([number, title, text]) => (
@@ -158,9 +193,11 @@ export function Admissions() {
                 <span className="text-sm font-semibold text-primary">
                   {number}
                 </span>
-                <h4 className="mt-3 text-lg font-semibold text-ink">{title}</h4>
+                <h4 className="mt-3 text-lg font-semibold text-ink">
+                  {t(title)}
+                </h4>
                 <p className="mt-2 text-sm leading-relaxed text-ink-soft">
-                  {text}
+                  {t(text)}
                 </p>
               </article>
             ))}
@@ -170,16 +207,19 @@ export function Admissions() {
         <div className="mt-24 grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
           <div>
             <p className="text-sm font-medium tracking-wide text-primary">
-              À PRÉVOIR
+              {t("À PRÉVOIR", "TO PREPARE")}
             </p>
             <h3 className="mt-3 text-2xl font-bold text-ink sm:text-3xl">
-              Documents nécessaires
+              {t("Documents nécessaires", "Required documents")}
             </h3>
             <p className="mt-4 text-sm leading-relaxed text-ink-soft">
-              Liste indicative à confirmer par l’administration de l’école.
+              {t(
+                "Liste indicative à confirmer par l’administration de l’école.",
+                "Indicative list, to be confirmed by the school administration.",
+              )}
             </p>
             <ul className="mt-7 space-y-4">
-              {DOCUMENTS.map((document) => (
+              {documents.map((document) => (
                 <li
                   key={document}
                   className="flex items-start gap-3 text-sm text-ink-soft"
@@ -199,14 +239,16 @@ export function Admissions() {
             className="scroll-mt-24 rounded-card border border-border-soft bg-white p-6 shadow-soft sm:p-8"
           >
             <p className="text-sm font-medium tracking-wide text-primary">
-              PREMIER ÉCHANGE
+              {t("PREMIER ÉCHANGE", "FIRST CONTACT")}
             </p>
             <h3 className="mt-3 text-2xl font-bold text-ink">
-              Demander une inscription
+              {t("Demander une inscription", "Request enrolment")}
             </h3>
             <p className="mt-3 text-sm leading-relaxed text-ink-soft">
-              Parlez-nous de votre projet et notre équipe pourra vous orienter
-              vers les prochaines étapes.
+              {t(
+                "Parlez-nous de votre projet et notre équipe pourra vous orienter vers les prochaines étapes.",
+                "Tell us about your plans and our team can guide you through the next steps.",
+              )}
             </p>
 
             <form
@@ -214,7 +256,7 @@ export function Admissions() {
               className="mt-8 grid gap-5 sm:grid-cols-2"
             >
               <label className="text-sm font-medium text-ink">
-                Nom du parent / tuteur
+                {t("Nom du parent / tuteur", "Parent / guardian name")}
                 <input
                   required
                   name="parentName"
@@ -222,7 +264,7 @@ export function Admissions() {
                 />
               </label>
               <label className="text-sm font-medium text-ink">
-                Téléphone
+                {t("Téléphone", "Phone")}
                 <input
                   required
                   type="tel"
@@ -240,7 +282,7 @@ export function Admissions() {
                 />
               </label>
               <label className="text-sm font-medium text-ink">
-                Nom de l’enfant
+                {t("Nom de l’enfant", "Child's name")}
                 <input
                   required
                   name="childName"
@@ -248,7 +290,7 @@ export function Admissions() {
                 />
               </label>
               <label className="text-sm font-medium text-ink">
-                Date de naissance
+                {t("Date de naissance", "Date of birth")}
                 <input
                   required
                   type="date"
@@ -257,7 +299,7 @@ export function Admissions() {
                 />
               </label>
               <label className="text-sm font-medium text-ink">
-                Niveau souhaité
+                {t("Niveau souhaité", "Desired level")}
                 <select
                   required
                   name="level"
@@ -265,10 +307,12 @@ export function Admissions() {
                   className="mt-2 w-full rounded-btn border border-border-soft bg-white px-4 py-3 font-normal outline-none transition-colors focus:border-primary"
                 >
                   <option value="" disabled>
-                    Choisir un niveau
+                    {t("Choisir un niveau", "Choose a level")}
                   </option>
                   {LEVELS.map((level) => (
-                    <option key={level}>{level}</option>
+                    <option key={level.fr} value={level.fr}>
+                      {t(level)}
+                    </option>
                   ))}
                 </select>
               </label>
@@ -288,21 +332,27 @@ export function Admissions() {
                   className="rounded-btn bg-primary px-6 py-3.5 text-sm font-medium text-white shadow-soft transition-colors hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {status === "loading"
-                    ? "Envoi en cours..."
-                    : "Envoyer une demande"}
+                    ? t("Envoi en cours...", "Sending...")
+                    : t("Envoyer une demande", "Send request")}
                 </button>
                 {status === "success" && (
                   <p
                     role="status"
                     className="flex items-center gap-2 text-sm text-secondary"
                   >
-                    <CheckCircle2 size={17} /> Demande enregistrée pour
-                    démonstration.
+                    <CheckCircle2 size={17} />{" "}
+                    {t(
+                      "Demande enregistrée pour démonstration.",
+                      "Request saved for demonstration.",
+                    )}
                   </p>
                 )}
                 {status === "error" && (
                   <p role="alert" className="text-sm text-accent-coral">
-                    Une erreur est survenue. Réessayez.
+                    {t(
+                      "Une erreur est survenue. Réessayez.",
+                      "An error occurred. Please try again.",
+                    )}
                   </p>
                 )}
               </div>
@@ -312,14 +362,17 @@ export function Admissions() {
 
         <div className="mx-auto mt-24 max-w-3xl">
           <p className="text-center text-sm font-medium tracking-wide text-primary">
-            QUESTIONS FRÉQUENTES
+            {t("QUESTIONS FRÉQUENTES", "FREQUENTLY ASKED QUESTIONS")}
           </p>
           <h3 className="mt-3 text-center text-2xl font-bold text-ink sm:text-3xl">
-            Les premières réponses à vos questions.
+            {t(
+              "Les premières réponses à vos questions.",
+              "First answers to your questions.",
+            )}
           </h3>
           <div className="mt-8 divide-y divide-border-soft rounded-card border border-border-soft bg-white px-6">
-            {FAQ.map(([question, answer], index) => (
-              <div key={question}>
+            {faq.map(([question, answer], index) => (
+              <div key={index}>
                 <button
                   type="button"
                   aria-expanded={openQuestion === index}

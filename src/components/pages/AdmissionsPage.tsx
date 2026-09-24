@@ -7,83 +7,106 @@ import {
   Sparkles,
   Users,
 } from "lucide-react";
-import { type FormEvent, useEffect, useState } from "react";
+import { type FormEvent, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
-import { SCHOOL } from "@/data/school";
+import { useSchool } from "@/data/useSchool";
+import { type Localized, tr } from "@/i18n/types";
+import { useLanguage } from "@/i18n/useLanguage";
+import { usePageMeta } from "@/lib/usePageMeta";
 
 const BENEFITS = [
   {
     icon: Heart,
-    title: "Un environnement bienveillant",
-    text: "Un cadre attentif qui respecte le rythme et les besoins de chaque enfant.",
+    title: tr("Un environnement bienveillant", "A caring environment"),
+    text: tr(
+      "Un cadre attentif qui respecte le rythme et les besoins de chaque enfant.",
+      "An attentive setting that respects each child's pace and needs.",
+    ),
   },
   {
     icon: Users,
-    title: "Un accompagnement adapté",
-    text: "Une équipe disponible pour accompagner les familles à chaque étape.",
+    title: tr("Un accompagnement adapté", "Tailored support"),
+    text: tr(
+      "Une équipe disponible pour accompagner les familles à chaque étape.",
+      "A team available to support families at every step.",
+    ),
   },
   {
     icon: ShieldCheck,
-    title: "Un apprentissage structuré",
-    text: "Des repères clairs pour apprendre, progresser et prendre confiance.",
+    title: tr("Un apprentissage structuré", "Structured learning"),
+    text: tr(
+      "Des repères clairs pour apprendre, progresser et prendre confiance.",
+      "Clear guidelines to help children learn, progress and build confidence.",
+    ),
   },
   {
     icon: Sparkles,
-    title: "L'épanouissement au quotidien",
-    text: "Des expériences variées pour nourrir la curiosité et l'autonomie.",
+    title: tr("L'épanouissement au quotidien", "Everyday personal growth"),
+    text: tr(
+      "Des expériences variées pour nourrir la curiosité et l'autonomie.",
+      "Varied experiences to nurture curiosity and independence.",
+    ),
   },
 ];
 
-const STEPS = [
+const STEPS: [string, Localized, Localized][] = [
   [
     "01",
-    "Prendre contact",
-    "Obtenir les premières informations et parler du projet de votre enfant.",
+    tr("Prendre contact", "Get in touch"),
+    tr(
+      "Obtenir les premières informations et parler du projet de votre enfant.",
+      "Get the first information and talk about your child's plans.",
+    ),
   ],
   [
     "02",
-    "Visiter l'école",
-    "Découvrir les espaces et échanger avec l'équipe pédagogique.",
+    tr("Visiter l'école", "Visit the school"),
+    tr(
+      "Découvrir les espaces et échanger avec l'équipe pédagogique.",
+      "Discover the facilities and speak with the teaching team.",
+    ),
   ],
   [
     "03",
-    "Déposer le dossier",
-    "Fournir les documents nécessaires à l'étude de la demande.",
+    tr("Déposer le dossier", "Submit the application"),
+    tr(
+      "Fournir les documents nécessaires à l'étude de la demande.",
+      "Provide the documents needed to review the application.",
+    ),
   ],
   [
     "04",
-    "Finaliser l'inscription",
-    "Recevoir la confirmation et préparer sereinement la rentrée.",
+    tr("Finaliser l'inscription", "Complete the enrolment"),
+    tr(
+      "Recevoir la confirmation et préparer sereinement la rentrée.",
+      "Receive confirmation and prepare calmly for the start of the school year.",
+    ),
   ],
 ];
-
-const DOCUMENTS = SCHOOL.admissions.documents;
-const LEVELS = SCHOOL.sections;
-const FAQ = SCHOOL.admissions.faq;
 
 type FormStatus = "idle" | "loading" | "success";
 
 export function AdmissionsPage() {
+  const { t } = useLanguage();
+  const school = useSchool();
+  const documents = school.admissions.documents;
+  const levels = school.sections;
+  const faq = school.admissions.faq;
   const [status, setStatus] = useState<FormStatus>("idle");
   const [openQuestion, setOpenQuestion] = useState<number | null>(null);
 
-  useEffect(() => {
-    document.title = `Admissions | ${SCHOOL.shortName} — Bertoua, Cameroun`;
-    const description =
-      "Admissions 2026–2027 au Groupe Scolaire Privé Bilingue La Pépinière à Bertoua : documents requis et frais officiels.";
-    let meta = document.querySelector('meta[name="description"]');
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.setAttribute("name", "description");
-      document.head.appendChild(meta);
-    }
-    meta.setAttribute("content", description);
-  }, []);
+  usePageMeta(
+    `Admissions | ${school.shortName} — ${school.location.city}, ${school.location.country}`,
+    t(
+      "Admissions 2026–2027 au Groupe Scolaire Privé Bilingue La Pépinière à Bertoua : documents requis et frais officiels.",
+      "2026–2027 admissions at La Pépinière Bilingual Private School Group in Bertoua: required documents and official fees.",
+    ),
+  );
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -97,9 +120,15 @@ export function AdmissionsPage() {
       <main>
         <PageHero
           eyebrow="ADMISSIONS"
-          title="Préparer la rentrée 2026–2027 de votre enfant."
-          description="Retrouvez les documents et les frais communiqués par La Pépinière pour préparer l'inscription."
-          imageLabel="famille africaine et école"
+          title={t(
+            "Préparer la rentrée 2026–2027 de votre enfant.",
+            "Prepare your child's 2026–2027 school year.",
+          )}
+          description={t(
+            "Retrouvez les documents et les frais communiqués par La Pépinière pour préparer l'inscription.",
+            "Find the documents and fees provided by La Pépinière to prepare for enrolment.",
+          )}
+          imageLabel={t("famille africaine et école", "African family and school")}
         />
         <section className="relative overflow-hidden bg-surface px-6 py-20 lg:px-10 lg:py-28">
           <div
@@ -115,22 +144,26 @@ export function AdmissionsPage() {
               <div className="flex flex-col gap-6 rounded-[30px_16px_30px_16px] bg-surface-alt p-7 shadow-soft sm:p-10 lg:flex-row lg:items-center lg:justify-between">
                 <div>
                   <p className="text-sm font-medium tracking-[0.18em] text-primary">
-                    PREMIÈRE ÉTAPE
+                    {t("PREMIÈRE ÉTAPE", "FIRST STEP")}
                   </p>
                   <h2 className="mt-3 max-w-2xl text-3xl font-bold text-ink sm:text-4xl">
-                    Parlons ensemble du projet de votre famille.
+                    {t(
+                      "Parlons ensemble du projet de votre famille.",
+                      "Let's talk together about your family's plans.",
+                    )}
                   </h2>
                   <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-soft">
-                    Une première demande permet de comprendre vos attentes, de
-                    vous orienter vers le niveau adapté et de préciser les
-                    prochaines étapes.
+                    {t(
+                      "Une première demande permet de comprendre vos attentes, de vous orienter vers le niveau adapté et de préciser les prochaines étapes.",
+                      "A first request helps us understand your expectations, guide you to the right level and clarify the next steps.",
+                    )}
                   </p>
                 </div>
                 <a
                   href="#demande-inscription"
                   className="inline-flex shrink-0 items-center justify-center rounded-btn bg-primary px-6 py-3.5 text-sm font-medium text-white shadow-soft transition-colors hover:bg-primary-dark"
                 >
-                  Demander une inscription
+                  {t("Demander une inscription", "Request enrolment")}
                 </a>
               </div>
             </Reveal>
@@ -146,25 +179,28 @@ export function AdmissionsPage() {
             <Reveal delay={0.08}>
               <div className="mx-auto max-w-2xl text-center">
                 <p className="text-sm font-medium tracking-[0.18em] text-secondary">
-                  POURQUOI LA PÉPINIÈRE ?
+                  {t("POURQUOI LA PÉPINIÈRE ?", "WHY LA PÉPINIÈRE?")}
                 </p>
                 <h2 className="mt-3 text-3xl font-bold text-ink sm:text-4xl">
-                  Un choix guidé par la confiance.
+                  {t(
+                    "Un choix guidé par la confiance.",
+                    "A choice guided by trust.",
+                  )}
                 </h2>
               </div>
             </Reveal>
             <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {BENEFITS.map(({ icon: Icon, title, text }, index) => (
-                <Reveal key={title} delay={0.12 + index * 0.08}>
+                <Reveal key={title.fr} delay={0.12 + index * 0.08}>
                   <article className="group rounded-[24px_14px_24px_14px] border border-border-soft bg-white p-6 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-soft-lg">
                     <span className="flex h-11 w-11 items-center justify-center rounded-full bg-primary-light text-primary transition-transform duration-300 group-hover:rotate-6 group-hover:scale-110">
                       <Icon size={20} />
                     </span>
                     <h3 className="mt-5 text-base font-semibold text-ink">
-                      {title}
+                      {t(title)}
                     </h3>
                     <p className="mt-2 text-sm leading-relaxed text-ink-soft">
-                      {text}
+                      {t(text)}
                     </p>
                   </article>
                 </Reveal>
@@ -182,27 +218,36 @@ export function AdmissionsPage() {
             <Reveal delay={0.08}>
               <div className="max-w-3xl">
                 <p className="text-sm font-medium tracking-[0.18em] text-primary">
-                  FRAIS 2026–2027
+                  {t("FRAIS 2026–2027", "2026–2027 FEES")}
                 </p>
                 <h2 className="mt-3 text-3xl font-bold text-ink sm:text-4xl">
-                  Les frais communiqués par l'établissement.
+                  {t(
+                    "Les frais communiqués par l'établissement.",
+                    "The fees announced by the school.",
+                  )}
                 </h2>
                 <p className="mt-5 text-lg leading-relaxed text-ink-soft">
-                  Les montants ci-dessous concernent la rentrée académique{" "}
-                  {SCHOOL.admissions.academicYear}.
+                  {t(
+                    "Les montants ci-dessous concernent la rentrée académique",
+                    "The amounts below apply to the academic year",
+                  )}{" "}
+                  {school.admissions.academicYear}.
                 </p>
               </div>
             </Reveal>
             <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
               {[
-                ["Inscription", SCHOOL.admissions.fees.registration],
-                ["Carnet de notes", SCHOOL.admissions.fees.reportBook],
-                ["Badge maternelle", SCHOOL.admissions.fees.kindergartenBadge],
+                [t("Inscription", "Registration"), school.admissions.fees.registration],
+                [t("Carnet de notes", "Report book"), school.admissions.fees.reportBook],
                 [
-                  "Fournitures maternelle",
-                  SCHOOL.admissions.fees.kindergartenSupplies,
+                  t("Badge maternelle", "Nursery badge"),
+                  school.admissions.fees.kindergartenBadge,
                 ],
-                ["Papier hygiénique", SCHOOL.admissions.fees.toiletPaper],
+                [
+                  t("Fournitures maternelle", "Nursery supplies"),
+                  school.admissions.fees.kindergartenSupplies,
+                ],
+                [t("Papier hygiénique", "Toilet paper"), school.admissions.fees.toiletPaper],
               ].map(([label, value], index) => (
                 <Reveal key={label} delay={0.12 + index * 0.08}>
                   <div className="rounded-[20px_12px_20px_12px] border border-border-soft bg-white p-5 shadow-soft">
@@ -220,18 +265,22 @@ export function AdmissionsPage() {
               <div className="mt-10 overflow-x-auto rounded-[28px_14px_28px_14px] border border-border-soft bg-white shadow-soft">
                 <table className="w-full min-w-175 text-left text-sm">
                   <caption className="px-6 pt-6 text-left text-lg font-bold text-ink">
-                    Frais de scolarité
+                    {t("Frais de scolarité", "School fees")}
                   </caption>
                   <thead className="text-xs uppercase tracking-[0.08em] text-ink-soft">
                     <tr className="border-b border-border-soft">
                       <th className="px-6 py-4">Section</th>
-                      <th className="px-6 py-4">1ère tranche</th>
-                      <th className="px-6 py-4">2ème tranche</th>
+                      <th className="px-6 py-4">
+                        {t("1ère tranche", "1st instalment")}
+                      </th>
+                      <th className="px-6 py-4">
+                        {t("2ème tranche", "2nd instalment")}
+                      </th>
                       <th className="px-6 py-4">Total</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {SCHOOL.admissions.schoolFees.map((fee) => (
+                    {school.admissions.schoolFees.map((fee) => (
                       <tr
                         key={fee.section}
                         className="border-b border-border-soft last:border-0"
@@ -256,12 +305,16 @@ export function AdmissionsPage() {
             </Reveal>
             <div className="mt-5 flex flex-col gap-2 text-sm text-ink-soft sm:flex-row sm:gap-8">
               <p>
-                <strong className="text-ink">1ère tranche :</strong>{" "}
-                {SCHOOL.admissions.installmentDates.first}
+                <strong className="text-ink">
+                  {t("1ère tranche :", "1st instalment:")}
+                </strong>{" "}
+                {school.admissions.installmentDates.first}
               </p>
               <p>
-                <strong className="text-ink">2ème tranche :</strong>{" "}
-                {SCHOOL.admissions.installmentDates.second}
+                <strong className="text-ink">
+                  {t("2ème tranche :", "2nd instalment:")}
+                </strong>{" "}
+                {school.admissions.installmentDates.second}
               </p>
             </div>
           </div>
@@ -276,10 +329,13 @@ export function AdmissionsPage() {
             <Reveal delay={0.08}>
               <div className="max-w-2xl">
                 <p className="text-sm font-medium tracking-[0.18em] text-primary">
-                  LE PARCOURS
+                  {t("LE PARCOURS", "THE PROCESS")}
                 </p>
                 <h2 className="mt-3 text-3xl font-bold text-ink sm:text-4xl">
-                  Une inscription en quatre étapes.
+                  {t(
+                    "Une inscription en quatre étapes.",
+                    "Enrolment in four steps.",
+                  )}
                 </h2>
               </div>
             </Reveal>
@@ -291,10 +347,10 @@ export function AdmissionsPage() {
                       {number}
                     </span>
                     <h3 className="mt-3 text-lg font-semibold text-ink">
-                      {title}
+                      {t(title)}
                     </h3>
                     <p className="mt-2 text-sm leading-relaxed text-ink-soft">
-                      {text}
+                      {t(text)}
                     </p>
                   </article>
                 </Reveal>
@@ -311,17 +367,19 @@ export function AdmissionsPage() {
           <div className="relative mx-auto grid max-w-6xl gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
             <div>
               <p className="text-sm font-medium tracking-[0.18em] text-primary">
-                À PRÉVOIR
+                {t("À PRÉVOIR", "TO PREPARE")}
               </p>
               <h2 className="mt-3 text-3xl font-bold text-ink sm:text-4xl">
-                Documents nécessaires
+                {t("Documents nécessaires", "Required documents")}
               </h2>
               <p className="mt-4 text-sm leading-relaxed text-ink-soft">
-                Pièces communiquées par l'établissement pour la rentrée
-                2026–2027.
+                {t(
+                  "Pièces communiquées par l'établissement pour la rentrée 2026–2027.",
+                  "Documents specified by the school for the 2026–2027 school year.",
+                )}
               </p>
               <ul className="mt-7 space-y-4 rounded-[24px_14px_24px_14px] bg-white p-6 shadow-soft">
-                {DOCUMENTS.map((document) => (
+                {documents.map((document) => (
                   <li
                     key={document}
                     className="flex items-start gap-3 text-sm text-ink-soft"
@@ -340,21 +398,23 @@ export function AdmissionsPage() {
               className="scroll-mt-24 rounded-[30px_16px_30px_16px] border border-border-soft bg-white p-6 shadow-soft-lg sm:p-8"
             >
               <p className="text-sm font-medium tracking-[0.18em] text-primary">
-                PREMIER ÉCHANGE
+                {t("PREMIER ÉCHANGE", "FIRST CONTACT")}
               </p>
               <h2 className="mt-3 text-2xl font-bold text-ink sm:text-3xl">
-                Demander une inscription
+                {t("Demander une inscription", "Request enrolment")}
               </h2>
               <p className="mt-3 text-sm leading-relaxed text-ink-soft">
-                Parlez-nous de votre projet et notre équipe pourra vous orienter
-                vers les prochaines étapes.
+                {t(
+                  "Parlez-nous de votre projet et notre équipe pourra vous orienter vers les prochaines étapes.",
+                  "Tell us about your plans and our team can guide you through the next steps.",
+                )}
               </p>
               <form
                 onSubmit={handleSubmit}
                 className="mt-8 grid gap-5 sm:grid-cols-2"
               >
                 <label className="text-sm font-medium text-ink">
-                  Nom du parent / tuteur
+                  {t("Nom du parent / tuteur", "Parent / guardian name")}
                   <input
                     required
                     name="parentName"
@@ -363,7 +423,7 @@ export function AdmissionsPage() {
                   />
                 </label>
                 <label className="text-sm font-medium text-ink">
-                  Téléphone
+                  {t("Téléphone", "Phone")}
                   <input
                     required
                     type="tel"
@@ -383,7 +443,7 @@ export function AdmissionsPage() {
                   />
                 </label>
                 <label className="text-sm font-medium text-ink">
-                  Nom de l'enfant
+                  {t("Nom de l'enfant", "Child's name")}
                   <input
                     required
                     name="childName"
@@ -391,7 +451,7 @@ export function AdmissionsPage() {
                   />
                 </label>
                 <label className="text-sm font-medium text-ink">
-                  Date de naissance
+                  {t("Date de naissance", "Date of birth")}
                   <input
                     required
                     type="date"
@@ -400,7 +460,7 @@ export function AdmissionsPage() {
                   />
                 </label>
                 <label className="text-sm font-medium text-ink">
-                  Classe souhaitée
+                  {t("Classe souhaitée", "Desired class")}
                   <select
                     required
                     name="level"
@@ -408,10 +468,12 @@ export function AdmissionsPage() {
                     className="mt-2 w-full rounded-btn border border-border-soft bg-white px-4 py-3 font-normal outline-none focus:border-primary focus:ring-2 focus:ring-primary/10"
                   >
                     <option value="" disabled>
-                      Choisir un niveau
+                      {t("Choisir un niveau", "Choose a level")}
                     </option>
-                    {LEVELS.map((level) => (
-                      <option key={level}>{level}</option>
+                    {levels.map((level, index) => (
+                      <option key={index} value={index}>
+                        {level}
+                      </option>
                     ))}
                   </select>
                 </label>
@@ -431,8 +493,8 @@ export function AdmissionsPage() {
                     className="rounded-btn bg-primary px-6 py-3.5 text-sm font-medium text-white shadow-soft transition-colors hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {status === "loading"
-                      ? "Envoi en cours..."
-                      : "Envoyer une demande"}
+                      ? t("Envoi en cours...", "Sending...")
+                      : t("Envoyer une demande", "Send request")}
                   </button>
                   {status === "success" && (
                     <p
@@ -440,7 +502,10 @@ export function AdmissionsPage() {
                       className="flex items-center gap-2 text-sm text-secondary"
                     >
                       <CheckCircle2 size={17} />
-                      Demande enregistrée pour démonstration.
+                      {t(
+                        "Demande enregistrée pour démonstration.",
+                        "Request saved for demonstration.",
+                      )}
                     </p>
                   )}
                 </div>
@@ -457,15 +522,18 @@ export function AdmissionsPage() {
           <div className="relative mx-auto max-w-4xl">
             <div className="text-center">
               <p className="text-sm font-medium tracking-[0.18em] text-primary">
-                QUESTIONS FRÉQUENTES
+                {t("QUESTIONS FRÉQUENTES", "FREQUENTLY ASKED QUESTIONS")}
               </p>
               <h2 className="mt-3 text-3xl font-bold text-ink sm:text-4xl">
-                Les premières réponses à vos questions.
+                {t(
+                  "Les premières réponses à vos questions.",
+                  "First answers to your questions.",
+                )}
               </h2>
             </div>
             <div className="mt-12 divide-y divide-border-soft rounded-[28px_14px_28px_14px] border border-border-soft bg-surface-alt shadow-soft">
-              {FAQ.map(([question, answer], index) => (
-                <div key={question}>
+              {faq.map(([question, answer], index) => (
+                <div key={index}>
                   <button
                     type="button"
                     aria-expanded={openQuestion === index}
@@ -499,17 +567,20 @@ export function AdmissionsPage() {
           <div className="relative mx-auto flex max-w-6xl flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-sm font-medium tracking-[0.18em] text-white/80">
-                BESOIN D'ÉCHANGER ?
+                {t("BESOIN D'ÉCHANGER ?", "NEED TO TALK?")}
               </p>
               <h2 className="mt-3 text-2xl font-bold sm:text-3xl">
-                L'équipe est prête à vous écouter.
+                {t(
+                  "L'équipe est prête à vous écouter.",
+                  "The team is ready to listen.",
+                )}
               </h2>
             </div>
             <Link
               to="/contact"
               className="inline-flex shrink-0 items-center justify-center rounded-btn bg-white px-5 py-3 text-sm font-medium text-primary shadow-soft transition-colors hover:bg-surface-alt"
             >
-              Nous contacter
+              {t("Nous contacter", "Contact us")}
             </Link>
           </div>
         </section>

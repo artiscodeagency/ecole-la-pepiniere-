@@ -10,33 +10,40 @@ import { type FormEvent, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { Reveal } from "@/components/ui/Reveal";
-import { SCHOOL } from "@/data/school";
-
-const { hours, location } = SCHOOL;
-const FULL_ADDRESS = `${location.address}, ${location.country}`;
-
-const CONTACT_ITEMS = [
-  {
-    icon: Phone,
-    title: "Téléphone",
-    lines: [SCHOOL.contacts.mainPhone],
-  },
-  { icon: Mail, title: "Email", lines: [SCHOOL.contacts.email] },
-  { icon: MapPin, title: "Adresse", lines: [FULL_ADDRESS] },
-  {
-    icon: Timer,
-    title: "Horaires",
-    lines: [
-      `Maternelle : Lun – Jeu ${hours.kindergarten.mondayToThursday}, Ven ${hours.kindergarten.friday}`,
-      `Primaire : Lun – Jeu ${hours.primary.mondayToThursday}, Ven ${hours.primary.friday}`,
-    ],
-  },
-];
+import { useSchool } from "@/data/useSchool";
+import { useLanguage } from "@/i18n/useLanguage";
 
 type FormStatus = "idle" | "loading" | "success";
 
 export function Contact() {
+  const { t } = useLanguage();
+  const school = useSchool();
+  const { hours, location } = school;
   const [status, setStatus] = useState<FormStatus>("idle");
+
+  const monThu = t("Lun – Jeu", "Mon – Thu");
+  const fri = t("Ven", "Fri");
+  const contactItems = [
+    {
+      icon: Phone,
+      title: t("Téléphone", "Phone"),
+      lines: [school.contacts.mainPhone],
+    },
+    { icon: Mail, title: "Email", lines: [school.contacts.email] },
+    {
+      icon: MapPin,
+      title: t("Adresse", "Address"),
+      lines: [`${location.address}, ${location.country}`],
+    },
+    {
+      icon: Timer,
+      title: t("Horaires", "Opening hours"),
+      lines: [
+        `${t("Maternelle", "Nursery")} : ${monThu} ${hours.kindergarten.mondayToThursday}, ${fri} ${hours.kindergarten.friday}`,
+        `${t("Primaire", "Primary")} : ${monThu} ${hours.primary.mondayToThursday}, ${fri} ${hours.primary.friday}`,
+      ],
+    },
+  ];
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -56,18 +63,23 @@ export function Contact() {
               CONTACT
             </p>
             <h2 className="mt-3 text-3xl font-bold leading-tight text-ink sm:text-4xl lg:text-5xl">
-              Parlons de l’avenir de votre enfant.
+              {t(
+                "Parlons de l’avenir de votre enfant.",
+                "Let’s talk about your child’s future.",
+              )}
             </h2>
             <p className="mt-5 max-w-2xl text-base leading-relaxed text-ink-soft sm:text-lg">
-              Contactez l’école pour obtenir des informations, préparer une
-              visite ou échanger autour d’une inscription.
+              {t(
+                "Contactez l’école pour obtenir des informations, préparer une visite ou échanger autour d’une inscription.",
+                "Contact the school to get information, plan a visit or discuss an enrolment.",
+              )}
             </p>
           </div>
         </Reveal>
 
         <Reveal delay={0.12}>
           <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {CONTACT_ITEMS.map(({ icon: Icon, title, lines }) => (
+            {contactItems.map(({ icon: Icon, title, lines }) => (
               <article
                 key={title}
                 className="rounded-card border border-border-soft bg-surface-alt p-6"
@@ -94,34 +106,39 @@ export function Contact() {
               <div>
                 <MessageCircle size={28} strokeWidth={1.7} />
                 <h3 className="mt-8 text-2xl font-bold">
-                  Une question rapide ?
+                  {t("Une question rapide ?", "A quick question?")}
                 </h3>
                 <p className="mt-3 text-sm leading-relaxed text-white/80">
-                  Échangez directement avec notre équipe.
+                  {t(
+                    "Échangez directement avec notre équipe.",
+                    "Chat directly with our team.",
+                  )}
                 </p>
               </div>
               <Link
                 to="/contact"
                 className="mt-10 inline-flex w-fit rounded-btn bg-white px-5 py-3 text-sm font-medium text-primary transition-colors hover:bg-surface-alt"
               >
-                Nous écrire sur WhatsApp
+                {t("Nous écrire sur WhatsApp", "Write to us on WhatsApp")}
               </Link>
             </div>
 
             <div className="rounded-card border border-border-soft bg-white p-6 shadow-soft sm:p-8">
               <h3 className="text-2xl font-bold text-ink">
-                Envoyer un message
+                {t("Envoyer un message", "Send a message")}
               </h3>
               <p className="mt-3 text-sm text-ink-soft">
-                Formulaire de contact frontend-only, prêt à être relié à un
-                service d’envoi.
+                {t(
+                  "Formulaire de contact frontend-only, prêt à être relié à un service d’envoi.",
+                  "Frontend-only contact form, ready to be connected to a sending service.",
+                )}
               </p>
               <form
                 onSubmit={handleSubmit}
                 className="mt-8 grid gap-5 sm:grid-cols-2"
               >
                 <label className="text-sm font-medium text-ink">
-                  Nom
+                  {t("Nom", "Name")}
                   <input
                     required
                     name="name"
@@ -138,7 +155,7 @@ export function Contact() {
                   />
                 </label>
                 <label className="text-sm font-medium text-ink">
-                  Téléphone
+                  {t("Téléphone", "Phone")}
                   <input
                     required
                     type="tel"
@@ -147,7 +164,7 @@ export function Contact() {
                   />
                 </label>
                 <label className="text-sm font-medium text-ink">
-                  Sujet
+                  {t("Sujet", "Subject")}
                   <input
                     required
                     name="subject"
@@ -170,16 +187,19 @@ export function Contact() {
                     className="rounded-btn bg-primary px-6 py-3.5 text-sm font-medium text-white shadow-soft hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {status === "loading"
-                      ? "Envoi en cours..."
-                      : "Envoyer le message"}
+                      ? t("Envoi en cours...", "Sending...")
+                      : t("Envoyer le message", "Send message")}
                   </button>
                   {status === "success" && (
                     <p
                       role="status"
                       className="flex items-center gap-2 text-sm text-secondary"
                     >
-                      <CheckCircle2 size={17} /> Message enregistré pour
-                      démonstration.
+                      <CheckCircle2 size={17} />{" "}
+                      {t(
+                        "Message enregistré pour démonstration.",
+                        "Message saved for demonstration.",
+                      )}
                     </p>
                   )}
                 </div>
@@ -192,7 +212,7 @@ export function Contact() {
           <div className="mt-8 flex min-h-56 flex-col items-center justify-center rounded-card border border-dashed border-border-soft bg-surface-alt p-8 text-center">
             <MapPin className="text-primary" size={28} strokeWidth={1.7} />
             <h3 className="mt-4 text-lg font-semibold text-ink">
-              Localisation de l’école
+              {t("Localisation de l’école", "School location")}
             </h3>
             <p className="mt-2 max-w-md text-sm leading-relaxed text-ink-soft">
               {location.address}, {location.city}, {location.country}
@@ -203,24 +223,26 @@ export function Contact() {
         <Reveal delay={0.26}>
           <div className="mt-16 rounded-card bg-surface-alt px-6 py-12 text-center sm:px-10">
             <h3 className="text-2xl font-bold text-ink sm:text-3xl">
-              Prêt à découvrir La Pépinière ?
+              {t("Prêt à découvrir La Pépinière ?", "Ready to discover La Pépinière?")}
             </h3>
             <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-ink-soft">
-              Commencez naturellement votre démarche en échangeant avec notre
-              équipe.
+              {t(
+                "Commencez naturellement votre démarche en échangeant avec notre équipe.",
+                "Start your journey naturally by talking with our team.",
+              )}
             </p>
             <div className="mt-7 flex flex-wrap justify-center gap-4">
               <Link
                 to="/admissions"
                 className="rounded-btn bg-primary px-6 py-3.5 text-sm font-medium text-white shadow-soft hover:bg-primary-dark"
               >
-                Demander une inscription
+                {t("Demander une inscription", "Request enrolment")}
               </Link>
               <Link
                 to="/contact"
                 className="rounded-btn border border-border-soft bg-white px-6 py-3.5 text-sm font-medium text-ink hover:bg-surface"
               >
-                Nous contacter
+                {t("Nous contacter", "Contact us")}
               </Link>
             </div>
           </div>

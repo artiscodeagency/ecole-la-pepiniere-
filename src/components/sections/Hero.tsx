@@ -2,8 +2,9 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Heart, Leaf, Sparkles, Star } from "lucide-react";
 import { Link } from "react-router-dom";
 
-import { SCHOOL } from "@/data/school";
+import { useSchool } from "@/data/useSchool";
 import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
+import { useLanguage } from "@/i18n/useLanguage";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -11,6 +12,8 @@ const fadeUp = {
 };
 
 export function Hero() {
+  const { lang, t } = useLanguage();
+  const school = useSchool();
   const prefersReducedMotion = useReducedMotion();
 
   const container = {
@@ -52,7 +55,7 @@ export function Hero() {
             className="mb-6 inline-flex items-center gap-2 rounded-full bg-primary-light px-4 py-2 text-xs font-medium tracking-wide text-primary"
           >
             <Sparkles size={14} />
-            {SCHOOL.type.toUpperCase()}
+            {school.type.toUpperCase()}
           </motion.div>
 
           <motion.h1
@@ -60,8 +63,17 @@ export function Hero() {
             transition={itemTransition}
             className="text-4xl font-bold leading-[1.15] text-ink sm:text-5xl lg:text-[3.25rem]"
           >
-            Une autre vision de l'éducation{" "}
-            <span className="text-secondary">bilingue</span>.
+            {lang === "fr" ? (
+              <>
+                Une autre vision de l'éducation{" "}
+                <span className="text-secondary">bilingue</span>.
+              </>
+            ) : (
+              <>
+                A different vision of{" "}
+                <span className="text-secondary">bilingual</span> education.
+              </>
+            )}
           </motion.h1>
 
           <motion.p
@@ -69,7 +81,7 @@ export function Hero() {
             transition={itemTransition}
             className="mt-6 max-w-lg text-lg leading-relaxed text-ink-soft"
           >
-            {SCHOOL.vision}
+            {school.vision}
           </motion.p>
 
           <motion.div
@@ -81,13 +93,13 @@ export function Hero() {
               to="/notre-ecole"
               className="rounded-btn bg-primary px-7 py-3.5 text-sm font-medium text-white shadow-soft transition-colors hover:bg-primary-dark"
             >
-              Découvrir notre école
+              {t("Découvrir notre école", "Discover our school")}
             </Link>
             <Link
               to="/admissions"
               className="rounded-btn border border-border-soft bg-white px-7 py-3.5 text-sm font-medium text-ink transition-colors hover:bg-surface-alt"
             >
-              Demander une inscription
+              {t("Demander une inscription", "Request enrolment")}
             </Link>
           </motion.div>
           <motion.p
@@ -95,7 +107,7 @@ export function Hero() {
             transition={itemTransition}
             className="mt-5 text-xs font-semibold uppercase tracking-[0.16em] text-secondary"
           >
-            {SCHOOL.motto}
+            {school.motto}
           </motion.p>
         </motion.div>
 
@@ -136,7 +148,10 @@ export function Hero() {
 
           <ImagePlaceholder
             className="relative z-10 aspect-4/5 w-full rounded-hero shadow-soft-lg"
-            content="enfants en classe, lumière naturelle"
+            content={t(
+              "enfants en classe, lumière naturelle",
+              "children in class, natural light",
+            )}
           />
 
           <FloatingStatCard prefersReducedMotion={prefersReducedMotion} />
@@ -152,6 +167,8 @@ function FloatingStatCard({
 }: {
   prefersReducedMotion: boolean | null;
 }) {
+  const { t } = useLanguage();
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -176,7 +193,9 @@ function FloatingStatCard({
         </span>
         <div>
           <p className="text-lg font-bold leading-none text-ink">10+</p>
-          <p className="text-xs text-ink-soft">années d'expérience</p>
+          <p className="text-xs text-ink-soft">
+            {t("années d'expérience", "years of experience")}
+          </p>
         </div>
       </motion.div>
     </motion.div>
@@ -188,6 +207,8 @@ function FloatingQuoteCard({
 }: {
   prefersReducedMotion: boolean | null;
 }) {
+  const { t } = useLanguage();
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -211,7 +232,7 @@ function FloatingQuoteCard({
           <Heart size={16} fill="currentColor" strokeWidth={0} />
         </span>
         <p className="text-sm font-medium leading-snug text-ink">
-          Une école où chaque enfant compte.
+          {t("Une école où chaque enfant compte.", "A school where every child matters.")}
         </p>
       </motion.div>
     </motion.div>

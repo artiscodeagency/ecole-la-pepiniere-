@@ -3,8 +3,10 @@ import { X } from "lucide-react";
 import { useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
 
+import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
 import { Logo } from "@/components/layout/Logo";
 import type { NavLink as NavigationLink } from "@/data/navigation";
+import { useLanguage } from "@/i18n/useLanguage";
 
 interface MobileMenuProps {
   open: boolean;
@@ -13,6 +15,7 @@ interface MobileMenuProps {
 }
 
 export function MobileMenu({ open, onClose, navLinks }: MobileMenuProps) {
+  const { t } = useLanguage();
   const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
@@ -37,8 +40,8 @@ export function MobileMenu({ open, onClose, navLinks }: MobileMenuProps) {
       {open && (
         <>
           <motion.button
-            aria-label="Fermer le menu"
-            className="fixed inset-0 z-40 bg-ink/30 lg:hidden"
+            aria-label={t("Fermer le menu", "Close menu")}
+            className="fixed inset-0 z-40 bg-ink/30 xl:hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -48,7 +51,7 @@ export function MobileMenu({ open, onClose, navLinks }: MobileMenuProps) {
           <motion.div
             role="dialog"
             aria-modal="true"
-            className="fixed inset-y-0 right-0 z-50 flex w-full max-w-sm flex-col bg-white shadow-soft-lg lg:hidden"
+            className="fixed inset-y-0 right-0 z-50 flex w-full max-w-sm flex-col bg-white shadow-soft-lg xl:hidden"
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
@@ -58,7 +61,7 @@ export function MobileMenu({ open, onClose, navLinks }: MobileMenuProps) {
               <Logo />
               <button
                 type="button"
-                aria-label="Fermer le menu"
+                aria-label={t("Fermer le menu", "Close menu")}
                 onClick={onClose}
                 className="flex h-10 w-10 items-center justify-center rounded-btn text-ink transition-colors hover:bg-surface-alt"
               >
@@ -66,7 +69,7 @@ export function MobileMenu({ open, onClose, navLinks }: MobileMenuProps) {
               </button>
             </div>
 
-            <nav className="flex flex-1 flex-col gap-1 px-6 py-4">
+            <nav className="flex flex-1 flex-col gap-1 overflow-y-auto px-6 py-4">
               {navLinks.map((link) => (
                 <NavLink
                   key={link.href}
@@ -76,10 +79,17 @@ export function MobileMenu({ open, onClose, navLinks }: MobileMenuProps) {
                     `rounded-btn px-3 py-3.5 text-base font-medium transition-colors hover:bg-surface-alt hover:text-primary ${isActive ? "bg-primary-light text-primary" : "text-ink"}`
                   }
                 >
-                  {link.label}
+                  {t(link.label)}
                 </NavLink>
               ))}
             </nav>
+
+            <div className="flex items-center justify-between border-t border-border-soft px-6 py-4">
+              <span className="text-sm font-medium text-ink-soft">
+                {t("Langue", "Language")}
+              </span>
+              <LanguageSwitcher />
+            </div>
 
             <div className="flex flex-col gap-3 border-t border-border-soft px-6 py-6">
               <Link

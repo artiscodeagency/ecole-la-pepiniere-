@@ -1,14 +1,16 @@
+import { type Localized, tr } from "@/i18n/types";
+
 export interface NavLink {
-  label: string;
+  label: Localized;
   href: string;
 }
 
 export const NAV_LINKS: NavLink[] = [
-  { label: "Accueil", href: "/" },
-  { label: "Notre école", href: "/notre-ecole" },
-  { label: "Maternelle", href: "/maternelle" },
-  { label: "Primaire", href: "/primaire" },
-  { label: "Vie scolaire", href: "/vie-scolaire" },
-  { label: "Galerie", href: "/galerie" },
-  { label: "Actualités", href: "/actualites" },
+  { label: tr("Accueil", "Home"), href: "/" },
+  { label: tr("Notre école", "Our school"), href: "/notre-ecole" },
+  { label: tr("Maternelle", "Nursery"), href: "/maternelle" },
+  { label: tr("Primaire", "Primary"), href: "/primaire" },
+  { label: tr("Vie scolaire", "School life"), href: "/vie-scolaire" },
+  { label: tr("Galerie", "Gallery"), href: "/galerie" },
+  { label: tr("Actualités", "News"), href: "/actualites" },
 ];

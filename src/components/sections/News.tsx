@@ -2,9 +2,14 @@ import { ArrowRight, BellRing } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { Reveal } from "@/components/ui/Reveal";
-import { SCHOOL } from "@/data/school";
+import { useSchool } from "@/data/useSchool";
+import { useLanguage } from "@/i18n/useLanguage";
 
 export function News() {
+  const { lang, t } = useLanguage();
+  const school = useSchool();
+  const categories = school.news.categories.slice(0, 3).join(", ");
+
   return (
     <section
       id="actualites"
@@ -13,10 +18,13 @@ export function News() {
       <Reveal delay={0.05}>
         <div className="mx-auto max-w-2xl text-center">
           <p className="text-sm font-medium tracking-wide text-primary">
-            ACTUALITÉS
+            {t("ACTUALITÉS", "NEWS")}
           </p>
           <h2 className="mt-3 text-3xl font-bold leading-tight text-ink sm:text-4xl">
-            Les dernières nouvelles de l'école
+            {t(
+              "Les dernières nouvelles de l'école",
+              "The latest news from the school",
+            )}
           </h2>
         </div>
       </Reveal>
@@ -26,18 +34,22 @@ export function News() {
             <BellRing size={25} />
           </span>
           <h3 className="mt-6 text-2xl font-bold text-ink">
-            Les actualités officielles arrivent bientôt.
+            {t(
+              "Les actualités officielles arrivent bientôt.",
+              "Official news is coming soon.",
+            )}
           </h3>
           <p className="mx-auto mt-4 max-w-2xl leading-relaxed text-ink-soft">
-            Les publications de La Pépinière seront ajoutées après communication
-            officielle : {SCHOOL.news.categories.slice(0, 3).join(", ")} et plus
-            encore.
+            {lang === "fr"
+              ? `Les publications de La Pépinière seront ajoutées après communication officielle : ${categories} et plus encore.`
+              : `La Pépinière's posts will be added after official communication: ${categories} and more.`}
           </p>
           <Link
             to="/actualites"
             className="mt-7 inline-flex items-center gap-2 text-sm font-medium text-primary transition-colors hover:text-primary-dark"
           >
-            Voir les rubriques d'actualités <ArrowRight size={16} />
+            {t("Voir les rubriques d'actualités", "View the news categories")}{" "}
+            <ArrowRight size={16} />
           </Link>
         </div>
       </Reveal>

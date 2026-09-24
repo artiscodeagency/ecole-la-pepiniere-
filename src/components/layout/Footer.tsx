@@ -10,41 +10,24 @@ import {
 import { Link } from "react-router-dom";
 
 import officialLogo from "@/assets/logo-transparent.png";
-import { SCHOOL } from "@/data/school";
+import { useSchool } from "@/data/useSchool";
+import { useLanguage } from "@/i18n/useLanguage";
+import { tr } from "@/i18n/types";
 
 const NAV_GROUPS = {
   school: [
-    { label: "Notre école", href: "/notre-ecole" },
-    { label: "Maternelle", href: "/maternelle" },
-    { label: "Primaire", href: "/primaire" },
-    { label: "Vie scolaire", href: "/vie-scolaire" },
+    { label: tr("Notre école", "Our school"), href: "/notre-ecole" },
+    { label: tr("Maternelle", "Nursery"), href: "/maternelle" },
+    { label: tr("Primaire", "Primary"), href: "/primaire" },
+    { label: tr("Vie scolaire", "School life"), href: "/vie-scolaire" },
   ],
   quick: [
-    { label: "Admissions", href: "/admissions" },
-    { label: "Galerie", href: "/galerie" },
-    { label: "Actualités", href: "/actualites" },
-    { label: "Contact", href: "/contact" },
+    { label: tr("Admissions", "Admissions"), href: "/admissions" },
+    { label: tr("Galerie", "Gallery"), href: "/galerie" },
+    { label: tr("Actualités", "News"), href: "/actualites" },
+    { label: tr("Contact", "Contact"), href: "/contact" },
   ],
 };
-
-const CONTACT_ITEMS = [
-  { icon: Phone, text: SCHOOL.contacts.mainPhone, href: "/contact" },
-  {
-    icon: Mail,
-    text: SCHOOL.contacts.email,
-    href: "/contact",
-  },
-  {
-    icon: MapPin,
-    text: SCHOOL.location.address,
-    href: "/contact",
-  },
-  {
-    icon: Timer,
-    text: "Horaires scolaires : voir les sections",
-    href: "/contact",
-  },
-];
 
 const SOCIALS = [
   { label: "Facebook", href: "#", icon: MessageCircle },
@@ -53,6 +36,20 @@ const SOCIALS = [
 ];
 
 export function Footer() {
+  const { t } = useLanguage();
+  const school = useSchool();
+
+  const contactItems = [
+    { icon: Phone, text: school.contacts.mainPhone, href: "/contact" },
+    { icon: Mail, text: school.contacts.email, href: "/contact" },
+    { icon: MapPin, text: school.location.address, href: "/contact" },
+    {
+      icon: Timer,
+      text: t("Horaires scolaires : voir les sections", "School hours: see the sections"),
+      href: "/contact",
+    },
+  ];
+
   return (
     <footer className="relative overflow-hidden bg-white px-6 py-16 text-ink lg:px-10">
       <div
@@ -66,19 +63,19 @@ export function Footer() {
             <div className="flex items-center gap-3">
               <img
                 src={officialLogo}
-                alt={SCHOOL.name}
+                alt={school.name}
                 className="h-12 w-12 object-contain object-center"
               />
               <div>
                 <p className="text-lg font-semibold tracking-wide text-ink">
-                  {SCHOOL.shortName}
+                  {school.shortName}
                 </p>
-                <p className="text-xs text-ink-soft">{SCHOOL.motto}</p>
+                <p className="text-xs text-ink-soft">{school.motto}</p>
               </div>
             </div>
 
             <p className="mt-6 max-w-xs text-sm leading-relaxed text-ink-soft">
-              {SCHOOL.slogan}. {SCHOOL.location.address}.
+              {school.slogan}. {school.location.address}.
             </p>
           </div>
 
@@ -88,12 +85,12 @@ export function Footer() {
             </h3>
             <ul className="mt-5 space-y-3 text-sm text-ink-soft">
               {NAV_GROUPS.school.map((link) => (
-                <li key={link.label}>
+                <li key={link.href}>
                   <Link
                     to={link.href}
                     className="transition-colors hover:text-primary"
                   >
-                    {link.label}
+                    {t(link.label)}
                   </Link>
                 </li>
               ))}
@@ -102,16 +99,16 @@ export function Footer() {
 
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-ink-soft">
-              En savoir plus
+              {t("En savoir plus", "Learn more")}
             </h3>
             <ul className="mt-5 space-y-3 text-sm text-ink-soft">
               {NAV_GROUPS.quick.map((link) => (
-                <li key={link.label}>
+                <li key={link.href}>
                   <Link
                     to={link.href}
                     className="transition-colors hover:text-primary"
                   >
-                    {link.label}
+                    {t(link.label)}
                   </Link>
                 </li>
               ))}
@@ -123,7 +120,7 @@ export function Footer() {
               Contact
             </h3>
             <ul className="mt-5 space-y-4 text-sm text-ink-soft">
-              {CONTACT_ITEMS.map(({ icon: Icon, text, href }) => (
+              {contactItems.map(({ icon: Icon, text, href }) => (
                 <li key={text}>
                   <Link
                     to={href}
@@ -142,7 +139,10 @@ export function Footer() {
 
         <div className="mt-12 flex flex-col gap-6 border-t border-border-soft pt-6 md:flex-row md:items-center md:justify-between">
           <p className="text-sm text-ink-soft">
-            © 2026 La Pépinière. Tous droits réservés.
+            {t(
+              "© 2026 La Pépinière. Tous droits réservés.",
+              "© 2026 La Pépinière. All rights reserved.",
+            )}
           </p>
 
           <div className="flex items-center gap-3">

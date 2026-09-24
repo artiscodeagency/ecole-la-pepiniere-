@@ -21,18 +21,21 @@ import { Testimonials } from "@/components/sections/Testimonials";
 import { Welcome } from "@/components/sections/Welcome";
 import { WhyUs } from "@/components/sections/WhyUs";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import { useEffect } from "react";
-import { SCHOOL } from "@/data/school";
+import { useSchool } from "@/data/useSchool";
+import { useLanguage } from "@/i18n/useLanguage";
+import { usePageMeta } from "@/lib/usePageMeta";
 
 function HomePage() {
-  useEffect(() => {
-    document.title = `${SCHOOL.name} | Bertoua, Cameroun`;
-    const meta = document.querySelector('meta[name="description"]');
-    meta?.setAttribute(
-      "content",
+  const { t } = useLanguage();
+  const school = useSchool();
+
+  usePageMeta(
+    `${school.name} | ${school.location.city}, ${school.location.country}`,
+    t(
       "Groupe Scolaire Privé Bilingue La Pépinière à Bertoua, Cameroun : maternelle, primaire francophone et primaire anglophone.",
-    );
-  }, []);
+      "La Pépinière Bilingual Private School Group in Bertoua, Cameroon: nursery, French-speaking primary and English-speaking primary.",
+    ),
+  );
 
   return (
     <>
