@@ -286,10 +286,6 @@ export function OurSchoolPage() {
               <h2 className="mt-4 text-3xl font-bold text-ink sm:text-4xl">
                 Une équipe identifiée pour accompagner les sections de l'école.
               </h2>
-              <p className="mt-6 text-lg leading-relaxed text-ink-soft">
-                Les responsables et fonctions officielles de l'établissement
-                seront présentés avec leurs informations validées.
-              </p>
               <div className="mt-8 flex items-center gap-4 rounded-card border border-border-soft bg-surface-alt p-4">
                 <Sparkles className="text-secondary" size={22} />
                 <div>

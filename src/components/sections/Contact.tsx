@@ -10,19 +10,26 @@ import { type FormEvent, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { Reveal } from "@/components/ui/Reveal";
+import { SCHOOL } from "@/data/school";
+
+const { hours, location } = SCHOOL;
+const FULL_ADDRESS = `${location.address}, ${location.country}`;
 
 const CONTACT_ITEMS = [
   {
     icon: Phone,
     title: "Téléphone",
-    value: "[Numéro de téléphone à confirmer]",
+    lines: [SCHOOL.contacts.mainPhone],
   },
-  { icon: Mail, title: "Email", value: "[Adresse email à confirmer]" },
-  { icon: MapPin, title: "Adresse", value: "[Adresse de l’école à confirmer]" },
+  { icon: Mail, title: "Email", lines: [SCHOOL.contacts.email] },
+  { icon: MapPin, title: "Adresse", lines: [FULL_ADDRESS] },
   {
     icon: Timer,
     title: "Horaires",
-    value: "[Horaires d’ouverture à confirmer]",
+    lines: [
+      `Maternelle : Lun – Jeu ${hours.kindergarten.mondayToThursday}, Ven ${hours.kindergarten.friday}`,
+      `Primaire : Lun – Jeu ${hours.primary.mondayToThursday}, Ven ${hours.primary.friday}`,
+    ],
   },
 ];
 
@@ -60,7 +67,7 @@ export function Contact() {
 
         <Reveal delay={0.12}>
           <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {CONTACT_ITEMS.map(({ icon: Icon, title, value }) => (
+            {CONTACT_ITEMS.map(({ icon: Icon, title, lines }) => (
               <article
                 key={title}
                 className="rounded-card border border-border-soft bg-surface-alt p-6"
@@ -71,9 +78,11 @@ export function Contact() {
                 <h3 className="mt-5 text-base font-semibold text-ink">
                   {title}
                 </h3>
-                <p className="mt-2 text-sm leading-relaxed text-ink-soft">
-                  {value}
-                </p>
+                <div className="mt-2 space-y-1 text-sm leading-relaxed text-ink-soft">
+                  {lines.map((line) => (
+                    <p key={line}>{line}</p>
+                  ))}
+                </div>
               </article>
             ))}
           </div>
@@ -185,8 +194,8 @@ export function Contact() {
             <h3 className="mt-4 text-lg font-semibold text-ink">
               Localisation de l’école
             </h3>
-            <p className="mt-2 text-sm text-ink-soft">
-              [Carte à configurer avec l’adresse officielle]
+            <p className="mt-2 max-w-md text-sm leading-relaxed text-ink-soft">
+              {location.address}, {location.city}, {location.country}
             </p>
           </div>
         </Reveal>

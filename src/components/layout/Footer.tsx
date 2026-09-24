@@ -28,7 +28,7 @@ const NAV_GROUPS = {
 };
 
 const CONTACT_ITEMS = [
-  { icon: Phone, text: "Numéros communiqués — à confirmer", href: "/contact" },
+  { icon: Phone, text: SCHOOL.contacts.mainPhone, href: "/contact" },
   {
     icon: Mail,
     text: SCHOOL.contacts.email,

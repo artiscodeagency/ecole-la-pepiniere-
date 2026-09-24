@@ -58,9 +58,7 @@ export function GalleryPage() {
           <div aria-hidden className="pointer-events-none absolute right-[10%] top-16 h-5 w-5 rounded-full bg-accent-coral/35 shadow-[18px_22px_0_rgba(50,183,104,0.2),-14px_40px_0_rgba(245,185,66,0.22)]" />
           <div className="relative mx-auto max-w-6xl">
             <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-              <div><p className="text-sm font-medium tracking-[0.18em] text-primary">GALERIE OFFICIELLE</p><h2 className="mt-3 text-3xl font-bold text-ink sm:text-4xl">Les univers de <span className="text-secondary">La Pépinière</span>.</h2></div>
-              <p className="max-w-sm text-sm leading-relaxed text-ink-soft md:text-right">Les photographies de l'établissement seront ajoutées dans les catégories ci-dessous.</p>
-            </div>
+              <div><p className="text-sm font-medium tracking-[0.18em] text-primary">GALERIE OFFICIELLE</p><h2 className="mt-3 text-3xl font-bold text-ink sm:text-4xl">Les univers de <span className="text-secondary">La Pépinière</span>.</h2></div>            </div>
             <div className="mt-10 flex flex-wrap gap-3">
               {FILTERS.map((filter) => <button key={filter} type="button" onClick={() => selectFilter(filter)} className={cn("rounded-full border px-4 py-2 text-sm font-medium transition-all duration-200 hover:-translate-y-0.5", activeFilter === filter ? "border-primary bg-primary text-white shadow-soft" : "border-border-soft bg-white text-ink-soft hover:border-primary/30 hover:text-primary")}>{filter}</button>)}
             </div>

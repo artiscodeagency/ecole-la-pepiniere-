@@ -121,6 +121,8 @@ export const SCHOOL = {
     phoneListA: ["694 797 162", "694 090 919", "696 205 041"],
     phoneListB: ["694 510 312", "694 090 919", "694 707 162", "678 010 480"],
     whatsapp: ["694 090 919", "696 205 041"],
+    // Number shown on the home page (present in both official lists and WhatsApp).
+    mainPhone: "694 090 919",
     email: "[Adresse email à confirmer]",
   },
   transport: {
@@ -185,6 +187,32 @@ export const SCHOOL = {
       bank: "Afriland First Bank",
       account: "06130831001 – 42",
     },
+    faq: [
+      [
+        "À partir de quel âge peut-on inscrire un enfant ?",
+        "L'âge d'admission et les conditions associées seront confirmés par l'administration selon la classe demandée.",
+      ],
+      [
+        "Quelles classes sont proposées ?",
+        "La Pépinière accueille les enfants de la maternelle au primaire. Les niveaux disponibles sont à confirmer pour chaque rentrée.",
+      ],
+      [
+        "Quels documents faut-il fournir ?",
+        "La liste officielle pour la rentrée 2026–2027 est affichée sur cette page.",
+      ],
+      [
+        "Peut-on visiter l'école avant l'inscription ?",
+        "Une visite peut être organisée selon les disponibilités de l'équipe. Contactez l'école pour préparer ce rendez-vous.",
+      ],
+      [
+        "Quels sont les horaires ?",
+        "Les horaires de la maternelle et du primaire sont disponibles sur les pages de chaque section.",
+      ],
+      [
+        "Comment connaître les frais de scolarité ?",
+        "Les frais communiqués pour la rentrée 2026–2027 sont affichés sur la page Admissions.",
+      ],
+    ],
   },
   administration: [
     { role: "Fondateur", name: "Monsieur Simon Pierre NGUEPIE" },

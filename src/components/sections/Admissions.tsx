@@ -61,14 +61,7 @@ const STEPS = [
 
 const DOCUMENTS = SCHOOL.admissions.documents;
 
-const FAQ = [
-  "À partir de quel âge peut-on inscrire un enfant ?",
-  "Quelles classes sont proposées ?",
-  "Quels documents faut-il fournir ?",
-  "Peut-on visiter l'école avant l'inscription ?",
-  "Quels sont les horaires ?",
-  "Comment connaître les frais de scolarité ?",
-];
+const FAQ = SCHOOL.admissions.faq;
 
 const LEVELS = [
   "Petite Section",
@@ -322,10 +315,10 @@ export function Admissions() {
             QUESTIONS FRÉQUENTES
           </p>
           <h3 className="mt-3 text-center text-2xl font-bold text-ink sm:text-3xl">
-            Les réponses seront précisées avec l’administration.
+            Les premières réponses à vos questions.
           </h3>
           <div className="mt-8 divide-y divide-border-soft rounded-card border border-border-soft bg-white px-6">
-            {FAQ.map((question, index) => (
+            {FAQ.map(([question, answer], index) => (
               <div key={question}>
                 <button
                   type="button"
@@ -343,7 +336,7 @@ export function Admissions() {
                 </button>
                 {openQuestion === index && (
                   <p className="pb-5 pr-8 text-sm leading-relaxed text-ink-soft">
-                    [Réponse à confirmer par l’administration de La Pépinière.]
+                    {answer}
                   </p>
                 )}
               </div>

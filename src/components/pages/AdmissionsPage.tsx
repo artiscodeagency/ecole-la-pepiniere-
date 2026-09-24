@@ -64,32 +64,7 @@ const STEPS = [
 
 const DOCUMENTS = SCHOOL.admissions.documents;
 const LEVELS = SCHOOL.sections;
-const FAQ = [
-  [
-    "À partir de quel âge peut-on inscrire un enfant ?",
-    "L'âge d'admission et les conditions associées seront confirmés par l'administration selon la classe demandée.",
-  ],
-  [
-    "Quelles classes sont proposées ?",
-    "La Pépinière accueille les enfants de la maternelle au primaire. Les niveaux disponibles sont à confirmer pour chaque rentrée.",
-  ],
-  [
-    "Quels documents faut-il fournir ?",
-    "La liste officielle pour la rentrée 2026–2027 est affichée sur cette page.",
-  ],
-  [
-    "Peut-on visiter l'école avant l'inscription ?",
-    "Une visite peut être organisée selon les disponibilités de l'équipe. Contactez l'école pour préparer ce rendez-vous.",
-  ],
-  [
-    "Quels sont les horaires ?",
-    "Les horaires de la maternelle et du primaire sont disponibles sur les pages de chaque section.",
-  ],
-  [
-    "Comment connaître les frais de scolarité ?",
-    "Les frais communiqués pour la rentrée 2026–2027 sont affichés sur cette page.",
-  ],
-];
+const FAQ = SCHOOL.admissions.faq;
 
 type FormStatus = "idle" | "loading" | "success";
 
