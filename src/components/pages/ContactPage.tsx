@@ -26,11 +26,12 @@ export function ContactPage() {
   const [status, setStatus] = useState<FormStatus>("idle");
 
   const whatsappNumber = school.contacts.whatsapp.join(" · ");
+  const phoneNumber = school.contacts.phone.join(" · ");
   const contactItems = [
     {
       icon: Phone,
       title: t("Téléphones communiqués", "Phone numbers provided"),
-      value: `${t("Liste A", "List A")} : ${school.contacts.phoneListA.join(" · ")}. ${t("Liste B", "List B")} : ${school.contacts.phoneListB.join(" · ")}.`,
+      value: phoneNumber,
       accent: "bg-primary-light text-primary",
     },
     {
@@ -81,7 +82,10 @@ export function ContactPage() {
             "Une question, une visite ou un premier échange ? Retrouvez les coordonnées et l'adresse officielle de La Pépinière.",
             "A question, a visit or a first conversation? Find La Pépinière's contact details and official address.",
           )}
-          imageLabel={t("famille africaine et école", "African family and school")}
+          imageLabel={t(
+            "famille africaine et école",
+            "African family and school",
+          )}
         />
 
         <section className="relative overflow-hidden bg-surface px-6 py-20 lg:px-10 lg:py-28">

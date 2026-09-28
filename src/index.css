@@ -1,24 +1,24 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 @theme {
-  --font-sans: 'Poppins', system-ui, -apple-system, sans-serif;
+  --font-sans: "Poppins", system-ui, -apple-system, sans-serif;
 
-  /* Brand colors */
-  --color-primary: #1557c0;
-  --color-primary-dark: #0f4499;
-  --color-primary-light: #e8eefb;
-  --color-secondary: #32b768;
-  --color-secondary-dark: #279154;
-  --color-secondary-light: #e7f8ee;
-  --color-accent-yellow: #f5b942;
-  --color-accent-coral: #f4776b;
+  /* Official school palette - green + white academic theme */
+  --color-primary: #02d6e4;
+  --color-primary-dark: #1c969e;
+  --color-primary-light: #edf9f1;
+  --color-secondary: #2d9d64;
+  --color-secondary-dark: #1f7d4d;
+  --color-secondary-light: #f1faf4;
+  --color-accent-yellow: #d9bf7a;
+  --color-accent-coral: #ddfdff;
 
   /* Neutrals */
   --color-surface: #ffffff;
-  --color-surface-alt: #f7fafc;
-  --color-ink: #172033;
-  --color-ink-soft: #667085;
-  --color-border-soft: #e7eaf0;
+  --color-surface-alt: #f7faf8;
+  --color-ink: #153b2d;
+  --color-ink-soft: #49685d;
+  --color-border-soft: #dfe9e3;
 
   /* Radii */
   --radius-btn: 11px;

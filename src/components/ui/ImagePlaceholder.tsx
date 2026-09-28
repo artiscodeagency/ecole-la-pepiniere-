@@ -1,5 +1,4 @@
-import { ImageIcon } from "lucide-react";
-
+import { getImageForTitle, schoolImages } from "@/data/galleryImages";
 import { useLanguage } from "@/i18n/useLanguage";
 import { cn } from "@/lib/utils";
 
@@ -7,13 +6,22 @@ interface ImagePlaceholderProps {
   className?: string;
   /** Describes the real photo that should eventually replace this block. */
   content?: string;
+  src?: string;
 }
 
 export function ImagePlaceholder({
   className,
   content,
+  src,
 }: ImagePlaceholderProps) {
   const { t } = useLanguage();
+  const imageSrc =
+    src ??
+    getImageForTitle(content)?.src ??
+    schoolImages.find((image) =>
+      /teacher|child|school-building|little-children|children/i.test(image.name),
+    )?.src ??
+    schoolImages[0]?.src;
 
   return (
     <div
@@ -22,13 +30,17 @@ export function ImagePlaceholder({
         className,
       )}
     >
-      <div className="absolute inset-0 flex items-center justify-center transition-transform duration-500 ease-out group-hover:scale-105">
-        <ImageIcon className="h-12 w-12 text-primary/15" strokeWidth={1.5} />
-      </div>
-      <span className="absolute left-3 top-3 max-w-[42%] truncate rounded-full bg-white/85 px-3 py-1 text-[11px] font-medium text-ink-soft backdrop-blur-sm">
-        {t("Photo à intégrer", "Photo to be added")}
-        {content ? ` · ${content}` : ""}
-      </span>
+      {imageSrc ? (
+        <>
+          <img
+            src={imageSrc}
+            alt={content ?? t("Photo de l'école", "School photo")}
+            className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+            loading="lazy"
+          />
+          <div className="absolute inset-0 bg-linear-to-t from-ink/65 via-ink/10 to-transparent" />
+        </>
+      ) : null}
     </div>
   );
 }

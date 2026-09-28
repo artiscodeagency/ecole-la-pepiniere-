@@ -120,11 +120,10 @@ const SCHOOL_FR = {
   },
   contacts: {
     // Two official lists were supplied and must be confirmed before publication.
-    phoneListA: ["694 797 162", "694 090 919", "696 205 041"],
-    phoneListB: ["694 510 312", "694 090 919", "694 707 162", "678 010 480"],
-    whatsapp: ["694 090 919", "696 205 041"],
+    phone: ["694 090 919", "678 010 480"],
+    whatsapp: ["694 090 919", "678 010 480"],
     // Number shown on the home page (present in both official lists and WhatsApp).
-    mainPhone: "694 090 919",
+    mainPhone: ["694 090 919", " ", "678 010 480"],
     email: "[Adresse email à confirmer]",
   },
   transport: {
@@ -352,8 +351,7 @@ const SCHOOL_EN: School = {
     ],
   },
   contacts: {
-    phoneListA: SCHOOL_FR.contacts.phoneListA,
-    phoneListB: SCHOOL_FR.contacts.phoneListB,
+    phone: SCHOOL_FR.contacts.phone,
     whatsapp: SCHOOL_FR.contacts.whatsapp,
     mainPhone: SCHOOL_FR.contacts.mainPhone,
     email: "[Email address to be confirmed]",
@@ -447,8 +445,14 @@ const SCHOOL_EN: School = {
   administration: [
     { role: "Founder", name: "Monsieur Simon Pierre NGUEPIE" },
     { role: "Head of Nursery", name: "Madame FOKENG SORELLE ASTRIDE" },
-    { role: "Head of the French-speaking section", name: "Monsieur SANDA VICTOR" },
-    { role: "Head of the English-speaking section", name: "Madame NDI FAITH YEYO" },
+    {
+      role: "Head of the French-speaking section",
+      name: "Monsieur SANDA VICTOR",
+    },
+    {
+      role: "Head of the English-speaking section",
+      name: "Madame NDI FAITH YEYO",
+    },
     { role: "Coordinator", name: "Madame MEGUEU KAMDEM BRIGITTE FLOR" },
     { role: "Counsellor", name: "Madame MELEUDJIE HENRIETTE" },
   ],

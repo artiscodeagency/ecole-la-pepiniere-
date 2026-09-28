@@ -3,6 +3,7 @@ import { Heart, Leaf, Sparkles, Star } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { useSchool } from "@/data/useSchool";
+import { schoolImages } from "@/data/galleryImages";
 import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
 import { useLanguage } from "@/i18n/useLanguage";
 
@@ -15,6 +16,10 @@ export function Hero() {
   const { lang, t } = useLanguage();
   const school = useSchool();
   const prefersReducedMotion = useReducedMotion();
+  const heroImage =
+    schoolImages.find((image) =>
+      /teacher-teaching-little-children-in-class|teacher-in-classroom|teacher-with-little-children-in-class|teacher-in-class/i.test(image.name),
+    ) ?? schoolImages[0];
 
   const container = {
     hidden: {},
@@ -148,9 +153,10 @@ export function Hero() {
 
           <ImagePlaceholder
             className="relative z-10 aspect-4/5 w-full rounded-hero shadow-soft-lg"
+            src={heroImage?.src}
             content={t(
-              "enfants en classe, lumière naturelle",
-              "children in class, natural light",
+              "enfants en classe avec enseignant",
+              "children in class with teacher",
             )}
           />
 

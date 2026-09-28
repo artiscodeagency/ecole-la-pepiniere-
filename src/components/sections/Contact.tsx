@@ -10,6 +10,7 @@ import { type FormEvent, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { Reveal } from "@/components/ui/Reveal";
+import { schoolImages } from "@/data/galleryImages";
 import { useSchool } from "@/data/useSchool";
 import { useLanguage } from "@/i18n/useLanguage";
 
@@ -21,15 +22,34 @@ export function Contact() {
   const { hours, location } = school;
   const [status, setStatus] = useState<FormStatus>("idle");
 
+  const locationBackground =
+    schoolImages.find((image) =>
+      /teacher-teaching-little-children-in-class|teacher-in-classroom|teacher-with-little-children-in-class|teacher-in-class/i.test(
+        image.name,
+      ),
+    ) ??
+    schoolImages.find((image) =>
+      /school-building|school-panel-with-children/i.test(image.name),
+    ) ??
+    schoolImages[0];
+
   const monThu = t("Lun – Jeu", "Mon – Thu");
   const fri = t("Ven", "Fri");
   const contactItems = [
     {
       icon: Phone,
       title: t("Téléphone", "Phone"),
-      lines: [school.contacts.mainPhone],
+      lines: Array.isArray(school.contacts.mainPhone)
+        ? school.contacts.mainPhone.filter(Boolean)
+        : [school.contacts.mainPhone],
     },
-    { icon: Mail, title: "Email", lines: [school.contacts.email] },
+    {
+      icon: Mail,
+      title: "Email",
+      lines: Array.isArray(school.contacts.email)
+        ? school.contacts.email.filter(Boolean)
+        : [school.contacts.email],
+    },
     {
       icon: MapPin,
       title: t("Adresse", "Address"),
@@ -209,21 +229,33 @@ export function Contact() {
         </Reveal>
 
         <Reveal delay={0.22}>
-          <div className="mt-8 flex min-h-56 flex-col items-center justify-center rounded-card border border-dashed border-border-soft bg-surface-alt p-8 text-center">
-            <MapPin className="text-primary" size={28} strokeWidth={1.7} />
-            <h3 className="mt-4 text-lg font-semibold text-ink">
-              {t("Localisation de l’école", "School location")}
-            </h3>
-            <p className="mt-2 max-w-md text-sm leading-relaxed text-ink-soft">
-              {location.address}, {location.city}, {location.country}
-            </p>
+          <div
+            className="relative mt-8 flex min-h-56 overflow-hidden rounded-card border border-border-soft bg-surface-alt p-8 text-center"
+            style={{
+              backgroundImage: `linear-gradient(rgba(19, 92, 64, 0.58), rgba(18, 75, 55, 0.7)), url(${locationBackground?.src})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          >
+            <div className="relative z-10 mx-auto flex max-w-xl flex-col items-center justify-center text-white">
+              <MapPin className="text-white" size={28} strokeWidth={1.7} />
+              <h3 className="mt-4 text-lg font-semibold text-white">
+                {t("Localisation de l’école", "School location")}
+              </h3>
+              <p className="mt-2 max-w-md text-sm leading-relaxed text-white/90">
+                {location.address}, {location.city}, {location.country}
+              </p>
+            </div>
           </div>
         </Reveal>
 
         <Reveal delay={0.26}>
           <div className="mt-16 rounded-card bg-surface-alt px-6 py-12 text-center sm:px-10">
             <h3 className="text-2xl font-bold text-ink sm:text-3xl">
-              {t("Prêt à découvrir La Pépinière ?", "Ready to discover La Pépinière?")}
+              {t(
+                "Prêt à découvrir La Pépinière ?",
+                "Ready to discover La Pépinière?",
+              )}
             </h3>
             <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-ink-soft">
               {t(

@@ -16,6 +16,7 @@ import { Header } from "@/components/layout/Header";
 import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
+import { schoolImages } from "@/data/galleryImages";
 import { useSchool } from "@/data/useSchool";
 import { tr } from "@/i18n/types";
 import { useLanguage } from "@/i18n/useLanguage";
@@ -95,26 +96,11 @@ const VALUES = [
 ];
 
 const ENVIRONMENT_IMAGES = [
-  {
-    src: "https://images.unsplash.com/photo-1588072432836-e10032774350?auto=format&fit=crop&w=900&q=80",
-    alt: tr("Salle de classe lumineuse", "Bright classroom"),
-  },
-  {
-    src: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=900&q=80",
-    alt: tr("Enfants dans une salle de classe", "Children in a classroom"),
-  },
-  {
-    src: "https://images.unsplash.com/photo-1472162072942-cd5147eb3902?auto=format&fit=crop&w=900&q=80",
-    alt: tr("Activité créative d'enfants", "Children's creative activity"),
-  },
-  {
-    src: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=900&q=80",
-    alt: tr("Espace de lecture pour enfants", "Reading area for children"),
-  },
-  {
-    src: "https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=900&q=80",
-    alt: tr("Moment d'apprentissage partagé", "Shared learning moment"),
-  },
+  tr("Bâtiment de l'école", "School building"),
+  tr("Enseignant au tableau dans une salle de classe", "Teacher at the board in a classroom"),
+  tr("Petits enfants qui jouent en classe", "Little children playing in class"),
+  tr("Administrateur dans son bureau", "Administrator in the office"),
+  tr("Enseignant avec des enfants du primaire", "Teacher with primary school children"),
 ];
 
 export function OurSchoolPage() {
@@ -127,6 +113,11 @@ export function OurSchoolPage() {
     { label: t("Parcours", "Pathway"), value: t("Bilingue", "Bilingual") },
     { label: t("Implantation", "Location"), value: school.location.city },
   ];
+
+  const administrationImage =
+    schoolImages.find((image) => image.name.toLowerCase().includes("administrator-in-office")) ??
+    schoolImages.find((image) => image.name.toLowerCase().includes("school-building")) ??
+    schoolImages[0];
 
   usePageMeta(
     `${t("Notre école", "Our school")} | ${school.shortName} — ${school.location.city}, ${school.location.country}`,
@@ -306,10 +297,15 @@ export function OurSchoolPage() {
         <section className="bg-surface px-6 py-24 lg:px-10 lg:py-28">
           <div className="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[0.9fr_1.1fr]">
             <div className="overflow-hidden rounded-[28px] border border-border-soft bg-white p-3 shadow-soft-lg">
-              <ImagePlaceholder
-                className="aspect-4/5 w-full rounded-image"
-                content={t("direction de l'école", "school management")}
-              />
+              <div className="relative aspect-4/5 overflow-hidden rounded-image">
+                <img
+                  src={administrationImage?.src}
+                  alt={t("administration de l'école", "school administration")}
+                  className="h-full w-full object-cover"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-linear-to-t from-ink/35 via-transparent to-transparent" />
+              </div>
             </div>
             <div>
               <p className="text-sm font-medium tracking-[0.18em] text-primary">
@@ -351,18 +347,14 @@ export function OurSchoolPage() {
               )}
             </h2>
             <div className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-5">
-              {ENVIRONMENT_IMAGES.map(({ src, alt }) => (
+              {ENVIRONMENT_IMAGES.map((content) => (
                 <div
-                  key={src}
+                  key={content.fr}
                   className="aspect-square overflow-hidden rounded-card bg-surface"
                 >
-                  <img
-                    src={src}
-                    alt={t(alt)}
-                    loading="lazy"
-                    width="900"
-                    height="900"
-                    className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
+                  <ImagePlaceholder
+                    content={t(content)}
+                    className="h-full w-full"
                   />
                 </div>
               ))}

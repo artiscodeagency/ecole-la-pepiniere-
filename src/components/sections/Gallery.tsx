@@ -26,7 +26,6 @@ export function Gallery() {
     .filter(({ index }) => activeFilter === "all" || index === activeFilter);
   const selectedLabel =
     selectedCategory === null ? null : categories[selectedCategory];
-  const photoPlaceholder = t("photo officielle à intégrer", "official photo to be added");
 
   return (
     <section id="galerie" className="bg-surface px-6 py-24 lg:px-10 lg:py-32">
@@ -80,7 +79,7 @@ export function Gallery() {
             >
               <ImagePlaceholder
                 className="h-full min-h-60 w-full transition-transform duration-500 group-hover:scale-[1.04]"
-                content={`${photoPlaceholder} · ${label}`}
+                content={label}
               />
               <div className="absolute inset-0 bg-linear-to-t from-ink/75 via-ink/15 to-transparent" />
               <span className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-ink shadow-sm transition-transform duration-300 group-hover:scale-105">
@@ -90,9 +89,6 @@ export function Gallery() {
                 <span className="inline-flex rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-medium text-ink">
                   {label}
                 </span>
-                <p className="mt-3 text-base font-semibold text-white">
-                  {t("Photo à intégrer", "Photo to be added")}
-                </p>
               </div>
             </button>
           ))}
@@ -121,20 +117,17 @@ export function Gallery() {
             <div className="grid md:grid-cols-[1.3fr_0.7fr]">
               <ImagePlaceholder
                 className="h-80 w-full md:h-full md:min-h-105"
-                content={`${photoPlaceholder} · ${selectedLabel}`}
+                content={selectedLabel}
               />
               <div className="flex flex-col justify-center p-6 sm:p-8">
                 <span className="flex w-fit items-center gap-2 rounded-full bg-primary-light px-3 py-1 text-xs font-medium text-primary">
                   <ImagePlus size={14} />
                   {selectedLabel}
                 </span>
-                <h3 className="mt-4 text-2xl font-bold text-ink">
-                  {t("Photo à intégrer", "Photo to be added")}
-                </h3>
                 <p className="mt-4 text-base leading-relaxed text-ink-soft">
                   {t(
-                    "Cet emplacement est réservé à une photographie officielle de l'établissement.",
-                    "This space is reserved for an official photograph of the school.",
+                    "Cette catégorie illustre la vie scolaire de l'établissement.",
+                    "This category showcases school life at the school.",
                   )}
                 </p>
               </div>

@@ -1,6 +1,7 @@
 import { ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
+import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
 import { Reveal } from "@/components/ui/Reveal";
 import { useLanguage } from "@/i18n/useLanguage";
 
@@ -65,11 +66,7 @@ export function PageHero({
             />
             <div className="group relative overflow-hidden rounded-[28px] border border-border-soft bg-white p-3 shadow-soft-lg">
               <div className="aspect-4/3 overflow-hidden rounded-image">
-                <div className="flex h-full items-center justify-center bg-linear-to-br from-primary-light via-white to-secondary-light px-8 text-center transition-transform duration-500 ease-out group-hover:scale-105">
-                  <span className="rounded-full bg-white/85 px-4 py-2 text-xs font-medium text-ink-soft shadow-soft">
-                    {t("Photo à intégrer", "Photo to be added")} · {imageLabel}
-                  </span>
-                </div>
+                <ImagePlaceholder className="h-full w-full" content={imageLabel} />
               </div>
             </div>
           </div>

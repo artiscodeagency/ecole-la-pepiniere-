@@ -39,13 +39,18 @@ export function Footer() {
   const { t } = useLanguage();
   const school = useSchool();
 
+  const phoneNumbers = (school.contacts.mainPhone ?? []).filter(Boolean).join(" / ");
+
   const contactItems = [
-    { icon: Phone, text: school.contacts.mainPhone, href: "/contact" },
-    { icon: Mail, text: school.contacts.email, href: "/contact" },
+    { icon: Phone, text: phoneNumbers, href: `tel:${phoneNumbers}` },
+    { icon: Mail, text: school.contacts.email, href: "mailto:contact@lapepiniere.cm" },
     { icon: MapPin, text: school.location.address, href: "/contact" },
     {
       icon: Timer,
-      text: t("Horaires scolaires : voir les sections", "School hours: see the sections"),
+      text: t(
+        "Horaires scolaires : voir les sections",
+        "School hours: see the sections",
+      ),
       href: "/contact",
     },
   ];
@@ -122,15 +127,29 @@ export function Footer() {
             <ul className="mt-5 space-y-4 text-sm text-ink-soft">
               {contactItems.map(({ icon: Icon, text, href }) => (
                 <li key={text}>
-                  <Link
-                    to={href}
-                    className="flex items-start gap-3 transition-colors hover:text-primary"
-                  >
-                    <span className="mt-0.5 flex h-8 w-8 items-center justify-center rounded-full bg-primary/8">
-                      <Icon size={15} className="text-primary" />
-                    </span>
-                    <span>{text}</span>
-                  </Link>
+                  {href.startsWith("mailto:") || href.startsWith("tel:") ? (
+                    <a
+                      href={href}
+                      aria-label={text}
+                      className="flex items-start gap-3 transition-colors hover:text-primary"
+                    >
+                      <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/8">
+                        <Icon size={15} className="text-primary" />
+                      </span>
+                      <span className="min-w-0 wrap-break-word leading-relaxed">{text}</span>
+                    </a>
+                  ) : (
+                    <Link
+                      to={href}
+                      aria-label={text}
+                      className="flex items-start gap-3 transition-colors hover:text-primary"
+                    >
+                      <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/8">
+                        <Icon size={15} className="text-primary" />
+                      </span>
+                      <span className="min-w-0 wrap-break-word leading-relaxed">{text}</span>
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>

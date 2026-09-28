@@ -5,6 +5,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
 import { PageHero } from "@/components/ui/PageHero";
+import { getGalleryImage } from "@/data/galleryImages";
 import { SCHOOL } from "@/data/school";
 import { useSchool } from "@/data/useSchool";
 import { useLanguage } from "@/i18n/useLanguage";
@@ -22,6 +23,19 @@ const GALLERY_ITEMS: GalleryItem[] = SCHOOL.fr.gallery.categories.map((_, index)
   color: ["bg-accent-yellow/20", "bg-primary-light", "bg-accent-coral/15", "bg-secondary-light"][index % 4],
 }));
 
+const GALLERY_DESCRIPTIONS = [
+  "Bâtiments et façade de l’établissement.",
+  "Salles de classe lumineuses et bien organisées.",
+  "Enfants en maternelle dans un cadre rassurant.",
+  "Espaces de jeu et de découvertes.",
+  "Salle informatique et apprentissage numérique.",
+  "Activités sportives et énergie positive.",
+  "Créativité, culture et arts visuels.",
+  "Sorties pédagogiques et moments d’échange.",
+  "Journées portes ouvertes et accueil des familles.",
+  "Événements et célébrations scolaires.",
+];
+
 export function GalleryPage() {
   const { t } = useLanguage();
   const school = useSchool();
@@ -31,6 +45,13 @@ export function GalleryPage() {
   const visibleItems = useMemo(() => activeFilter === "all" ? GALLERY_ITEMS : GALLERY_ITEMS.filter((item) => item.categoryIndex === activeFilter), [activeFilter]);
   const selectedItem = selectedIndex === null ? null : visibleItems[selectedIndex];
   const filters: { id: GalleryFilter; label: string }[] = [{ id: "all", label: t("Toutes", "All") }, ...categories.map((label, index) => ({ id: index, label }))];
+  const visiblePhotoData = visibleItems.map((item, index) => ({
+    ...item,
+    src: getGalleryImage(item.categoryIndex, index)?.src,
+    description:
+      GALLERY_DESCRIPTIONS[item.categoryIndex] ??
+      t("Mémoires de la vie scolaire", "School life moments"),
+  }));
 
   usePageMeta(
     `${t("Galerie", "Gallery")} | ${school.shortName} — ${school.location.city}, ${school.location.country}`,
@@ -71,12 +92,12 @@ export function GalleryPage() {
               {filters.map((filter) => <button key={filter.id} type="button" onClick={() => selectFilter(filter.id)} className={cn("rounded-full border px-4 py-2 text-sm font-medium transition-all duration-200 hover:-translate-y-0.5", activeFilter === filter.id ? "border-primary bg-primary text-white shadow-soft" : "border-border-soft bg-white text-ink-soft hover:border-primary/30 hover:text-primary")}>{filter.label}</button>)}
             </div>
             <div className="mt-12 grid auto-rows-42.5 grid-cols-2 gap-4 sm:auto-rows-47.5 md:grid-cols-4 lg:auto-rows-52.5">
-              {visibleItems.map((item, index) => (
+              {visiblePhotoData.map((item, index) => (
                 <button key={item.id} type="button" onClick={() => setSelectedIndex(index)} className={cn("group relative overflow-hidden text-left shadow-soft transition-all duration-300 hover:-translate-y-1.5 hover:shadow-soft-lg", index % 3 === 0 && "rounded-[30px_14px_30px_14px]", index % 3 === 1 && "rounded-[14px_30px_14px_30px]", index % 3 === 2 && "rounded-3xl", index === 0 && "col-span-2 row-span-2", index === 3 && "row-span-2", index === 5 && "col-span-2", index === 7 && "col-span-2")}>
-                  <ImagePlaceholder className={cn("h-full w-full", item.color)} content={imageContent(item.categoryIndex)} />
+                  <ImagePlaceholder src={item.src} className={cn("h-full w-full", item.color)} content={imageContent(item.categoryIndex)} />
                   <div className="absolute inset-0 bg-linear-to-t from-ink/75 via-transparent to-transparent opacity-70 transition-opacity group-hover:opacity-90" />
                   <span className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-primary shadow-soft transition-transform duration-300 group-hover:scale-110"><Eye size={18} /></span>
-                  <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5"><span className="rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-medium text-ink">{categories[item.categoryIndex]}</span><h3 className="mt-3 text-base font-semibold text-white">{t("Photo à intégrer", "Photo to be added")}</h3></div>
+                  <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5"><span className="rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-medium text-ink">{categories[item.categoryIndex]}</span><h3 className="mt-3 text-base font-semibold text-white">{item.description}</h3></div>
                 </button>
               ))}
             </div>
@@ -89,11 +110,11 @@ export function GalleryPage() {
           <div className="relative w-full max-w-4xl overflow-hidden rounded-[34px_18px_34px_18px] border-4 border-white bg-white shadow-soft-lg" onClick={(event) => event.stopPropagation()}>
             <button type="button" aria-label={t("Fermer la galerie", "Close the gallery")} onClick={() => setSelectedIndex(null)} className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-ink shadow-soft hover:text-primary"><X size={18} /></button>
             <div className="grid md:grid-cols-[1.3fr_0.7fr]">
-              <ImagePlaceholder className={cn("h-72 w-full md:h-full md:min-h-105", selectedItem.color)} content={imageContent(selectedItem.categoryIndex)} />
+              <ImagePlaceholder src={getGalleryImage(selectedItem.categoryIndex, selectedIndex)?.src} className={cn("h-72 w-full md:h-full md:min-h-105", selectedItem.color)} content={imageContent(selectedItem.categoryIndex)} />
               <div className="flex flex-col justify-center p-6 sm:p-8">
                 <span className="flex w-fit items-center gap-2 rounded-full bg-primary-light px-3 py-1 text-xs font-medium text-primary"><ImagePlus size={14} />{categories[selectedItem.categoryIndex]}</span>
-                <h2 className="mt-4 text-2xl font-bold text-ink">{t("Photo à intégrer", "Photo to be added")}</h2>
-                <p className="mt-4 text-sm leading-relaxed text-ink-soft">{t(`Cet emplacement est prêt à recevoir une photographie officielle de l'établissement pour la catégorie « ${categories[selectedItem.categoryIndex]} ».`, `This space is ready to receive an official photograph of the school for the “${categories[selectedItem.categoryIndex]}” category.`)}</p>
+                <h2 className="mt-4 text-2xl font-bold text-ink">{GALLERY_DESCRIPTIONS[selectedItem.categoryIndex]}</h2>
+                <p className="mt-4 text-sm leading-relaxed text-ink-soft">{t(`Cette image illustre la catégorie « ${categories[selectedItem.categoryIndex]} » et donne un aperçu de la vie scolaire de l'établissement.`, `This image illustrates the “${categories[selectedItem.categoryIndex]}” category and gives a snapshot of school life at the institution.`)}</p>
                 <div className="mt-8 flex gap-3">
                   <button type="button" aria-label={t("Image précédente", "Previous image")} onClick={() => setSelectedIndex((selectedIndex - 1 + visibleItems.length) % visibleItems.length)} className="flex h-10 w-10 items-center justify-center rounded-full border border-border-soft text-ink transition-colors hover:border-primary hover:text-primary"><ArrowLeft size={17} /></button>
                   <button type="button" aria-label={t("Image suivante", "Next image")} onClick={() => setSelectedIndex((selectedIndex + 1) % visibleItems.length)} className="flex h-10 w-10 items-center justify-center rounded-full border border-border-soft text-ink transition-colors hover:border-primary hover:text-primary"><ArrowRight size={17} /></button>
