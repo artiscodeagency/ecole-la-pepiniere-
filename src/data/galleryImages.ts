@@ -1,6 +1,7 @@
 const imageModules = import.meta.glob("../assets/*.{jpg,jpeg,png}", {
   eager: true,
-  as: "url",
+  query: "?url",
+  import: "default",
 });
 
 const excludedFiles = new Set(["hero.png", "logo-transparent.png"]);
@@ -13,10 +14,7 @@ export const schoolImages = Object.entries(imageModules)
       return null;
     }
 
-    return {
-      src: String(src),
-      name: fileName,
-    };
+    return { src, name: fileName };
   })
   .filter((photo): photo is { src: string; name: string } => Boolean(photo))
   .sort((a, b) => a.name.localeCompare(b.name));
