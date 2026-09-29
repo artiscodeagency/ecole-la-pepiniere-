@@ -3,22 +3,22 @@
 @theme {
   --font-sans: "Poppins", system-ui, -apple-system, sans-serif;
 
-  /* Official school palette - green + white academic theme */
+  /* Official school palette - clean cyan + white academic theme */
   --color-primary: #02d6e4;
-  --color-primary-dark: #1c969e;
-  --color-primary-light: #edf9f1;
-  --color-secondary: #2d9d64;
-  --color-secondary-dark: #1f7d4d;
-  --color-secondary-light: #f1faf4;
-  --color-accent-yellow: #d9bf7a;
-  --color-accent-coral: #ddfdff;
+  --color-primary-dark: #0195ac;
+  --color-primary-light: #eafbfd;
+  --color-secondary: #02d6e4;
+  --color-secondary-dark: #0195ac;
+  --color-secondary-light: #eafbfd;
+  --color-accent-yellow: #f7d57a;
+  --color-accent-coral: #eafbfd;
 
   /* Neutrals */
   --color-surface: #ffffff;
-  --color-surface-alt: #f7faf8;
-  --color-ink: #153b2d;
-  --color-ink-soft: #49685d;
-  --color-border-soft: #dfe9e3;
+  --color-surface-alt: #f7fbfc;
+  --color-ink: #12313b;
+  --color-ink-soft: #4d6570;
+  --color-border-soft: #ddecef;
 
   /* Radii */
   --radius-btn: 11px;
