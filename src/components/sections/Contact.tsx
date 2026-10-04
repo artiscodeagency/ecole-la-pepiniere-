@@ -1,26 +1,27 @@
-import {
-  CheckCircle2,
-  Mail,
-  MapPin,
-  MessageCircle,
-  Phone,
-  Timer,
-} from "lucide-react";
-import { type FormEvent, useState } from "react";
+import { Mail, MapPin, MessageCircle, Phone, Timer } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { Reveal } from "@/components/ui/Reveal";
+import { WhatsAppSentNotice } from "@/components/ui/WhatsAppSentNotice";
 import { schoolImages } from "@/data/galleryImages";
 import { useSchool } from "@/data/useSchool";
 import { useLanguage } from "@/i18n/useLanguage";
-
-type FormStatus = "idle" | "loading" | "success";
+import { useWhatsAppForm } from "@/lib/useWhatsAppForm";
 
 export function Contact() {
   const { t } = useLanguage();
   const school = useSchool();
   const { hours, location } = school;
-  const [status, setStatus] = useState<FormStatus>("idle");
+  const { whatsappLink, handleSubmit } = useWhatsAppForm(
+    t("Message depuis le site web", "Message from the website"),
+    [
+      [t("Nom", "Name"), "name"],
+      ["Email", "email"],
+      [t("Téléphone", "Phone"), "phone"],
+      [t("Sujet", "Subject"), "subject"],
+      ["Message", "message"],
+    ],
+  );
 
   const locationBackground =
     schoolImages.find((image) =>
@@ -64,12 +65,6 @@ export function Contact() {
       ],
     },
   ];
-
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setStatus("loading");
-    window.setTimeout(() => setStatus("success"), 700);
-  };
 
   return (
     <section
@@ -149,8 +144,8 @@ export function Contact() {
               </h3>
               <p className="mt-3 text-sm text-ink-soft">
                 {t(
-                  "Formulaire de contact frontend-only, prêt à être relié à un service d’envoi.",
-                  "Frontend-only contact form, ready to be connected to a sending service.",
+                  "Votre message sera préparé dans WhatsApp : il ne vous restera qu’à l’envoyer.",
+                  "Your message will be prepared in WhatsApp: you will only have to send it.",
                 )}
               </p>
               <form
@@ -202,25 +197,13 @@ export function Contact() {
                 </label>
                 <div className="sm:col-span-2 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                   <button
-                    disabled={status === "loading"}
                     type="submit"
-                    className="rounded-btn bg-primary px-6 py-3.5 text-sm font-medium text-white shadow-soft hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-60"
+                    className="shrink-0 rounded-btn bg-primary px-6 py-3.5 text-sm font-medium text-white shadow-soft hover:bg-primary-dark"
                   >
-                    {status === "loading"
-                      ? t("Envoi en cours...", "Sending...")
-                      : t("Envoyer le message", "Send message")}
+                    {t("Envoyer via WhatsApp", "Send via WhatsApp")}
                   </button>
-                  {status === "success" && (
-                    <p
-                      role="status"
-                      className="flex items-center gap-2 text-sm text-secondary"
-                    >
-                      <CheckCircle2 size={17} />{" "}
-                      {t(
-                        "Message enregistré pour démonstration.",
-                        "Message saved for demonstration.",
-                      )}
-                    </p>
+                  {whatsappLink && (
+                    <WhatsAppSentNotice whatsappLink={whatsappLink} />
                   )}
                 </div>
               </form>

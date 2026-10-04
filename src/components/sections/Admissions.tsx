@@ -1,5 +1,4 @@
 import {
-  CheckCircle2,
   ChevronDown,
   FileText,
   Heart,
@@ -7,13 +6,15 @@ import {
   Sparkles,
   Users,
 } from "lucide-react";
-import { type FormEvent, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 import { Reveal } from "@/components/ui/Reveal";
+import { WhatsAppSentNotice } from "@/components/ui/WhatsAppSentNotice";
 import { useSchool } from "@/data/useSchool";
 import { type Localized, tr } from "@/i18n/types";
 import { useLanguage } from "@/i18n/useLanguage";
+import { useWhatsAppForm } from "@/lib/useWhatsAppForm";
 
 const BENEFITS = [
   {
@@ -97,21 +98,24 @@ const LEVELS = [
   tr("CM2", "CM2"),
 ];
 
-type FormStatus = "idle" | "loading" | "success" | "error";
-
 export function Admissions() {
   const { t } = useLanguage();
   const school = useSchool();
   const documents = school.admissions.documents;
   const faq = school.admissions.faq;
-  const [status, setStatus] = useState<FormStatus>("idle");
   const [openQuestion, setOpenQuestion] = useState<number | null>(null);
-
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setStatus("loading");
-    window.setTimeout(() => setStatus("success"), 700);
-  };
+  const { whatsappLink, handleSubmit } = useWhatsAppForm(
+    t("Demande d'inscription", "Enrolment request"),
+    [
+      [t("Nom du parent / tuteur", "Parent / guardian name"), "parentName"],
+      [t("Téléphone", "Phone"), "phone"],
+      ["Email", "email"],
+      [t("Nom de l'enfant", "Child's name"), "childName"],
+      [t("Date de naissance", "Date of birth"), "birthDate"],
+      [t("Niveau souhaité", "Desired level"), "level"],
+      ["Message", "message"],
+    ],
+  );
 
   return (
     <section
@@ -327,33 +331,13 @@ export function Admissions() {
               </label>
               <div className="sm:col-span-2 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <button
-                  disabled={status === "loading"}
                   type="submit"
-                  className="rounded-btn bg-primary px-6 py-3.5 text-sm font-medium text-white shadow-soft transition-colors hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-60"
+                  className="shrink-0 rounded-btn bg-primary px-6 py-3.5 text-sm font-medium text-white shadow-soft transition-colors hover:bg-primary-dark"
                 >
-                  {status === "loading"
-                    ? t("Envoi en cours...", "Sending...")
-                    : t("Envoyer une demande", "Send request")}
+                  {t("Envoyer via WhatsApp", "Send via WhatsApp")}
                 </button>
-                {status === "success" && (
-                  <p
-                    role="status"
-                    className="flex items-center gap-2 text-sm text-secondary"
-                  >
-                    <CheckCircle2 size={17} />{" "}
-                    {t(
-                      "Demande enregistrée pour démonstration.",
-                      "Request saved for demonstration.",
-                    )}
-                  </p>
-                )}
-                {status === "error" && (
-                  <p role="alert" className="text-sm text-accent-coral">
-                    {t(
-                      "Une erreur est survenue. Réessayez.",
-                      "An error occurred. Please try again.",
-                    )}
-                  </p>
+                {whatsappLink && (
+                  <WhatsAppSentNotice whatsappLink={whatsappLink} />
                 )}
               </div>
             </form>

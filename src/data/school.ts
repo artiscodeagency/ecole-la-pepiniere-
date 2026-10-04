@@ -122,6 +122,8 @@ const SCHOOL_FR = {
     // Two official lists were supplied and must be confirmed before publication.
     phone: ["694 090 919", "678 010 480"],
     whatsapp: ["694 090 919", "678 010 480"],
+    // Official WhatsApp number that receives the website forms.
+    whatsappPrimary: "694 090 919",
     // Number shown on the home page (present in both official lists and WhatsApp).
     mainPhone: ["694 090 919", " ", "678 010 480"],
     email: "[Adresse email à confirmer]",
@@ -353,6 +355,7 @@ const SCHOOL_EN: School = {
   contacts: {
     phone: SCHOOL_FR.contacts.phone,
     whatsapp: SCHOOL_FR.contacts.whatsapp,
+    whatsappPrimary: SCHOOL_FR.contacts.whatsappPrimary,
     mainPhone: SCHOOL_FR.contacts.mainPhone,
     email: "[Email address to be confirmed]",
   },
