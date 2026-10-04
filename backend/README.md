@@ -9,7 +9,10 @@ sous `/api`, sur le même domaine.
 
 ## Prérequis
 
-- PHP 8.4 (extensions : gd, exif, fileinfo, intl, mbstring, pdo_mysql, pdo_sqlite, zip)
+- PHP 8.4 (extensions : gd, exif, fileinfo, intl, mbstring, pdo_mysql, pdo_sqlite, zip).
+  Vérifiez avec `php -v` : le PHP 8.2 de XAMPP provoque l'erreur « Composer detected
+  issues in your platform ». En local, PHP 8.4 est dans `C:\php\8.4` ; après une
+  modification du PATH, VS Code doit être entièrement redémarré pour la voir.
 - Composer
 - MySQL ou MariaDB (XAMPP en local)
 
@@ -25,7 +28,8 @@ php artisan pepiniere:create-director
 php artisan serve --host=127.0.0.1 --port=8010
 ```
 
-Le port 8010 évite le port 8000, souvent occupé par d'autres projets.
+Ports fixes : 8010 pour l'API, 5180 pour le site et l'administration (Vite),
+qui redirige `/api` vers l'API. Ils évitent 8000 et 5173, souvent pris par d'autres projets.
 
 Le seeder ne crée que les listes officielles (sections, catégories
 d'actualités, catégories de galerie). Aucun compte ni contenu de démonstration.

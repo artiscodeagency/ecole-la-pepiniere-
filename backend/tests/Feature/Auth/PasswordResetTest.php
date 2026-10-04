@@ -26,7 +26,7 @@ class PasswordResetTest extends TestCase
         Notification::assertSentTimes(ResetPassword::class, 1);
     }
 
-    public function test_the_reset_link_points_to_the_admin(): void
+    public function test_the_reset_email_is_in_french_and_links_to_the_admin(): void
     {
         Notification::fake();
         $user = User::factory()->create();
@@ -34,9 +34,11 @@ class PasswordResetTest extends TestCase
         $this->postJson('/api/auth/forgot-password', ['email' => $user->email]);
 
         Notification::assertSentTo($user, ResetPassword::class, function (ResetPassword $notification) use ($user) {
-            $url = $notification->toMail($user)->actionUrl;
+            $mail = $notification->toMail($user);
 
-            return str_starts_with($url, 'http://localhost/admin/mot-de-passe/reinitialiser?token=');
+            return $mail->subject === 'Réinitialisation de votre mot de passe'
+                && $mail->actionText === 'Choisir un nouveau mot de passe'
+                && str_starts_with($mail->actionUrl, 'http://localhost/admin/mot-de-passe/reinitialiser?token=');
         });
     }
 
