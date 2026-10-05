@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Admin\AnnouncementController as AdminAnnouncementController;
 use App\Http\Controllers\Api\Admin\DashboardController;
 use App\Http\Controllers\Api\Admin\MediaController;
 use App\Http\Controllers\Api\Admin\NewsController as AdminNewsController;
@@ -14,6 +15,7 @@ use App\Http\Controllers\Api\Public\EventController;
 use App\Http\Controllers\Api\Public\GalleryController;
 use App\Http\Controllers\Api\Public\NewsController;
 use App\Http\Controllers\Api\Public\SchoolInfoController;
+use App\Http\Controllers\Api\Public\SectionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,6 +23,7 @@ use Illuminate\Support\Facades\Route;
 */
 Route::prefix('public')->name('public.')->group(function () {
     Route::get('school-info', SchoolInfoController::class)->name('school-info');
+    Route::get('sections', SectionController::class)->name('sections');
     Route::get('news', [NewsController::class, 'index'])->name('news.index');
     Route::get('news/{slug}', [NewsController::class, 'show'])->name('news.show');
     Route::get('news-categories', [NewsController::class, 'categories'])->name('news-categories');
@@ -67,6 +70,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum', 'active', 'c
 
     Route::apiResource('news', AdminNewsController::class);
     Route::post('news/{news}/restore', [AdminNewsController::class, 'restore'])->withTrashed()->name('news.restore');
+
+    Route::apiResource('announcements', AdminAnnouncementController::class);
+    Route::post('announcements/{announcement}/restore', [AdminAnnouncementController::class, 'restore'])
+        ->withTrashed()
+        ->name('announcements.restore');
 
     Route::middleware('can:manage-users')->group(function () {
         Route::apiResource('users', UserController::class);

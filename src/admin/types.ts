@@ -18,6 +18,9 @@ export interface AdminUser {
   abilities: Record<Ability, boolean>;
 }
 
+/** Status chosen by staff for news and announcements. */
+export type ContentStatus = "draft" | "published" | "archived";
+
 /** A bilingual text from the API; a missing English text is null. */
 export interface Localized {
   fr: string | null;

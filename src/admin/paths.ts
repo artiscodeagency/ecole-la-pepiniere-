@@ -10,6 +10,7 @@ export const PATHS = {
   news: "/actualites",
   newsNew: "/actualites/nouvelle",
   announcements: "/annonces",
+  announcementsNew: "/annonces/nouvelle",
   events: "/evenements",
   gallery: "/galerie",
   documents: "/documents",
@@ -21,3 +22,4 @@ export const PATHS = {
 } as const;
 
 export const newsEditPath = (id: number) => `${PATHS.news}/${id}`;
+export const announcementEditPath = (id: number) => `${PATHS.announcements}/${id}`;

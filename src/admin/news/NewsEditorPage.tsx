@@ -1,15 +1,17 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Loader2, Trash2 } from "lucide-react";
-import { type FormEvent, type ReactNode, useEffect, useState } from "react";
+import { type FormEvent, useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { Button } from "@/admin/components/Button";
+import { Card } from "@/admin/components/Card";
 import { ConfirmDialog } from "@/admin/components/ConfirmDialog";
 import { FormAlert } from "@/admin/components/FormAlert";
 import { CheckboxField, SelectField, TextAreaField, TextField } from "@/admin/components/FormField";
 import { ImageUploadField } from "@/admin/components/ImageUploadField";
 import { type ContentLang, LanguageTabs } from "@/admin/components/LanguageTabs";
 import { PageHeader } from "@/admin/components/PageHeader";
+import { type RadioCardOption, RadioCards } from "@/admin/components/RadioCards";
 import { RichTextEditor } from "@/admin/components/RichTextEditor";
 import { formatDateTime, fromDateTimeInput, toDateTimeInput } from "@/admin/lib/dates";
 import { NewsStatusBadge } from "@/admin/news/NewsStatusBadge";
@@ -18,7 +20,6 @@ import { useNewsCategories } from "@/admin/news/useNewsCategories";
 import { newsEditPath, PATHS } from "@/admin/paths";
 import type { Media } from "@/admin/types";
 import { api, ApiError } from "@/lib/api/client";
-import { cn } from "@/lib/utils";
 import { usePageMeta } from "@/lib/usePageMeta";
 
 interface FormState {
@@ -66,20 +67,11 @@ function initialState(news: AdminNews | undefined): FormState {
   };
 }
 
-const STATUS_OPTIONS: { value: NewsStatus; label: string; description: string }[] = [
+const STATUS_OPTIONS: RadioCardOption<NewsStatus>[] = [
   { value: "draft", label: "Brouillon", description: "Visible uniquement dans l'administration." },
   { value: "published", label: "Publiée", description: "Visible sur le site, à la date choisie." },
   { value: "archived", label: "Archivée", description: "Retirée du site, conservée ici." },
 ];
-
-function Card({ title, children, className }: { title?: string; children: ReactNode; className?: string }) {
-  return (
-    <section className={cn("rounded-card border border-border-soft bg-white p-5 shadow-soft sm:p-6", className)}>
-      {title && <h2 className="mb-4 text-base font-semibold text-ink">{title}</h2>}
-      {children}
-    </section>
-  );
-}
 
 function saveLabel(form: FormState, news: AdminNews | undefined) {
   if (form.status === "draft") return "Enregistrer le brouillon";
@@ -340,31 +332,7 @@ function NewsForm({ news }: { news?: AdminNews }) {
                 Actuellement : <NewsStatusBadge news={news} />
               </div>
             )}
-            <fieldset className="space-y-2">
-              <legend className="sr-only">Statut</legend>
-              {STATUS_OPTIONS.map((option) => (
-                <label
-                  key={option.value}
-                  className={cn(
-                    "flex cursor-pointer items-start gap-3 rounded-btn border p-3 transition-colors",
-                    form.status === option.value ? "border-primary bg-primary-light/60" : "border-border-soft hover:bg-surface-alt",
-                  )}
-                >
-                  <input
-                    type="radio"
-                    name="status"
-                    value={option.value}
-                    checked={form.status === option.value}
-                    onChange={() => set("status", option.value)}
-                    className="mt-1 accent-primary-dark"
-                  />
-                  <span>
-                    <span className="block text-sm font-semibold text-ink">{option.label}</span>
-                    <span className="block text-xs text-ink-soft">{option.description}</span>
-                  </span>
-                </label>
-              ))}
-            </fieldset>
+            <RadioCards name="status" legend="Statut" value={form.status} options={STATUS_OPTIONS} onChange={(value) => set("status", value)} />
 
             {form.status === "published" && (
               <TextField

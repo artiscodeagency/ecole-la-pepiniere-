@@ -1,6 +1,8 @@
 import { lazy } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
+import { AnnouncementEditorPage } from "@/admin/announcements/AnnouncementEditorPage";
+import { AnnouncementListPage } from "@/admin/announcements/AnnouncementListPage";
 import { AuthProvider } from "@/admin/auth/AuthProvider";
 import { RequireAuth } from "@/admin/auth/RequireAuth";
 import { AdminLayout } from "@/admin/components/AdminLayout";
@@ -30,6 +32,9 @@ export function AdminApp() {
               <Route path={PATHS.news} element={<NewsListPage />} />
               <Route path={PATHS.newsNew} element={<NewsEditorPage />} />
               <Route path={`${PATHS.news}/:id`} element={<NewsEditorPage />} />
+              <Route path={PATHS.announcements} element={<AnnouncementListPage />} />
+              <Route path={PATHS.announcementsNew} element={<AnnouncementEditorPage />} />
+              <Route path={`${PATHS.announcements}/:id`} element={<AnnouncementEditorPage />} />
             </Route>
           </Route>
           <Route path="*" element={<Navigate to={PATHS.home} replace />} />

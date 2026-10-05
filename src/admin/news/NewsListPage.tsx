@@ -1,16 +1,18 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ImageIcon, Newspaper, Plus, RotateCcw, Search, Star } from "lucide-react";
+import { ImageIcon, Newspaper, Plus, RotateCcw, Star } from "lucide-react";
 import { useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import { useAuth } from "@/admin/auth/useAuth";
 import { Button, ButtonLink } from "@/admin/components/Button";
 import { EmptyState } from "@/admin/components/EmptyState";
 import { FormAlert } from "@/admin/components/FormAlert";
+import { FilterPills, FilterSelect, SearchBar } from "@/admin/components/ListFilters";
 import { PageHeader } from "@/admin/components/PageHeader";
 import { Pagination } from "@/admin/components/Pagination";
 import { formatDate } from "@/admin/lib/dates";
 import { useDebouncedValue } from "@/admin/lib/useDebouncedValue";
+import { useListParams } from "@/admin/lib/useListParams";
 import { NewsStatusBadge } from "@/admin/news/NewsStatusBadge";
 import { type AdminNews, NEWS_QUERY_KEY } from "@/admin/news/types";
 import { useNewsCategories } from "@/admin/news/useNewsCategories";
@@ -93,23 +95,16 @@ function NewsRow({ news, onRestore, restoring }: { news: AdminNews; onRestore?: 
 export function NewsListPage() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
-  const [params, setParams] = useSearchParams();
-  const status = params.get("statut") ?? "";
-  const category = params.get("categorie") ?? "";
-  const page = Number(params.get("page") ?? "1") || 1;
+  const params = useListParams();
+  const status = params.get("statut");
+  const category = params.get("categorie");
+  const page = params.page;
   const [search, setSearch] = useState("");
   const searchTerm = useDebouncedValue(search.trim());
   const categories = useNewsCategories();
   const isDirector = user?.role === "director";
 
   usePageMeta("Actualités | Administration La Pépinière", "Gestion des actualités.");
-
-  const updateParams = (changes: Record<string, string>) => {
-    const next = new URLSearchParams(params);
-    Object.entries(changes).forEach(([key, value]) => (value ? next.set(key, value) : next.delete(key)));
-    if (!("page" in changes)) next.delete("page");
-    setParams(next, { replace: true });
-  };
 
   const query = new URLSearchParams();
   if (status) query.set("status", status === "corbeille" ? "trashed" : status);
@@ -147,57 +142,28 @@ export function NewsListPage() {
         }
       />
 
-      <div className="mb-5 flex flex-wrap gap-2" role="group" aria-label="Filtrer par statut">
-        {filters.map((filter) => (
-          <button
-            key={filter.value}
-            type="button"
-            aria-pressed={status === filter.value}
-            onClick={() => updateParams({ statut: filter.value })}
-            className={cn(
-              "rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors",
-              status === filter.value
-                ? "border-primary-dark bg-primary-dark text-white"
-                : "border-border-soft bg-white text-ink-soft hover:text-ink",
-            )}
-          >
-            {filter.label}
-          </button>
-        ))}
-      </div>
+      <FilterPills label="Filtrer par statut" options={filters} value={status} onChange={(value) => params.update({ statut: value })} />
 
-      <div className="mb-6 grid gap-3 sm:grid-cols-[1fr_16rem]">
-        <label className="relative block">
-          <span className="sr-only">Rechercher une actualité</span>
-          <Search size={17} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-soft" aria-hidden="true" />
-          <input
-            type="search"
-            value={search}
-            onChange={(event) => {
-              setSearch(event.target.value);
-              // A new search starts again from the first page.
-              if (page > 1) updateParams({});
-            }}
-            placeholder="Rechercher par titre…"
-            className="w-full rounded-btn border border-border-soft bg-white py-2.5 pl-10 pr-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/15"
-          />
-        </label>
-        <label className="block">
-          <span className="sr-only">Catégorie</span>
-          <select
-            value={category}
-            onChange={(event) => updateParams({ categorie: event.target.value })}
-            className="w-full rounded-btn border border-border-soft bg-white px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/15"
-          >
+      <SearchBar
+        label="Rechercher une actualité"
+        value={search}
+        onChange={(value) => {
+          setSearch(value);
+          // A new search starts again from the first page.
+          if (page > 1) params.update({});
+        }}
+        placeholder="Rechercher par titre…"
+        aside={
+          <FilterSelect label="Catégorie" value={category} onChange={(value) => params.update({ categorie: value })}>
             <option value="">Toutes les catégories</option>
             {categories.data?.map((item) => (
               <option key={item.id} value={item.id}>
                 {item.name.fr}
               </option>
             ))}
-          </select>
-        </label>
-      </div>
+          </FilterSelect>
+        }
+      />
 
       {restore.isError && (
         <div className="mb-4">
@@ -242,7 +208,7 @@ export function NewsListPage() {
               />
             ))}
           </ul>
-          <Pagination meta={news.data.meta} onPageChange={(next) => updateParams({ page: String(next) })} />
+          <Pagination meta={news.data.meta} onPageChange={(next) => params.update({ page: String(next) })} />
         </>
       )}
     </div>
