@@ -6,6 +6,8 @@ import { AnnouncementListPage } from "@/admin/announcements/AnnouncementListPage
 import { AuthProvider } from "@/admin/auth/AuthProvider";
 import { RequireAuth } from "@/admin/auth/RequireAuth";
 import { AdminLayout } from "@/admin/components/AdminLayout";
+import { EventEditorPage } from "@/admin/events/EventEditorPage";
+import { EventListPage } from "@/admin/events/EventListPage";
 import { NewsListPage } from "@/admin/news/NewsListPage";
 import { DashboardPage } from "@/admin/pages/DashboardPage";
 import { ForgotPasswordPage } from "@/admin/pages/ForgotPasswordPage";
@@ -35,6 +37,9 @@ export function AdminApp() {
               <Route path={PATHS.announcements} element={<AnnouncementListPage />} />
               <Route path={PATHS.announcementsNew} element={<AnnouncementEditorPage />} />
               <Route path={`${PATHS.announcements}/:id`} element={<AnnouncementEditorPage />} />
+              <Route path={PATHS.events} element={<EventListPage />} />
+              <Route path={PATHS.eventsNew} element={<EventEditorPage />} />
+              <Route path={`${PATHS.events}/:id`} element={<EventEditorPage />} />
             </Route>
           </Route>
           <Route path="*" element={<Navigate to={PATHS.home} replace />} />

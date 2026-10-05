@@ -12,6 +12,7 @@ export const PATHS = {
   announcements: "/annonces",
   announcementsNew: "/annonces/nouvelle",
   events: "/evenements",
+  eventsNew: "/evenements/nouveau",
   gallery: "/galerie",
   documents: "/documents",
   messages: "/messages",
@@ -23,3 +24,4 @@ export const PATHS = {
 
 export const newsEditPath = (id: number) => `${PATHS.news}/${id}`;
 export const announcementEditPath = (id: number) => `${PATHS.announcements}/${id}`;
+export const eventEditPath = (id: number) => `${PATHS.events}/${id}`;

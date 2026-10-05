@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Admin;
 
+use App\Enums\EventStatus;
 use App\Enums\MessageStatus;
 use App\Models\Announcement;
 use App\Models\ContactMessage;
@@ -30,6 +31,8 @@ class DashboardTest extends TestCase
         GalleryPhoto::factory()->count(3)->create();
         SchoolEvent::factory()->create();
         SchoolEvent::factory()->past()->create();
+        // Still shown on the site, but not counted as coming up.
+        SchoolEvent::factory()->create(['status' => EventStatus::Cancelled]);
         ContactMessage::query()->create([
             'name' => 'Parent', 'email' => 'parent@example.com', 'phone' => '694000000',
             'subject' => 'Visite', 'message' => 'Bonjour', 'status' => MessageStatus::New,

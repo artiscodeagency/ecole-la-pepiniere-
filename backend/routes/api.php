@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Admin\AnnouncementController as AdminAnnouncementController;
 use App\Http\Controllers\Api\Admin\DashboardController;
+use App\Http\Controllers\Api\Admin\EventController as AdminEventController;
 use App\Http\Controllers\Api\Admin\MediaController;
 use App\Http\Controllers\Api\Admin\NewsController as AdminNewsController;
 use App\Http\Controllers\Api\Admin\UserController;
@@ -75,6 +76,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum', 'active', 'c
     Route::post('announcements/{announcement}/restore', [AdminAnnouncementController::class, 'restore'])
         ->withTrashed()
         ->name('announcements.restore');
+
+    Route::apiResource('events', AdminEventController::class);
+    Route::post('events/{event}/restore', [AdminEventController::class, 'restore'])->withTrashed()->name('events.restore');
 
     Route::middleware('can:manage-users')->group(function () {
         Route::apiResource('users', UserController::class);

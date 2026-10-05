@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Enums\AdmissionStatus;
+use App\Enums\EventStatus;
 use App\Enums\MessageStatus;
 use App\Http\Controllers\Controller;
 use App\Models\AdmissionRequest;
@@ -23,7 +24,8 @@ class DashboardController extends Controller
             'gallery_photos' => GalleryPhoto::query()->visible()->count(),
             'messages_unread' => ContactMessage::query()->where('status', MessageStatus::New)->count(),
             'admission_requests_new' => AdmissionRequest::query()->where('status', AdmissionStatus::New)->count(),
-            'events_upcoming' => SchoolEvent::query()->publiclyVisible()->upcoming()->count(),
+            // Cancelled events stay visible on the site, but they are not "coming up".
+            'events_upcoming' => SchoolEvent::query()->where('status', EventStatus::Published)->upcoming()->count(),
         ]]);
     }
 }
