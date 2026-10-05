@@ -62,6 +62,56 @@
     line-height: 1.2;
   }
 
+  /* Text written in the admin editor (news articles): same look in the editor and on the site. */
+  .rich-text {
+    color: var(--color-ink);
+    line-height: 1.75;
+  }
+
+  .rich-text > * + * {
+    margin-top: 1rem;
+  }
+
+  .rich-text h2 {
+    margin-top: 2rem;
+    font-size: 1.5rem;
+  }
+
+  .rich-text h3 {
+    margin-top: 1.5rem;
+    font-size: 1.2rem;
+  }
+
+  .rich-text ul,
+  .rich-text ol {
+    padding-left: 1.5rem;
+  }
+
+  .rich-text ul {
+    list-style: disc;
+  }
+
+  .rich-text ol {
+    list-style: decimal;
+  }
+
+  .rich-text li + li {
+    margin-top: 0.35rem;
+  }
+
+  .rich-text blockquote {
+    border-left: 4px solid var(--color-primary);
+    padding-left: 1rem;
+    color: var(--color-ink-soft);
+    font-style: italic;
+  }
+
+  .rich-text a {
+    color: var(--color-primary-dark);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     html {
       scroll-behavior: auto;

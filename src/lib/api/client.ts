@@ -44,13 +44,16 @@ function send(path: string, method: Method, body: unknown) {
   };
   const xsrf = readCookie(XSRF_COOKIE);
   if (xsrf) headers["X-XSRF-TOKEN"] = xsrf;
-  if (body !== undefined) headers["Content-Type"] = "application/json";
+
+  // Files go as multipart: the browser sets the content type and its boundary.
+  const isForm = body instanceof FormData;
+  if (body !== undefined && !isForm) headers["Content-Type"] = "application/json";
 
   return fetch(`${API_BASE}${path}`, {
     method,
     credentials: "same-origin",
     headers,
-    body: body === undefined ? undefined : JSON.stringify(body),
+    body: body === undefined ? undefined : isForm ? body : JSON.stringify(body),
   });
 }
 
@@ -71,7 +74,7 @@ function fallbackMessage(status: number) {
  */
 export async function api<T>(
   path: string,
-  { method = "GET", body }: { method?: Method; body?: unknown } = {},
+  { method = "GET", body }: { method?: Method; body?: unknown | FormData } = {},
 ): Promise<T> {
   const writes = method !== "GET";
   let response: Response;

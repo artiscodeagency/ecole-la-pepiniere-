@@ -56,7 +56,7 @@ export function ForgotPasswordPage() {
             type="email"
             autoComplete="username"
             inputMode="email"
-            required
+            aria-required
             autoFocus
             error={error?.field("email")}
           />

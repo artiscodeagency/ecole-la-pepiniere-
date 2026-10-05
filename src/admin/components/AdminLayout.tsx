@@ -1,5 +1,5 @@
-import { Menu, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Loader2, Menu, X } from "lucide-react";
+import { Suspense, useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 
 import { Sidebar } from "@/admin/components/Sidebar";
@@ -69,7 +69,16 @@ export function AdminLayout() {
       )}
 
       <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-10 lg:py-10">
-        <Outlet />
+        <Suspense
+          fallback={
+            <p role="status" className="flex items-center gap-2 py-10 text-sm text-ink-soft">
+              <Loader2 size={18} className="animate-spin" aria-hidden="true" />
+              Chargement…
+            </p>
+          }
+        >
+          <Outlet />
+        </Suspense>
       </main>
     </div>
   );

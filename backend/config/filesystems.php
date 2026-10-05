@@ -84,8 +84,10 @@ return [
     |
     */
 
+    // Only the uploaded media are exposed. In production the link is made
+    // from the site root (public_html/media), see the deployment notes.
     'links' => [
-        public_path('storage') => storage_path('app/public'),
+        public_path('media') => storage_path('app/public/media'),
     ],
 
 ];

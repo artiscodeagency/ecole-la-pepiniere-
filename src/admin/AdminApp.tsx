@@ -1,13 +1,20 @@
+import { lazy } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
 import { AuthProvider } from "@/admin/auth/AuthProvider";
 import { RequireAuth } from "@/admin/auth/RequireAuth";
 import { AdminLayout } from "@/admin/components/AdminLayout";
+import { NewsListPage } from "@/admin/news/NewsListPage";
 import { DashboardPage } from "@/admin/pages/DashboardPage";
 import { ForgotPasswordPage } from "@/admin/pages/ForgotPasswordPage";
 import { LoginPage } from "@/admin/pages/LoginPage";
 import { ResetPasswordPage } from "@/admin/pages/ResetPasswordPage";
 import { PATHS } from "@/admin/paths";
+
+// The text editor is heavy: it is only downloaded when an article is opened.
+const NewsEditorPage = lazy(() =>
+  import("@/admin/news/NewsEditorPage").then((module) => ({ default: module.NewsEditorPage })),
+);
 
 export function AdminApp() {
   return (
@@ -20,6 +27,9 @@ export function AdminApp() {
           <Route element={<RequireAuth />}>
             <Route element={<AdminLayout />}>
               <Route path={PATHS.home} element={<DashboardPage />} />
+              <Route path={PATHS.news} element={<NewsListPage />} />
+              <Route path={PATHS.newsNew} element={<NewsEditorPage />} />
+              <Route path={`${PATHS.news}/:id`} element={<NewsEditorPage />} />
             </Route>
           </Route>
           <Route path="*" element={<Navigate to={PATHS.home} replace />} />

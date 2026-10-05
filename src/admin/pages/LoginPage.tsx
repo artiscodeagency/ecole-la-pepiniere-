@@ -61,14 +61,14 @@ export function LoginPage() {
           type="email"
           autoComplete="username"
           inputMode="email"
-          required
+          aria-required
           autoFocus
         />
         <PasswordField
           label="Mot de passe"
           name="password"
           autoComplete="current-password"
-          required
+          aria-required
         />
         <div className="flex justify-end">
           <Link

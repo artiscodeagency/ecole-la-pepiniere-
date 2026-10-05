@@ -84,7 +84,7 @@ export function ResetPasswordPage() {
             label="Nouveau mot de passe"
             name="password"
             autoComplete="new-password"
-            required
+            aria-required
             minLength={10}
             autoFocus
             error={error?.field("password")}
@@ -93,7 +93,7 @@ export function ResetPasswordPage() {
             label="Confirmez le mot de passe"
             name="password_confirmation"
             autoComplete="new-password"
-            required
+            aria-required
             minLength={10}
           />
           <SubmitButton pending={pending} pendingLabel="Enregistrement…">

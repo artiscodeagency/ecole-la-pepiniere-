@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\Admin\DashboardController;
+use App\Http\Controllers\Api\Admin\MediaController;
+use App\Http\Controllers\Api\Admin\NewsController as AdminNewsController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Auth\PasswordResetController;
@@ -59,6 +61,12 @@ Route::prefix('auth')->name('auth.')->group(function () {
 */
 Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum', 'active', 'can:manage-content'])->group(function () {
     Route::get('dashboard', DashboardController::class)->name('dashboard');
+
+    Route::post('media', [MediaController::class, 'store'])->name('media.store');
+    Route::patch('media/{media}', [MediaController::class, 'update'])->name('media.update');
+
+    Route::apiResource('news', AdminNewsController::class);
+    Route::post('news/{news}/restore', [AdminNewsController::class, 'restore'])->withTrashed()->name('news.restore');
 
     Route::middleware('can:manage-users')->group(function () {
         Route::apiResource('users', UserController::class);

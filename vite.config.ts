@@ -41,6 +41,8 @@ export default defineConfig({
     proxy: {
       "/api": API_TARGET,
       "/sanctum": API_TARGET,
+      // Photos uploaded in the admin (backend/public/media).
+      "/media": API_TARGET,
     },
   },
   build: {

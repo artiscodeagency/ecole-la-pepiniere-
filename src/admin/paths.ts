@@ -8,6 +8,7 @@ export const PATHS = {
   forgotPassword: "/mot-de-passe/oublie",
   resetPassword: "/mot-de-passe/reinitialiser",
   news: "/actualites",
+  newsNew: "/actualites/nouvelle",
   announcements: "/annonces",
   events: "/evenements",
   gallery: "/galerie",
@@ -18,3 +19,5 @@ export const PATHS = {
   users: "/utilisateurs",
   profile: "/profil",
 } as const;
+
+export const newsEditPath = (id: number) => `${PATHS.news}/${id}`;

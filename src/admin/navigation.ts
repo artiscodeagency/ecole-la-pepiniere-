@@ -37,7 +37,7 @@ export const NAVIGATION: NavGroup[] = [
   {
     title: "Contenus du site",
     items: [
-      { label: "Actualités", path: PATHS.news, icon: Newspaper, available: false },
+      { label: "Actualités", path: PATHS.news, icon: Newspaper, available: true },
       { label: "Annonces", path: PATHS.announcements, icon: Megaphone, available: false },
       { label: "Événements", path: PATHS.events, icon: CalendarDays, available: false },
       { label: "Galerie", path: PATHS.gallery, icon: Images, available: false },
