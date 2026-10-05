@@ -9,8 +9,6 @@ use App\Services\ImageProcessor;
 use App\Support\ActivityLogger;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
-use Intervention\Image\Exceptions\DecoderException;
 
 class MediaController extends Controller
 {
@@ -18,30 +16,12 @@ class MediaController extends Controller
     public function store(Request $request, ImageProcessor $images): JsonResponse
     {
         $request->validate([
-            // The MIME type is read from the file content, not from its name.
-            'file' => ['required', 'file', 'mimetypes:image/jpeg,image/png,image/webp', 'max:15360'],
+            'file' => ImageProcessor::rules(),
             'alt_fr' => ['nullable', 'string', 'max:255'],
             'alt_en' => ['nullable', 'string', 'max:255'],
-        ], [
-            'file.mimetypes' => 'Format non pris en charge : envoyez une photo JPEG, PNG ou WebP.',
-            'file.max' => 'Cette photo dépasse 15 Mo.',
-        ]);
+        ], ImageProcessor::messages('file'));
 
-        $file = $request->file('file');
-        $size = @getimagesize($file->getRealPath());
-        if ($size === false) {
-            throw ValidationException::withMessages(['file' => "Cette image n'a pas pu être lue."]);
-        }
-        if ($size[0] * $size[1] > ImageProcessor::MAX_PIXELS) {
-            throw ValidationException::withMessages(['file' => 'Cette image est trop grande (40 millions de pixels au maximum).']);
-        }
-
-        try {
-            $media = $images->store($file, $request->user(), $request->input('alt_fr'), $request->input('alt_en'));
-        } catch (DecoderException) {
-            throw ValidationException::withMessages(['file' => "Cette image n'a pas pu être lue."]);
-        }
-
+        $media = $images->storeUpload($request->file('file'), 'file', $request->user(), $request->input('alt_fr'), $request->input('alt_en'));
         ActivityLogger::record('media.uploaded', $media, ['original_name' => $media->original_name]);
 
         return MediaResource::make($media)->response()->setStatusCode(201);

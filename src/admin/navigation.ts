@@ -40,7 +40,7 @@ export const NAVIGATION: NavGroup[] = [
       { label: "Actualités", path: PATHS.news, icon: Newspaper, available: true },
       { label: "Annonces", path: PATHS.announcements, icon: Megaphone, available: true },
       { label: "Événements", path: PATHS.events, icon: CalendarDays, available: true },
-      { label: "Galerie", path: PATHS.gallery, icon: Images, available: false },
+      { label: "Galerie", path: PATHS.gallery, icon: Images, available: true },
       { label: "Documents", path: PATHS.documents, icon: FileText, available: false },
     ],
   },

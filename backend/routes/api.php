@@ -3,6 +3,8 @@
 use App\Http\Controllers\Api\Admin\AnnouncementController as AdminAnnouncementController;
 use App\Http\Controllers\Api\Admin\DashboardController;
 use App\Http\Controllers\Api\Admin\EventController as AdminEventController;
+use App\Http\Controllers\Api\Admin\GalleryCategoryController as AdminGalleryCategoryController;
+use App\Http\Controllers\Api\Admin\GalleryPhotoController as AdminGalleryPhotoController;
 use App\Http\Controllers\Api\Admin\MediaController;
 use App\Http\Controllers\Api\Admin\NewsController as AdminNewsController;
 use App\Http\Controllers\Api\Admin\UserController;
@@ -79,6 +81,25 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum', 'active', 'c
 
     Route::apiResource('events', AdminEventController::class);
     Route::post('events/{event}/restore', [AdminEventController::class, 'restore'])->withTrashed()->name('events.restore');
+
+    Route::prefix('gallery')->name('gallery.')->group(function () {
+        Route::get('categories', [AdminGalleryCategoryController::class, 'index'])->name('categories.index');
+        Route::post('categories', [AdminGalleryCategoryController::class, 'store'])->name('categories.store');
+        Route::put('categories/order', [AdminGalleryCategoryController::class, 'order'])->name('categories.order');
+        Route::put('categories/{galleryCategory}', [AdminGalleryCategoryController::class, 'update'])->whereNumber('galleryCategory')->name('categories.update');
+        Route::delete('categories/{galleryCategory}', [AdminGalleryCategoryController::class, 'destroy'])->whereNumber('galleryCategory')->name('categories.destroy');
+
+        Route::get('photos', [AdminGalleryPhotoController::class, 'index'])->name('photos.index');
+        Route::post('photos', [AdminGalleryPhotoController::class, 'store'])->name('photos.store');
+        Route::put('photos/order', [AdminGalleryPhotoController::class, 'order'])->name('photos.order');
+        Route::patch('photos/{galleryPhoto}', [AdminGalleryPhotoController::class, 'update'])->whereNumber('galleryPhoto')->name('photos.update');
+        Route::post('photos/{galleryPhoto}/move', [AdminGalleryPhotoController::class, 'move'])->whereNumber('galleryPhoto')->name('photos.move');
+        Route::delete('photos/{galleryPhoto}', [AdminGalleryPhotoController::class, 'destroy'])->whereNumber('galleryPhoto')->name('photos.destroy');
+        Route::post('photos/{galleryPhoto}/restore', [AdminGalleryPhotoController::class, 'restore'])
+            ->whereNumber('galleryPhoto')
+            ->withTrashed()
+            ->name('photos.restore');
+    });
 
     Route::middleware('can:manage-users')->group(function () {
         Route::apiResource('users', UserController::class);

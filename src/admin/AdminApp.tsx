@@ -8,6 +8,8 @@ import { RequireAuth } from "@/admin/auth/RequireAuth";
 import { AdminLayout } from "@/admin/components/AdminLayout";
 import { EventEditorPage } from "@/admin/events/EventEditorPage";
 import { EventListPage } from "@/admin/events/EventListPage";
+import { AlbumsPage } from "@/admin/gallery/AlbumsPage";
+import { GalleryPage } from "@/admin/gallery/GalleryPage";
 import { NewsListPage } from "@/admin/news/NewsListPage";
 import { DashboardPage } from "@/admin/pages/DashboardPage";
 import { ForgotPasswordPage } from "@/admin/pages/ForgotPasswordPage";
@@ -40,6 +42,8 @@ export function AdminApp() {
               <Route path={PATHS.events} element={<EventListPage />} />
               <Route path={PATHS.eventsNew} element={<EventEditorPage />} />
               <Route path={`${PATHS.events}/:id`} element={<EventEditorPage />} />
+              <Route path={PATHS.gallery} element={<GalleryPage />} />
+              <Route path={`${PATHS.gallery}/albums`} element={<AlbumsPage />} />
             </Route>
           </Route>
           <Route path="*" element={<Navigate to={PATHS.home} replace />} />

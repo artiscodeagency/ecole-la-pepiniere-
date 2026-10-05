@@ -8,9 +8,11 @@ use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use Intervention\Image\Drivers\Gd\Driver as GdDriver;
 use Intervention\Image\Encoders\JpegEncoder;
 use Intervention\Image\Encoders\WebpEncoder;
+use Intervention\Image\Exceptions\DecoderException;
 use Intervention\Image\ImageManager;
 use Throwable;
 
@@ -35,6 +37,51 @@ final class ImageProcessor
 
     /** A decoded photo takes about 4 bytes per pixel: 160 MB at the maximum size. */
     private const MEMORY_LIMIT = '512M';
+
+    /**
+     * Validation rules of an uploaded photo. The type is read from the file
+     * content, not from its name.
+     *
+     * @return list<string>
+     */
+    public static function rules(): array
+    {
+        return ['required', 'file', 'mimetypes:image/jpeg,image/png,image/webp', 'max:15360'];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public static function messages(string $field): array
+    {
+        return [
+            "{$field}.mimetypes" => 'Format non pris en charge : envoyez une photo JPEG, PNG ou WebP.',
+            "{$field}.max" => 'Cette photo dépasse 15 Mo.',
+        ];
+    }
+
+    /**
+     * Stores a validated upload. An image that cannot be decoded, or that is
+     * too large to decode safely, becomes a validation error on $field.
+     *
+     * @throws ValidationException
+     */
+    public function storeUpload(UploadedFile $file, string $field, ?User $uploader, ?string $altFr = null, ?string $altEn = null): Media
+    {
+        $size = @getimagesize($file->getRealPath());
+        if ($size === false) {
+            throw ValidationException::withMessages([$field => "Cette image n'a pas pu être lue."]);
+        }
+        if ($size[0] * $size[1] > self::MAX_PIXELS) {
+            throw ValidationException::withMessages([$field => 'Cette image est trop grande (40 millions de pixels au maximum).']);
+        }
+
+        try {
+            return $this->store($file, $uploader, $altFr, $altEn);
+        } catch (DecoderException) {
+            throw ValidationException::withMessages([$field => "Cette image n'a pas pu être lue."]);
+        }
+    }
 
     public function store(UploadedFile $file, ?User $uploader, ?string $altFr = null, ?string $altEn = null): Media
     {
