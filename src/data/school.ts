@@ -126,7 +126,8 @@ const SCHOOL_FR = {
     whatsappPrimary: "694 090 919",
     // Number shown on the home page (present in both official lists and WhatsApp).
     mainPhone: ["694 090 919", " ", "678 010 480"],
-    email: "[Adresse email à confirmer]",
+    // Official address supplied by the school on 2026-10-20.
+    email: "gsbpepiniere92@gmail.com",
   },
   transport: {
     description: "Transport scolaire selon la distance.",
@@ -357,7 +358,7 @@ const SCHOOL_EN: School = {
     whatsapp: SCHOOL_FR.contacts.whatsapp,
     whatsappPrimary: SCHOOL_FR.contacts.whatsappPrimary,
     mainPhone: SCHOOL_FR.contacts.mainPhone,
-    email: "[Email address to be confirmed]",
+    email: SCHOOL_FR.contacts.email,
   },
   transport: {
     description: "School transport, priced according to distance.",

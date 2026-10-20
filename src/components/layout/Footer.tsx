@@ -43,7 +43,7 @@ export function Footer() {
 
   const contactItems = [
     { icon: Phone, text: phoneNumbers, href: `tel:${phoneNumbers}` },
-    { icon: Mail, text: school.contacts.email, href: "mailto:contact@lapepiniere.cm" },
+    { icon: Mail, text: school.contacts.email, href: `mailto:${school.contacts.email}` },
     { icon: MapPin, text: school.location.address, href: "/contact" },
     {
       icon: Timer,
