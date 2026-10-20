@@ -7,6 +7,7 @@ import { PrimairePage } from "@/components/pages/PrimairePage";
 import { SchoolLifePage } from "@/components/pages/SchoolLifePage";
 import { GalleryPage } from "@/components/pages/GalleryPage";
 import { NewsPage } from "@/components/pages/NewsPage";
+import { NewsArticlePage } from "@/components/pages/NewsArticlePage";
 import { ContactPage } from "@/components/pages/ContactPage";
 import { AdmissionsPage } from "@/components/pages/AdmissionsPage";
 import { Admissions } from "@/components/sections/Admissions";
@@ -69,6 +70,7 @@ function App() {
         <Route path="/vie-scolaire" element={<SchoolLifePage />} />
         <Route path="/galerie" element={<GalleryPage />} />
         <Route path="/actualites" element={<NewsPage />} />
+        <Route path="/actualites/:slug" element={<NewsArticlePage />} />
         <Route path="/admissions" element={<AdmissionsPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />

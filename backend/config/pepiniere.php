@@ -21,6 +21,13 @@ return [
         'reset_password' => '/admin/mot-de-passe/reinitialiser',
     ],
 
+    /*
+    | The built public site's index.html (npm run build). Served with each
+    | article's own title, description and share image for /actualites/{slug},
+    | so links shared on WhatsApp or Facebook show the article.
+    */
+    'spa_index' => env('SPA_INDEX_PATH', base_path('../dist/index.html')),
+
     'passwords' => [
         'min_length' => 10,
     ],
