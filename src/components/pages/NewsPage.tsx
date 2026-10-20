@@ -3,6 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
+import { AnnouncementsSection } from "@/components/announcements/AnnouncementsSection";
 import { NewsCard } from "@/components/news/NewsCard";
 import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
 import { PageHero } from "@/components/ui/PageHero";
@@ -158,6 +159,7 @@ export function NewsPage() {
           )}
           imageLabel={t("vie de l'école", "school life")}
         />
+        <AnnouncementsSection className="bg-surface-alt" />
         <section id="journal" className="relative scroll-mt-24 overflow-hidden bg-surface px-6 py-20 lg:px-10 lg:py-28">
           <div
             aria-hidden

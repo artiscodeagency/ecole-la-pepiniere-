@@ -10,6 +10,7 @@ import { NewsPage } from "@/components/pages/NewsPage";
 import { NewsArticlePage } from "@/components/pages/NewsArticlePage";
 import { ContactPage } from "@/components/pages/ContactPage";
 import { AdmissionsPage } from "@/components/pages/AdmissionsPage";
+import { AnnouncementsSection } from "@/components/announcements/AnnouncementsSection";
 import { Admissions } from "@/components/sections/Admissions";
 import { Activities } from "@/components/sections/Activities";
 import { Contact } from "@/components/sections/Contact";
@@ -50,6 +51,7 @@ function HomePage() {
         <Activities />
         <Gallery />
         <Testimonials />
+        <AnnouncementsSection className="border-t border-border-soft bg-surface" />
         <News />
         <Admissions />
         <Contact />
