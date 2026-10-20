@@ -119,13 +119,13 @@ const SCHOOL_FR = {
     ],
   },
   contacts: {
-    // Two official lists were supplied and must be confirmed before publication.
-    phone: ["694 090 919", "678 010 480"],
-    whatsapp: ["694 090 919", "678 010 480"],
+    // The main number (supplied by the school on 2026-10-20) comes first.
+    phone: ["694 797 162", "694 090 919", "678 010 480"],
+    whatsapp: ["694 797 162", "694 090 919", "678 010 480"],
     // Official WhatsApp number that receives the website forms.
-    whatsappPrimary: "694 090 919",
-    // Number shown on the home page (present in both official lists and WhatsApp).
-    mainPhone: ["694 090 919", " ", "678 010 480"],
+    whatsappPrimary: "694 797 162",
+    // Main number, shown on the home page and in the footer.
+    mainPhone: ["694 797 162"],
     // Official address supplied by the school on 2026-10-20.
     email: "gsbpepiniere92@gmail.com",
   },
