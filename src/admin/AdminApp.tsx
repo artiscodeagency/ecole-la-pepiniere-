@@ -1,6 +1,8 @@
 import { lazy } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
+import { AdmissionDetailPage } from "@/admin/admissions/AdmissionDetailPage";
+import { AdmissionListPage } from "@/admin/admissions/AdmissionListPage";
 import { AnnouncementEditorPage } from "@/admin/announcements/AnnouncementEditorPage";
 import { AnnouncementListPage } from "@/admin/announcements/AnnouncementListPage";
 import { AuthProvider } from "@/admin/auth/AuthProvider";
@@ -48,6 +50,8 @@ export function AdminApp() {
               <Route path={`${PATHS.gallery}/albums`} element={<AlbumsPage />} />
               <Route path={PATHS.messages} element={<MessageListPage />} />
               <Route path={`${PATHS.messages}/:id`} element={<MessageDetailPage />} />
+              <Route path={PATHS.admissions} element={<AdmissionListPage />} />
+              <Route path={`${PATHS.admissions}/:id`} element={<AdmissionDetailPage />} />
             </Route>
           </Route>
           <Route path="*" element={<Navigate to={PATHS.home} replace />} />

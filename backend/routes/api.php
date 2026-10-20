@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Admin\AdmissionRequestController as AdminAdmissionRequestController;
 use App\Http\Controllers\Api\Admin\AnnouncementController as AdminAnnouncementController;
 use App\Http\Controllers\Api\Admin\ContactMessageController as AdminContactMessageController;
 use App\Http\Controllers\Api\Admin\DashboardController;
@@ -86,6 +87,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum', 'active', 'c
     Route::post('events/{event}/restore', [AdminEventController::class, 'restore'])->withTrashed()->name('events.restore');
 
     Route::apiResource('contact-messages', AdminContactMessageController::class)->except('store');
+    Route::apiResource('admission-requests', AdminAdmissionRequestController::class)->except('store');
 
     Route::prefix('gallery')->name('gallery.')->group(function () {
         Route::get('categories', [AdminGalleryCategoryController::class, 'index'])->name('categories.index');
