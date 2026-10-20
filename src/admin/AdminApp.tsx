@@ -23,6 +23,8 @@ import { LoginPage } from "@/admin/pages/LoginPage";
 import { ResetPasswordPage } from "@/admin/pages/ResetPasswordPage";
 import { PATHS } from "@/admin/paths";
 import { SchoolInfoPage } from "@/admin/school/SchoolInfoPage";
+import { ProfilePage } from "@/admin/users/ProfilePage";
+import { UsersPage } from "@/admin/users/UsersPage";
 
 // The text editor is heavy: it is only downloaded when an article is opened.
 const NewsEditorPage = lazy(() =>
@@ -59,6 +61,8 @@ export function AdminApp() {
               <Route path={PATHS.admissions} element={<AdmissionListPage />} />
               <Route path={`${PATHS.admissions}/:id`} element={<AdmissionDetailPage />} />
               <Route path={PATHS.schoolInfo} element={<SchoolInfoPage />} />
+              <Route path={PATHS.users} element={<UsersPage />} />
+              <Route path={PATHS.profile} element={<ProfilePage />} />
             </Route>
           </Route>
           <Route path="*" element={<Navigate to={PATHS.home} replace />} />

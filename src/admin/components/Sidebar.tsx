@@ -96,7 +96,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
           <p className="truncate text-sm font-semibold text-ink">{user.name}</p>
           <p className="text-xs text-ink-soft">{ROLE_LABELS[user.role]}</p>
         </div>
-        <NavEntry item={{ label: "Mon profil", path: PATHS.profile, icon: UserCircle, available: false }} />
+        <NavEntry item={{ label: "Mon profil", path: PATHS.profile, icon: UserCircle, available: true }} onNavigate={onNavigate} />
         <a
           href="/"
           target="_blank"
