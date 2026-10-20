@@ -25,3 +25,4 @@ export const PATHS = {
 export const newsEditPath = (id: number) => `${PATHS.news}/${id}`;
 export const announcementEditPath = (id: number) => `${PATHS.announcements}/${id}`;
 export const eventEditPath = (id: number) => `${PATHS.events}/${id}`;
+export const messagePath = (id: number) => `${PATHS.messages}/${id}`;

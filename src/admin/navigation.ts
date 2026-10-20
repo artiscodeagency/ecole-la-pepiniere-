@@ -47,7 +47,7 @@ export const NAVIGATION: NavGroup[] = [
   {
     title: "Demandes reçues",
     items: [
-      { label: "Messages", path: PATHS.messages, icon: Mail, available: false },
+      { label: "Messages", path: PATHS.messages, icon: Mail, available: true },
       { label: "Demandes d'inscription", path: PATHS.admissions, icon: ClipboardList, available: false },
     ],
   },
