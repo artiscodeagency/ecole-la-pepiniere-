@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\Admin\GalleryCategoryController as AdminGalleryCate
 use App\Http\Controllers\Api\Admin\GalleryPhotoController as AdminGalleryPhotoController;
 use App\Http\Controllers\Api\Admin\MediaController;
 use App\Http\Controllers\Api\Admin\NewsController as AdminNewsController;
+use App\Http\Controllers\Api\Admin\SchoolInfoListController;
 use App\Http\Controllers\Api\Admin\SchoolSettingsController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\Auth\AuthController;
@@ -22,6 +23,7 @@ use App\Http\Controllers\Api\Public\GalleryController;
 use App\Http\Controllers\Api\Public\NewsController;
 use App\Http\Controllers\Api\Public\SchoolInfoController;
 use App\Http\Controllers\Api\Public\SectionController;
+use App\Support\SchoolInfoLists;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -93,6 +95,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum', 'active', 'c
     Route::prefix('school-info')->name('school-info.')->middleware('can:manage-school-info')->group(function () {
         Route::get('settings', [SchoolSettingsController::class, 'show'])->name('settings.show');
         Route::put('settings', [SchoolSettingsController::class, 'update'])->name('settings.update');
+        Route::get('lists', [SchoolInfoListController::class, 'index'])->name('lists.index');
+        Route::put('lists/{list}', [SchoolInfoListController::class, 'update'])
+            ->whereIn('list', array_keys(SchoolInfoLists::MODELS))
+            ->name('lists.update');
     });
 
     Route::prefix('gallery')->name('gallery.')->group(function () {
