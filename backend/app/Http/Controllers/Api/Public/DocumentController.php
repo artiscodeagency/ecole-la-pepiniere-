@@ -15,6 +15,8 @@ class DocumentController extends Controller
             ->where('is_public', true)
             ->with('media')
             ->orderBy('sort_order')
+            // The newest first: the site shows the latest internal rules or calendar.
+            ->latest()
             ->get();
 
         return DocumentResource::collection($documents);

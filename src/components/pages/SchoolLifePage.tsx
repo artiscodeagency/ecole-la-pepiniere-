@@ -5,6 +5,7 @@ import {
   Clock3,
   Computer,
   Dumbbell,
+  FileDown,
   HeartPulse,
   LandPlot,
   Music2,
@@ -26,6 +27,7 @@ import { useSchool } from "@/data/useSchool";
 import { tr } from "@/i18n/types";
 import { useLanguage } from "@/i18n/useLanguage";
 import { usePageMeta } from "@/lib/usePageMeta";
+import { type PublicDocument, type PublicDocumentType, usePublicDocuments } from "@/lib/usePublicDocuments";
 
 const FACILITY_ICONS = [
   School,
@@ -78,6 +80,17 @@ const ACTIVITY_DESCRIPTIONS = [
 export function SchoolLifePage() {
   const { t } = useLanguage();
   const school = useSchool();
+  const documents = usePublicDocuments();
+  // The newest document of each type, published from the administration.
+  const latest = (type: PublicDocumentType) => documents.find((document) => document.type === type);
+
+  // Without an English version, the French one is shown.
+  const pick = (fr: string, en: string | null) => t(fr, en ?? fr);
+  const documentText = (document: PublicDocument | undefined, fallback: string) =>
+    document?.description.fr ? pick(document.description.fr, document.description.en) : fallback;
+
+  const rules = latest("internal_rules");
+  const calendar = latest("school_calendar");
 
   const parentInfo = [
     {
@@ -90,19 +103,25 @@ export function SchoolLifePage() {
     },
     {
       icon: NotebookText,
-      title: t("Règlement intérieur", "Internal regulations"),
-      text: t(
-        "Règlement intérieur officiel — document à intégrer.",
-        "Official internal regulations — document to be added.",
+      title: rules ? pick(rules.title.fr, rules.title.en) : t("Règlement intérieur", "Internal regulations"),
+      text: documentText(
+        rules,
+        rules
+          ? t("Le règlement intérieur de l'école, à consulter et à conserver.", "The school's internal regulations, to read and keep.")
+          : t("Règlement intérieur officiel — document à intégrer.", "Official internal regulations — document to be added."),
       ),
+      document: rules,
     },
     {
       icon: CalendarDays,
-      title: t("Calendrier scolaire", "School calendar"),
-      text: t(
-        "Calendrier scolaire officiel — document à intégrer.",
-        "Official school calendar — document to be added.",
+      title: calendar ? pick(calendar.title.fr, calendar.title.en) : t("Calendrier scolaire", "School calendar"),
+      text: documentText(
+        calendar,
+        calendar
+          ? t("Les dates importantes de l'année scolaire.", "The key dates of the school year.")
+          : t("Calendrier scolaire officiel — document à intégrer.", "Official school calendar — document to be added."),
       ),
+      document: calendar,
     },
   ];
 
@@ -340,14 +359,25 @@ export function SchoolLifePage() {
               </div>
             </Reveal>
             <div className="mt-12 grid gap-5 md:grid-cols-3">
-              {parentInfo.map(({ icon: Icon, title, text }, index) => (
+              {parentInfo.map(({ icon: Icon, title, text, document }, index) => (
                 <Reveal key={index} delay={0.12 + index * 0.08}>
-                  <article className="rounded-[22px_14px_22px_14px] border border-border-soft bg-surface-alt p-6">
+                  <article className="flex h-full flex-col rounded-[22px_14px_22px_14px] border border-border-soft bg-surface-alt p-6">
                     <Icon className="text-secondary" size={23} />
                     <h3 className="mt-5 text-xl font-bold text-ink">{title}</h3>
                     <p className="mt-3 text-sm leading-relaxed text-ink-soft">
                       {text}
                     </p>
+                    {document && (
+                      <a
+                        href={document.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-5 inline-flex items-center gap-2 self-start rounded-btn bg-primary px-4 py-2.5 text-sm font-medium text-white shadow-soft transition-colors hover:bg-primary-dark"
+                      >
+                        <FileDown size={17} aria-hidden="true" />
+                        {t("Consulter le document (PDF)", "View the document (PDF)")}
+                      </a>
+                    )}
                   </article>
                 </Reveal>
               ))}
