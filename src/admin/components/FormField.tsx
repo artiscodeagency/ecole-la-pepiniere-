@@ -38,11 +38,12 @@ function FieldShell({
   required,
   className,
   aside,
+  labelClassName,
   children,
-}: FieldShellProps & { inputId: string; aside?: ReactNode; children: ReactNode }) {
+}: FieldShellProps & { inputId: string; aside?: ReactNode; labelClassName?: string; children: ReactNode }) {
   return (
     <div className={className}>
-      <div className="flex items-baseline justify-between gap-3">
+      <div className={cn("flex items-baseline justify-between gap-3", labelClassName)}>
         <label htmlFor={inputId} className="text-sm font-medium text-ink">
           {label}
           {required && (
@@ -71,17 +72,26 @@ function FieldShell({
 
 type TextFieldProps = FieldShellProps & Omit<InputHTMLAttributes<HTMLInputElement>, "className">;
 
-export function TextField({ label, error, hint, id, className, required, ...props }: TextFieldProps) {
+/** `hideLabel` keeps the label for screen readers only, for fields whose meaning is shown around them. */
+export function TextField({ label, error, hint, id, className, required, hideLabel, ...props }: TextFieldProps & { hideLabel?: boolean }) {
   const { inputId, describedBy } = useFieldIds(id, hint, error);
 
   return (
-    <FieldShell inputId={inputId} label={label} error={error} hint={hint} required={required} className={className}>
+    <FieldShell
+      inputId={inputId}
+      label={label}
+      error={error}
+      hint={hint}
+      required={required}
+      className={className}
+      labelClassName={hideLabel ? "sr-only" : undefined}
+    >
       <input
         id={inputId}
         required={required}
         aria-invalid={error ? true : undefined}
         aria-describedby={describedBy}
-        className={cn(INPUT_CLASSES, error ? "border-red-400" : "border-border-soft")}
+        className={cn(INPUT_CLASSES, hideLabel && "mt-0", error ? "border-red-400" : "border-border-soft")}
         {...props}
       />
     </FieldShell>

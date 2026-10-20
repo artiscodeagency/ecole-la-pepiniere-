@@ -59,7 +59,7 @@ export const NAVIGATION: NavGroup[] = [
         path: PATHS.schoolInfo,
         icon: School,
         ability: "manage-school-info",
-        available: false,
+        available: true,
       },
       { label: "Utilisateurs", path: PATHS.users, icon: Users, ability: "manage-users", available: false },
     ],

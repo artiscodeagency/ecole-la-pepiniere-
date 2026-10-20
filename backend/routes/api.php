@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\Admin\GalleryCategoryController as AdminGalleryCate
 use App\Http\Controllers\Api\Admin\GalleryPhotoController as AdminGalleryPhotoController;
 use App\Http\Controllers\Api\Admin\MediaController;
 use App\Http\Controllers\Api\Admin\NewsController as AdminNewsController;
+use App\Http\Controllers\Api\Admin\SchoolSettingsController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Auth\PasswordResetController;
@@ -88,6 +89,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum', 'active', 'c
 
     Route::apiResource('contact-messages', AdminContactMessageController::class)->except('store');
     Route::apiResource('admission-requests', AdminAdmissionRequestController::class)->except('store');
+
+    Route::prefix('school-info')->name('school-info.')->middleware('can:manage-school-info')->group(function () {
+        Route::get('settings', [SchoolSettingsController::class, 'show'])->name('settings.show');
+        Route::put('settings', [SchoolSettingsController::class, 'update'])->name('settings.update');
+    });
 
     Route::prefix('gallery')->name('gallery.')->group(function () {
         Route::get('categories', [AdminGalleryCategoryController::class, 'index'])->name('categories.index');
