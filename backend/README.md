@@ -34,6 +34,12 @@ qui redirige `/api` vers l'API. Ils évitent 8000 et 5173, souvent pris par d'au
 Le seeder ne crée que les listes officielles (sections, catégories
 d'actualités, catégories de galerie). Aucun compte ni contenu de démonstration.
 
+Photos d'origine du site : `php artisan pepiniere:import-gallery` les importe
+une fois dans la galerie (versions WebP optimisées, album par photo listé dans
+la commande ; `--dry-run` pour vérifier, `--dir=` pour un autre dossier que
+`src/assets`). Relancée, elle n'importe rien deux fois. À lancer aussi en
+production, après avoir envoyé le dossier des photos sur le serveur.
+
 ## Tests
 
 ```bash
