@@ -4,7 +4,7 @@ Running log of the work turning the static public site into an administrable
 site. **Read this first when a session starts**, then update it at every
 stop (new commit, validated step, decision, open problem).
 
-Last updated: 2026-10-20 — stage 4, after the Événements group (Galerie next).
+Last updated: 2026-10-20 — stage 4, Galerie group built, awaiting validation.
 
 ---
 
@@ -77,7 +77,7 @@ Last updated: 2026-10-20 — stage 4, after the Événements group (Galerie next
 | Actualités (list, home, `/actualites/:slug`) | ✅ | `3c963cb` |
 | Annonces (banner + blocks on home, /actualites, Maternelle, Primaire) | ✅ | `cfdc0d8` |
 | Événements ("Agenda" on home (3) and /actualites) | ✅ committed, visual check by user pending | `49fd213` |
-| **Galerie** (public gallery from the API instead of `src/assets`) | ⏭ next | — |
+| **Galerie** (`/galerie` + home "Galerie" from the API; built-in photos kept as fallback while the API has none) | 🟡 built, **uncommitted, awaiting user validation** — files: `src/lib/api/publicGallery.ts` (new), `src/components/pages/GalleryPage.tsx`, `src/components/sections/Gallery.tsx` | — |
 | Formulaires (contact + admission → API, replacing WhatsApp) | to do | — |
 | Infos école (contacts, fees, FAQ, team… from `/api/public/school-info` instead of `school.ts`) | to do — confirm scope with user | — |
 
@@ -90,6 +90,7 @@ loading / on error / when empty so the page looks as before.
 
 ## 5. Open items / known issues
 
+- **Galerie switch-over (question asked 2026-10-20)**: the public gallery shows the admin photos as soon as one exists, which hides the 59 built-in photos of `src/assets` (233 MB). Proposed: import those official photos into the gallery (stage 5, via a one-off artisan command producing optimised WebP) **before** the school uploads its own. Waiting for the user's answer.
 - D13: the 3 fictitious testimonials still show on the home page (`Testimonials` in `src/App.tsx`) — separate isolated change, waiting for the user's go.
 - Francophone primary levels not supplied by the school (D9).
 - `backend/app/Enums/enm.txt` = the user's pasted brief, untracked; not code, keep out of commits.
@@ -108,4 +109,4 @@ loading / on error / when empty so the page looks as before.
 
 - **2026-10-04** Stage 1 validated (D1–D17); stage 2 backend built.
 - **2026-10-05 → 10-20** Stage 3 admin modules, one commit each (table above). Official email and phone set.
-- **2026-10-20** Stage 4: Actualités connected (`3c963cb`). Annonces audited and committed (`cfdc0d8`). Événements/Agenda built and committed (`49fd213`). This HANDOFF.md created. Next: Galerie group.
+- **2026-10-20** Stage 4: Actualités connected (`3c963cb`). Annonces audited and committed (`cfdc0d8`). Événements/Agenda built and committed (`49fd213`). This HANDOFF.md created (`ba3ab1e`). Galerie group built (uncommitted), checked with a temporary photo row (deleted). Next after validation: commit Galerie, then Formulaires.
