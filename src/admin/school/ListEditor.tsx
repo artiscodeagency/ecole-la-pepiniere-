@@ -5,7 +5,7 @@ import { type FormEvent, useEffect, useRef, useState } from "react";
 import { Button } from "@/admin/components/Button";
 import { Card } from "@/admin/components/Card";
 import { FormAlert } from "@/admin/components/FormAlert";
-import { SelectField, TextField } from "@/admin/components/FormField";
+import { CheckboxField, SelectField, TextAreaField, TextField } from "@/admin/components/FormField";
 import { formatDateTime } from "@/admin/lib/dates";
 import { useSections } from "@/admin/lib/useSections";
 import { formatFcfa, type ListColumn, type ListData, type ListDefinition, type ListItem } from "@/admin/school/lists";
@@ -28,8 +28,15 @@ interface FormState {
 
 let nextKey = 1;
 
+/** A checkbox is "1" when checked, "" otherwise; a new row starts checked (visible, offered). */
+function toValue(column: ListColumn, item?: ListItem): string {
+  if (column.kind === "checkbox") return (item ? item[column.key] : true) ? "1" : "";
+  const value = item?.[column.key];
+  return value == null ? "" : String(value);
+}
+
 function toRow(columns: ListColumn[], item?: ListItem): Row {
-  const values = Object.fromEntries(columns.map((column) => [column.key, item?.[column.key] == null ? "" : String(item[column.key])]));
+  const values = Object.fromEntries(columns.map((column) => [column.key, toValue(column, item)]));
   return { key: nextKey++, id: item?.id ?? null, values };
 }
 
@@ -47,10 +54,11 @@ function snapshot(form: FormState) {
 
 function toPayload(definition: ListDefinition, form: FormState) {
   const items = form.rows.map((row) => {
-    const item: Record<string, string | number | null> = row.id ? { id: row.id } : {};
+    const item: Record<string, string | number | boolean | null> = row.id ? { id: row.id } : {};
     for (const column of definition.columns) {
       const value = row.values[column.key].trim();
-      if (column.kind === "text") item[column.key] = value || null;
+      if (column.kind === "checkbox") item[column.key] = value === "1";
+      else if (column.kind === "text" || column.kind === "textarea") item[column.key] = value || null;
       else item[column.key] = value === "" ? null : Number(value);
     }
     return item;
@@ -139,7 +147,7 @@ export function ListEditor({ definition, data }: { definition: ListDefinition; d
     if (column.kind === "section") {
       return (
         <SelectField key={column.key} {...common} onChange={(event) => setValue(row.key, column.key, event.target.value)}>
-          <option value="">Toute l'école</option>
+          <option value="">{column.required ? "Choisir…" : "Toute l'école"}</option>
           {sections.data?.map((section) => (
             <option key={section.id} value={section.id}>
               {section.name.fr}
@@ -159,6 +167,29 @@ export function ListEditor({ definition, data }: { definition: ListDefinition; d
           onChange={(event) => setValue(row.key, column.key, event.target.value.replace(/\D/g, "").slice(0, 8))}
           hint={amount ? formatFcfa(Number(amount)) : (column.hint ?? "En FCFA, chiffres uniquement.")}
           placeholder="0"
+        />
+      );
+    }
+    if (column.kind === "checkbox") {
+      return (
+        <CheckboxField
+          key={column.key}
+          label={column.label}
+          hint={column.hint}
+          className={common.className}
+          checked={row.values[column.key] === "1"}
+          onChange={(event) => setValue(row.key, column.key, event.target.checked ? "1" : "")}
+        />
+      );
+    }
+    if (column.kind === "textarea") {
+      return (
+        <TextAreaField
+          key={column.key}
+          {...common}
+          onChange={(event) => setValue(row.key, column.key, event.target.value)}
+          maxLength={3000}
+          rows={3}
         />
       );
     }

@@ -18,6 +18,7 @@ import { usePageMeta } from "@/lib/usePageMeta";
 const TABS = [
   { value: "coordonnees", label: "Coordonnées et horaires" },
   { value: "frais", label: "Frais et inscription" },
+  { value: "general", label: "Niveaux, équipe et FAQ" },
 ] as const;
 
 type Tab = (typeof TABS)[number]["value"];
@@ -46,7 +47,7 @@ function Loaded<T>({ query, children }: { query: { isPending: boolean; isError: 
 export function SchoolInfoPage() {
   const { user } = useAuth();
   const [params, setParams] = useSearchParams();
-  const tab: Tab = params.get("onglet") === "frais" ? "frais" : "coordonnees";
+  const tab: Tab = TABS.find((item) => item.value === params.get("onglet"))?.value ?? "coordonnees";
   // The server refuses the others anyway; this only explains why.
   const allowed = Boolean(user?.abilities["manage-school-info"]);
 
@@ -58,7 +59,7 @@ export function SchoolInfoPage() {
   const lists = useQuery({
     queryKey: [...SCHOOL_INFO_QUERY_KEY, "lists"],
     queryFn: async () => (await api<{ data: ListsResponse }>("/admin/school-info/lists")).data,
-    enabled: allowed && tab === "frais",
+    enabled: allowed && tab !== "coordonnees",
   });
 
   usePageMeta("Informations de l'école | Administration La Pépinière", "Coordonnées, horaires et informations pratiques de l'école.");
@@ -104,7 +105,7 @@ export function SchoolInfoPage() {
               <Loaded query={lists}>
                 {(data) => (
                   <div className="max-w-4xl space-y-6">
-                    {LISTS.map((definition) => (
+                    {LISTS.filter((definition) => definition.tab === tab).map((definition) => (
                       <ListEditor key={definition.name} definition={definition} data={data[definition.name]} />
                     ))}
                   </div>

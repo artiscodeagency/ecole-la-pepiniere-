@@ -3,15 +3,19 @@
 namespace App\Support;
 
 use App\Models\AdmissionFee;
+use App\Models\FaqItem;
 use App\Models\RequiredDocument;
 use App\Models\SchoolFee;
+use App\Models\SchoolLevel;
+use App\Models\StaffMember;
 use App\Models\TransportTariff;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
 
 /**
  * The school information edited as short ordered lists (fees, documents to
- * provide, transport prices). Each list is saved as a whole by the admin.
+ * provide, transport prices, FAQ, management team, levels). Each list is
+ * saved as a whole by the admin.
  */
 final class SchoolInfoLists
 {
@@ -26,6 +30,9 @@ final class SchoolInfoLists
         'admission-fees' => AdmissionFee::class,
         'required-documents' => RequiredDocument::class,
         'transport-tariffs' => TransportTariff::class,
+        'faq' => FaqItem::class,
+        'staff' => StaffMember::class,
+        'school-levels' => SchoolLevel::class,
     ];
 
     /** Settings stored with a list: the due dates of the two installments. */
@@ -64,6 +71,24 @@ final class SchoolInfoLists
                 'amount' => ['required', ...self::AMOUNT],
                 'label_fr' => $translation, 'label_en' => $translation,
             ],
+            'faq' => [
+                'question_fr' => $label, 'question_en' => $translation,
+                'answer_fr' => ['required', 'string', 'max:3000'],
+                'answer_en' => ['nullable', 'string', 'max:3000'],
+                'is_visible' => ['required', 'boolean'],
+            ],
+            'staff' => [
+                'name' => $label,
+                'role_fr' => $label, 'role_en' => $translation,
+                'is_visible' => ['required', 'boolean'],
+            ],
+            // The code is made by the server from the name (see SchoolInfoListController).
+            'school-levels' => [
+                'section_id' => ['required', 'integer', Rule::exists('sections', 'id')],
+                'name_fr' => ['required', 'string', 'max:100'],
+                'name_en' => ['nullable', 'string', 'max:100'],
+                'is_active' => ['required', 'boolean'],
+            ],
         };
     }
 
@@ -91,6 +116,15 @@ final class SchoolInfoLists
             'items.*.amount' => 'montant',
             'items.*.amount_text_fr' => 'texte',
             'items.*.amount_text_en' => 'texte en anglais',
+            'items.*.question_fr' => 'question',
+            'items.*.question_en' => 'question en anglais',
+            'items.*.answer_fr' => 'réponse',
+            'items.*.answer_en' => 'réponse en anglais',
+            'items.*.name' => 'nom',
+            'items.*.role_fr' => 'fonction',
+            'items.*.role_en' => 'fonction en anglais',
+            'items.*.name_fr' => 'nom du niveau',
+            'items.*.name_en' => 'nom du niveau en anglais',
             'due_dates.first' => 'date de la 1re tranche',
             'due_dates.second' => 'date de la 2e tranche',
         ];

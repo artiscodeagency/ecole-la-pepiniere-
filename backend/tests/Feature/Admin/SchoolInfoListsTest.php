@@ -2,8 +2,11 @@
 
 namespace Tests\Feature\Admin;
 
+use App\Enums\AdmissionStatus;
 use App\Models\AdmissionFee;
+use App\Models\AdmissionRequest;
 use App\Models\SchoolFee;
+use App\Models\SchoolLevel;
 use App\Models\Section;
 use App\Models\Setting;
 use App\Models\TransportTariff;
@@ -92,6 +95,67 @@ class SchoolInfoListsTest extends TestCase
             ->assertUnprocessable()
             ->assertJsonValidationErrors(['items.0.amount', 'items.1.amount']);
         $this->assertSame(2, AdmissionFee::query()->count());
+    }
+
+    public function test_hidden_faq_items_and_team_members_are_not_on_the_site(): void
+    {
+        $this->actingAs(User::factory()->director()->create());
+
+        $this->putJson('/api/admin/school-info/lists/faq', ['items' => [
+            ['question_fr' => 'Quels sont les horaires ?', 'answer_fr' => 'Voir la page de chaque section.', 'is_visible' => true],
+            ['question_fr' => 'Brouillon', 'answer_fr' => 'Pas encore prêt.', 'is_visible' => false],
+        ]])->assertOk();
+        $this->putJson('/api/admin/school-info/lists/staff', ['items' => [
+            ['name' => 'Madame NDI FAITH YEYO', 'role_fr' => 'Directrice section anglophone', 'role_en' => 'Head of the English-speaking section', 'is_visible' => true],
+            ['name' => 'Caché', 'role_fr' => 'Test', 'is_visible' => false],
+        ]])->assertOk();
+
+        $this->getJson('/api/public/school-info')
+            ->assertJsonCount(1, 'data.faq')
+            ->assertJsonPath('data.faq.0.question.fr', 'Quels sont les horaires ?')
+            ->assertJsonPath('data.faq.0.answer.en', null)
+            ->assertJsonCount(1, 'data.staff')
+            ->assertJsonPath('data.staff.0.role.en', 'Head of the English-speaking section');
+    }
+
+    public function test_levels_get_a_stable_code_and_only_active_ones_reach_the_form(): void
+    {
+        $section = Section::query()->create(['slug' => 'primaire-anglophone', 'name_fr' => 'Primaire anglophone', 'sort_order' => 3]);
+        $this->actingAs(User::factory()->director()->create());
+
+        $levels = $this->putJson('/api/admin/school-info/lists/school-levels', ['items' => [
+            ['section_id' => $section->id, 'name_fr' => 'Class 1', 'is_active' => true],
+            ['section_id' => $section->id, 'name_fr' => 'Class 2', 'is_active' => false],
+        ]])->assertOk()->json('data.items');
+
+        // Renamed: the code made at creation stays.
+        $this->putJson('/api/admin/school-info/lists/school-levels', ['items' => [
+            ['id' => $levels[0]['id'], 'section_id' => $section->id, 'name_fr' => 'Class One', 'is_active' => true],
+            ['id' => $levels[1]['id'], 'section_id' => $section->id, 'name_fr' => 'Class 2', 'is_active' => false],
+        ]])->assertOk();
+        $this->assertSame('class-1', SchoolLevel::query()->find($levels[0]['id'])->code);
+
+        $this->getJson('/api/public/school-info')
+            ->assertJsonCount(1, 'data.sections.0.levels')
+            ->assertJsonPath('data.sections.0.levels.0.name.fr', 'Class One');
+    }
+
+    public function test_a_removed_level_stays_readable_on_the_requests_that_used_it(): void
+    {
+        $section = Section::query()->create(['slug' => 'primaire-anglophone', 'name_fr' => 'Primaire anglophone', 'sort_order' => 3]);
+        $level = SchoolLevel::query()->create(['section_id' => $section->id, 'code' => 'class-1', 'name_fr' => 'Class 1', 'sort_order' => 1]);
+        $request = AdmissionRequest::query()->create([
+            'parent_name' => 'Marie Ngo', 'child_name' => 'Léa Ngo', 'child_birth_date' => '2019-03-14', 'level_id' => $level->id,
+            'phone' => '694000000', 'email' => 'marie@example.com', 'status' => AdmissionStatus::New,
+        ]);
+
+        $this->actingAs(User::factory()->director()->create())
+            ->putJson('/api/admin/school-info/lists/school-levels', ['items' => []])
+            ->assertOk();
+
+        $this->assertModelMissing($level);
+        $this->assertNull($request->fresh()->level_id);
+        $this->assertSame('Class 1', $request->fresh()->level_label);
     }
 
     public function test_the_values_are_checked_and_nothing_is_saved_on_error(): void

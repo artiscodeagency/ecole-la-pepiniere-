@@ -1,6 +1,13 @@
-export type ListName = "school-fees" | "admission-fees" | "required-documents" | "transport-tariffs";
+export type ListName =
+  | "school-fees"
+  | "admission-fees"
+  | "required-documents"
+  | "transport-tariffs"
+  | "faq"
+  | "staff"
+  | "school-levels";
 
-export type ListItem = { id: number } & Record<string, string | number | null>;
+export type ListItem = { id: number } & Record<string, string | number | boolean | null>;
 
 export interface DueDates {
   first: string | null;
@@ -19,8 +26,8 @@ export type ListsResponse = Record<ListName, ListData>;
 export interface ListColumn {
   key: string;
   label: string;
-  /** "amount" is whole FCFA; "section" is a choice of school section. */
-  kind: "text" | "amount" | "section";
+  /** "amount" is whole FCFA; "section" is a choice of school section (required: no "whole school"). */
+  kind: "text" | "textarea" | "amount" | "section" | "checkbox";
   required?: boolean;
   placeholder?: string;
   hint?: string;
@@ -30,6 +37,8 @@ export interface ListColumn {
 
 export interface ListDefinition {
   name: ListName;
+  /** The tab of the school information page that shows this list. */
+  tab: "frais" | "general";
   title: string;
   description: string;
   itemLabel: string;
@@ -56,6 +65,7 @@ const SECTION: ListColumn = {
 export const LISTS: ListDefinition[] = [
   {
     name: "school-fees",
+    tab: "frais",
     title: "Frais de scolarité",
     description: "Les frais payés en deux tranches. Le total est calculé automatiquement.",
     itemLabel: "Ligne",
@@ -70,6 +80,7 @@ export const LISTS: ListDefinition[] = [
   },
   {
     name: "admission-fees",
+    tab: "frais",
     title: "Frais et fournitures d'inscription",
     description: "Ce qui est demandé à l'inscription : un montant, ou un texte pour ce qui n'est pas de l'argent.",
     itemLabel: "Élément",
@@ -85,6 +96,7 @@ export const LISTS: ListDefinition[] = [
   },
   {
     name: "required-documents",
+    tab: "frais",
     title: "Pièces à fournir",
     description: "Les documents demandés pour constituer le dossier d'inscription.",
     itemLabel: "Pièce",
@@ -97,6 +109,7 @@ export const LISTS: ListDefinition[] = [
   },
   {
     name: "transport-tariffs",
+    tab: "frais",
     title: "Transport scolaire",
     description: "Les tarifs du transport, selon la distance.",
     itemLabel: "Tarif",
@@ -105,6 +118,62 @@ export const LISTS: ListDefinition[] = [
       { key: "amount", label: "Tarif", kind: "amount", required: true },
       { key: "label_fr", label: "Description (facultatif)", kind: "text", placeholder: "Moins de 2 km" },
       { key: "label_en", label: "Description en anglais (facultatif)", kind: "text" },
+    ],
+  },
+  {
+    name: "school-levels",
+    tab: "general",
+    title: "Niveaux (classes)",
+    description:
+      "Les classes proposées dans le formulaire d'inscription du site. Une section sans niveau n'en propose pas : la famille indique alors simplement la section.",
+    itemLabel: "Niveau",
+    addLabel: "Ajouter un niveau",
+    columns: [
+      { key: "section_id", label: "Section", kind: "section", required: true, wide: true },
+      { key: "name_fr", label: "Nom du niveau", kind: "text", required: true, placeholder: "Class 1" },
+      { key: "name_en", label: "Nom en anglais (facultatif)", kind: "text" },
+      {
+        key: "is_active",
+        label: "Proposé dans le formulaire d'inscription",
+        kind: "checkbox",
+        hint: "Décochez pour ne plus le proposer sans le supprimer.",
+        wide: true,
+      },
+    ],
+  },
+  {
+    name: "staff",
+    tab: "general",
+    title: "Équipe de direction",
+    description: "Les membres de la direction présentés sur le site.",
+    itemLabel: "Membre",
+    addLabel: "Ajouter un membre",
+    columns: [
+      { key: "name", label: "Nom", kind: "text", required: true, placeholder: "Madame …", wide: true },
+      { key: "role_fr", label: "Fonction", kind: "text", required: true, placeholder: "Directrice section anglophone" },
+      { key: "role_en", label: "Fonction en anglais (facultatif)", kind: "text" },
+      { key: "is_visible", label: "Visible sur le site", kind: "checkbox", wide: true },
+    ],
+  },
+  {
+    name: "faq",
+    tab: "general",
+    title: "Questions fréquentes",
+    description: "Les questions et réponses affichées sur le site.",
+    itemLabel: "Question",
+    addLabel: "Ajouter une question",
+    columns: [
+      { key: "question_fr", label: "Question", kind: "text", required: true, wide: true },
+      { key: "answer_fr", label: "Réponse", kind: "textarea", required: true, wide: true },
+      { key: "question_en", label: "Question en anglais (facultatif)", kind: "text", wide: true },
+      {
+        key: "answer_en",
+        label: "Réponse en anglais (facultatif)",
+        kind: "textarea",
+        hint: "Sans traduction, le site en anglais affiche la version française.",
+        wide: true,
+      },
+      { key: "is_visible", label: "Visible sur le site", kind: "checkbox", wide: true },
     ],
   },
 ];

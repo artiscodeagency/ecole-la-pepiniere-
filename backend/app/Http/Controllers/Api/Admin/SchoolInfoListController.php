@@ -3,15 +3,18 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AdmissionRequest;
+use App\Models\SchoolLevel;
 use App\Models\Setting;
 use App\Support\ActivityLogger;
 use App\Support\SchoolInfoLists;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
-/** Fees, documents to provide and transport prices: director only. */
+/** Fees, documents to provide, transport prices, FAQ, team and levels: director only. */
 class SchoolInfoListController extends Controller
 {
     public function index(): JsonResponse
@@ -50,8 +53,19 @@ class SchoolInfoListController extends Controller
             foreach ($validated['items'] as $index => $item) {
                 $values = [...collect($item)->only(SchoolInfoLists::fields($list))->all(), 'sort_order' => $index + 1];
                 $row = isset($item['id']) ? $model::query()->findOrFail($item['id']) : new $model;
+                if ($list === 'school-levels' && ! $row->exists) {
+                    // Made once: it stays the same when the level is renamed.
+                    $row->code = $this->uniqueLevelCode($values['name_fr']);
+                }
                 $row->fill($values)->save();
                 $keep[] = $row->id;
+            }
+
+            if ($list === 'school-levels') {
+                // A request keeps the name of a level that is removed from the list.
+                SchoolLevel::query()->whereNotIn('id', $keep)->each(fn (SchoolLevel $level) => AdmissionRequest::query()
+                    ->where('level_id', $level->id)
+                    ->update(['level_id' => null, 'level_label' => $level->name_fr]));
             }
             $model::query()->whereNotIn('id', $keep)->delete();
 
@@ -69,6 +83,18 @@ class SchoolInfoListController extends Controller
         ActivityLogger::record("school-info.$list.updated", changes: ['items' => count($validated['items'])]);
 
         return response()->json(['data' => $this->payload($list)]);
+    }
+
+    /** "class-1", or "class-1-2" when the name is already used. */
+    private function uniqueLevelCode(string $name): string
+    {
+        $base = Str::slug($name) ?: 'niveau';
+        $code = $base;
+        for ($suffix = 2; SchoolLevel::query()->where('code', $code)->exists(); $suffix++) {
+            $code = "{$base}-{$suffix}";
+        }
+
+        return $code;
     }
 
     /**
