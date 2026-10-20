@@ -8,6 +8,8 @@ import { AnnouncementListPage } from "@/admin/announcements/AnnouncementListPage
 import { AuthProvider } from "@/admin/auth/AuthProvider";
 import { RequireAuth } from "@/admin/auth/RequireAuth";
 import { AdminLayout } from "@/admin/components/AdminLayout";
+import { DocumentEditorPage } from "@/admin/documents/DocumentEditorPage";
+import { DocumentListPage } from "@/admin/documents/DocumentListPage";
 import { EventEditorPage } from "@/admin/events/EventEditorPage";
 import { EventListPage } from "@/admin/events/EventListPage";
 import { AlbumsPage } from "@/admin/gallery/AlbumsPage";
@@ -49,6 +51,9 @@ export function AdminApp() {
               <Route path={`${PATHS.events}/:id`} element={<EventEditorPage />} />
               <Route path={PATHS.gallery} element={<GalleryPage />} />
               <Route path={`${PATHS.gallery}/albums`} element={<AlbumsPage />} />
+              <Route path={PATHS.documents} element={<DocumentListPage />} />
+              <Route path={PATHS.documentsNew} element={<DocumentEditorPage />} />
+              <Route path={`${PATHS.documents}/:id`} element={<DocumentEditorPage />} />
               <Route path={PATHS.messages} element={<MessageListPage />} />
               <Route path={`${PATHS.messages}/:id`} element={<MessageDetailPage />} />
               <Route path={PATHS.admissions} element={<AdmissionListPage />} />

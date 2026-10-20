@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\Admin\AdmissionRequestController as AdminAdmissionR
 use App\Http\Controllers\Api\Admin\AnnouncementController as AdminAnnouncementController;
 use App\Http\Controllers\Api\Admin\ContactMessageController as AdminContactMessageController;
 use App\Http\Controllers\Api\Admin\DashboardController;
+use App\Http\Controllers\Api\Admin\DocumentController as AdminDocumentController;
 use App\Http\Controllers\Api\Admin\EventController as AdminEventController;
 use App\Http\Controllers\Api\Admin\GalleryCategoryController as AdminGalleryCategoryController;
 use App\Http\Controllers\Api\Admin\GalleryPhotoController as AdminGalleryPhotoController;
@@ -91,6 +92,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum', 'active', 'c
 
     Route::apiResource('contact-messages', AdminContactMessageController::class)->except('store');
     Route::apiResource('admission-requests', AdminAdmissionRequestController::class)->except('store');
+
+    Route::apiResource('documents', AdminDocumentController::class)->except('show');
+    Route::post('documents/{document}/restore', [AdminDocumentController::class, 'restore'])->withTrashed()->name('documents.restore');
 
     Route::prefix('school-info')->name('school-info.')->middleware('can:manage-school-info')->group(function () {
         Route::get('settings', [SchoolSettingsController::class, 'show'])->name('settings.show');

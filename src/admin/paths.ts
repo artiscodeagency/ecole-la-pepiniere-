@@ -15,6 +15,7 @@ export const PATHS = {
   eventsNew: "/evenements/nouveau",
   gallery: "/galerie",
   documents: "/documents",
+  documentsNew: "/documents/nouveau",
   messages: "/messages",
   admissions: "/inscriptions",
   schoolInfo: "/ecole",
@@ -27,3 +28,4 @@ export const announcementEditPath = (id: number) => `${PATHS.announcements}/${id
 export const eventEditPath = (id: number) => `${PATHS.events}/${id}`;
 export const messagePath = (id: number) => `${PATHS.messages}/${id}`;
 export const admissionPath = (id: number) => `${PATHS.admissions}/${id}`;
+export const documentEditPath = (id: number) => `${PATHS.documents}/${id}`;
