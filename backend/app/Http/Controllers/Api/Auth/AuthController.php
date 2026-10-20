@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Resources\UserResource;
 use App\Support\ActivityLogger;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -41,6 +42,17 @@ class AuthController extends Controller
     public function me(Request $request): UserResource
     {
         return UserResource::make($request->user());
+    }
+
+    /**
+     * The signed-in user, or `data: null` for a guest. Called when the admin
+     * opens, so that "not signed in yet" is an answer, not a 401 error.
+     */
+    public function session(Request $request): UserResource|JsonResponse
+    {
+        $user = $request->user('sanctum');
+
+        return $user ? UserResource::make($user) : response()->json(['data' => null]);
     }
 
     public function updateProfile(Request $request): UserResource

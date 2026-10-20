@@ -48,6 +48,8 @@ Route::prefix('public')->name('public.')->group(function () {
 */
 Route::prefix('auth')->name('auth.')->group(function () {
     Route::post('login', [AuthController::class, 'login'])->middleware('throttle:login')->name('login');
+    // Open to guests; a deactivated account is still signed out here.
+    Route::get('session', [AuthController::class, 'session'])->middleware('active')->name('session');
     Route::middleware('throttle:password-reset')->group(function () {
         Route::post('forgot-password', [PasswordResetController::class, 'sendLink'])->name('forgot-password');
         Route::post('reset-password', [PasswordResetController::class, 'reset'])->name('reset-password');

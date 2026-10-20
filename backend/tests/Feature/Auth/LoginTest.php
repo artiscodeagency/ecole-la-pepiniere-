@@ -87,6 +87,28 @@ class LoginTest extends TestCase
         $this->getJson('/api/auth/me')->assertUnauthorized();
     }
 
+    public function test_the_session_check_answers_a_guest_without_an_error(): void
+    {
+        $this->getJson('/api/auth/session')->assertOk()->assertExactJson(['data' => null]);
+    }
+
+    public function test_the_session_check_returns_the_signed_in_user(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->getJson('/api/auth/session')->assertOk()->assertJsonPath('data.email', $user->email);
+    }
+
+    public function test_the_session_check_signs_out_a_deactivated_user(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+        $user->update(['is_active' => false]);
+
+        $this->getJson('/api/auth/session')->assertForbidden()->assertJsonPath('message', 'Ce compte est désactivé.');
+        $this->assertGuest('web');
+    }
+
     public function test_a_deactivated_user_is_signed_out_on_the_next_request(): void
     {
         $user = User::factory()->create();

@@ -13,7 +13,7 @@ import { api, ApiError } from "@/lib/api/client";
 /** The signed-in user, or null when there is no valid session. */
 async function fetchCurrentUser(): Promise<AdminUser | null> {
   try {
-    return (await api<{ data: AdminUser }>("/auth/me")).data;
+    return (await api<{ data: AdminUser | null }>("/auth/session")).data;
   } catch (error) {
     if (error instanceof ApiError && (error.status === 401 || error.status === 403)) {
       return null;
