@@ -13,12 +13,12 @@ import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
-import { WhatsAppSentNotice } from "@/components/ui/WhatsAppSentNotice";
+import { FormFeedback, FormSubmitButton, HoneypotField } from "@/components/ui/FormFeedback";
 import { useSchool } from "@/data/useSchool";
 import { type Localized, tr } from "@/i18n/types";
 import { useLanguage } from "@/i18n/useLanguage";
 import { usePageMeta } from "@/lib/usePageMeta";
-import { useWhatsAppForm } from "@/lib/useWhatsAppForm";
+import { useSchoolForm } from "@/lib/useSchoolForm";
 
 const BENEFITS = [
   {
@@ -97,16 +97,17 @@ export function AdmissionsPage() {
   const levels = school.sections;
   const faq = school.admissions.faq;
   const [openQuestion, setOpenQuestion] = useState<number | null>(null);
-  const { whatsappLink, handleSubmit } = useWhatsAppForm(
+  const { state: formState, handleSubmit } = useSchoolForm(
+    "admission",
     t("Demande d'inscription", "Enrolment request"),
     [
-      [t("Nom du parent / tuteur", "Parent / guardian name"), "parentName"],
-      [t("Téléphone", "Phone"), "phone"],
-      ["Email", "email"],
-      [t("Nom de l'enfant", "Child's name"), "childName"],
-      [t("Date de naissance", "Date of birth"), "birthDate"],
-      [t("Classe souhaitée", "Desired class"), "level"],
-      ["Message", "message"],
+      [t("Nom du parent / tuteur", "Parent / guardian name"), "parentName", "parent_name"],
+      [t("Téléphone", "Phone"), "phone", "phone"],
+      ["Email", "email", "email"],
+      [t("Nom de l'enfant", "Child's name"), "childName", "child_name"],
+      [t("Date de naissance", "Date of birth"), "birthDate", "child_birth_date"],
+      [t("Classe souhaitée", "Desired class"), "level", "level_label"],
+      ["Message", "message", "message"],
     ],
   );
 
@@ -417,6 +418,7 @@ export function AdmissionsPage() {
                 onSubmit={handleSubmit}
                 className="mt-8 grid gap-5 sm:grid-cols-2"
               >
+                <HoneypotField />
                 <label className="text-sm font-medium text-ink">
                   {t("Nom du parent / tuteur", "Parent / guardian name")}
                   <input
@@ -491,15 +493,17 @@ export function AdmissionsPage() {
                   />
                 </label>
                 <div className="flex flex-col gap-4 sm:col-span-2 sm:flex-row sm:items-center sm:justify-between">
-                  <button
-                    type="submit"
-                    className="shrink-0 rounded-btn bg-primary px-6 py-3.5 text-sm font-medium text-white shadow-soft transition-colors hover:bg-primary-dark"
-                  >
-                    {t("Envoyer via WhatsApp", "Send via WhatsApp")}
-                  </button>
-                  {whatsappLink && (
-                    <WhatsAppSentNotice whatsappLink={whatsappLink} />
-                  )}
+                  <FormSubmitButton
+                    state={formState}
+                    label={t("Envoyer la demande", "Send the request")}
+                  />
+                  <FormFeedback
+                    state={formState}
+                    sentMessage={t(
+                      "Merci ! Votre demande d'inscription a bien été transmise à l'école. Nous vous recontacterons.",
+                      "Thank you! Your enrolment request has been sent to the school. We will get back to you.",
+                    )}
+                  />
                 </div>
               </form>
             </div>

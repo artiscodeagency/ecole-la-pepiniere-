@@ -2,24 +2,25 @@ import { Mail, MapPin, MessageCircle, Phone, Timer } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { Reveal } from "@/components/ui/Reveal";
-import { WhatsAppSentNotice } from "@/components/ui/WhatsAppSentNotice";
+import { FormFeedback, FormSubmitButton, HoneypotField } from "@/components/ui/FormFeedback";
 import { schoolImages } from "@/data/galleryImages";
 import { useSchool } from "@/data/useSchool";
 import { useLanguage } from "@/i18n/useLanguage";
-import { useWhatsAppForm } from "@/lib/useWhatsAppForm";
+import { useSchoolForm } from "@/lib/useSchoolForm";
 
 export function Contact() {
   const { t } = useLanguage();
   const school = useSchool();
   const { hours, location } = school;
-  const { whatsappLink, handleSubmit } = useWhatsAppForm(
+  const { state: formState, handleSubmit } = useSchoolForm(
+    "contact",
     t("Message depuis le site web", "Message from the website"),
     [
-      [t("Nom", "Name"), "name"],
-      ["Email", "email"],
-      [t("Téléphone", "Phone"), "phone"],
-      [t("Sujet", "Subject"), "subject"],
-      ["Message", "message"],
+      [t("Nom", "Name"), "name", "name"],
+      ["Email", "email", "email"],
+      [t("Téléphone", "Phone"), "phone", "phone"],
+      [t("Sujet", "Subject"), "subject", "subject"],
+      ["Message", "message", "message"],
     ],
   );
 
@@ -144,14 +145,15 @@ export function Contact() {
               </h3>
               <p className="mt-3 text-sm text-ink-soft">
                 {t(
-                  "Votre message sera préparé dans WhatsApp : il ne vous restera qu’à l’envoyer.",
-                  "Your message will be prepared in WhatsApp: you will only have to send it.",
+                  "Votre message sera transmis directement à l'administration de l'école.",
+                  "Your message will be sent directly to the school administration.",
                 )}
               </p>
               <form
                 onSubmit={handleSubmit}
                 className="mt-8 grid gap-5 sm:grid-cols-2"
               >
+                <HoneypotField />
                 <label className="text-sm font-medium text-ink">
                   {t("Nom", "Name")}
                   <input
@@ -196,15 +198,17 @@ export function Contact() {
                   />
                 </label>
                 <div className="sm:col-span-2 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                  <button
-                    type="submit"
-                    className="shrink-0 rounded-btn bg-primary px-6 py-3.5 text-sm font-medium text-white shadow-soft hover:bg-primary-dark"
-                  >
-                    {t("Envoyer via WhatsApp", "Send via WhatsApp")}
-                  </button>
-                  {whatsappLink && (
-                    <WhatsAppSentNotice whatsappLink={whatsappLink} />
-                  )}
+                  <FormSubmitButton
+                    state={formState}
+                    label={t("Envoyer", "Send")}
+                  />
+                  <FormFeedback
+                    state={formState}
+                    sentMessage={t(
+                      "Merci ! Votre message a bien été transmis à l'école. Nous vous répondrons rapidement.",
+                      "Thank you! Your message has been sent to the school. We will reply shortly.",
+                    )}
+                  />
                 </div>
               </form>
             </div>

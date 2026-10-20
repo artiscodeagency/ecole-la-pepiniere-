@@ -4,7 +4,7 @@ Running log of the work turning the static public site into an administrable
 site. **Read this first when a session starts**, then update it at every
 stop (new commit, validated step, decision, open problem).
 
-Last updated: 2026-10-20 — stage 4, Galerie done + photos imported; Formulaires next.
+Last updated: 2026-10-20 — stage 4: all groups done except "Infos école". Work paused by the user; see **§8 RESUME HERE**.
 
 ---
 
@@ -79,7 +79,7 @@ Last updated: 2026-10-20 — stage 4, Galerie done + photos imported; Formulaire
 | Événements ("Agenda" on home (3) and /actualites) | ✅ committed, visual check by user pending | `49fd213` |
 | Galerie (`/galerie` + home "Galerie" from the API; built-in photos as fallback while the API has none) | ✅ | `f900acc` |
 | Gallery photos import (stage 5 step, see open items) | ✅ | see log |
-| Formulaires (contact + admission → API, replacing WhatsApp) | to do | — |
+| Formulaires (4 forms: home Contact + Admissions sections, /contact, /admissions → API; WhatsApp only as fallback when the server fails) | ✅ committed — **user's visual test still pending** (send one real test from /contact and /admissions, check the admin) | see log |
 | Infos école (contacts, fees, FAQ, team… from `/api/public/school-info` instead of `school.ts`) | to do — confirm scope with user | — |
 
 Public pattern used so far: hooks in `src/lib/api/public*.ts` (React Query),
@@ -95,7 +95,8 @@ loading / on error / when empty so the page looks as before.
   - Left out on purpose, waiting for the user: the school logo (`WhatsApp Image 2026-09-20…`), the 3 `administrator-in-office*` photos and `teachers-outside-class-seated` (no matching album).
   - `src/assets` cannot be deleted yet: `ImagePlaceholder` uses those photos all over the site (hero, pages). Shrinking them is a separate future step.
 - D13: the 3 fictitious testimonials still show on the home page (`Testimonials` in `src/App.tsx`) — separate isolated change, waiting for the user's go.
-- Francophone primary levels not supplied by the school (D9).
+- Francophone primary levels not supplied by the school (D9). The public admission selects still use their existing lists (home: PS…CM2; /admissions: section names) and send the chosen text as `level_label`; switch to the admin's level list once it is complete.
+- Admission requests get `academic_year` from the setting `admissions.academic_year`, currently empty locally → the director should fill it in the admin.
 - `backend/app/Enums/enm.txt` = the user's pasted brief, untracked; not code, keep out of commits.
 - Visual checks: Chrome tooling was disconnected in past sessions → the user checks desktop/mobile rendering themselves.
 
@@ -112,4 +113,15 @@ loading / on error / when empty so the page looks as before.
 
 - **2026-10-04** Stage 1 validated (D1–D17); stage 2 backend built.
 - **2026-10-05 → 10-20** Stage 3 admin modules, one commit each (table above). Official email and phone set.
-- **2026-10-20** Stage 4: Actualités connected (`3c963cb`). Annonces audited and committed (`cfdc0d8`). Événements/Agenda built and committed (`49fd213`). This HANDOFF.md created (`ba3ab1e`). Galerie group committed (`f900acc`). Gallery import command added and run locally (55 photos). Next: Formulaires group.
+- **2026-10-20** Stage 4: Actualités connected (`3c963cb`). Annonces audited and committed (`cfdc0d8`). Événements/Agenda built and committed (`49fd213`). This HANDOFF.md created (`ba3ab1e`). Galerie group committed (`f900acc`). Gallery import command added and run locally (55 photos, `03e01f7`). Formulaires group built, smoke-tested end to end (rows deleted) and committed at the user's request; the user paused the work here.
+
+## 8. RESUME HERE (next session)
+
+1. Read this file and run `git log --oneline -8`; the working tree should be clean apart from the untracked `backend/app/Enums/enm.txt` (the user's brief, never commit it).
+2. Start the API if needed (§6). Vite on 5180 is usually already running.
+3. Ask the user for the result of the pending visual checks: the Agenda (home + /actualites), the Galerie (now from the API, 55 photos), and the 4 forms (send a test, check it arrives in the admin, then delete it). Fix anything reported first, each fix on its own.
+4. Ask before starting each next item, one at a time, and stop after each:
+   - **Infos école** (last stage 4 group): public pages read contacts / hours / fees / documents to provide / transport / FAQ / team / levels from `/api/public/school-info` instead of `src/data/school.ts`. Confirm the scope with the user first; keep `school.ts` as the fallback; don't invent missing data.
+   - **D13**: hide the 3 fictitious testimonials (`<Testimonials />` in `src/App.tsx`), as an isolated change.
+   - Decide the fate of the 5 photos not imported (see §5).
+   - Stage 5 (migrate the remaining confirmed data), then stage 6 (Hostinger prep, including running `pepiniere:import-gallery` on the server). Never deploy automatically.
