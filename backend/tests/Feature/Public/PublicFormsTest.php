@@ -58,14 +58,14 @@ class PublicFormsTest extends TestCase
         $this->assertDatabaseCount('contact_messages', 0);
     }
 
-    public function test_forms_are_limited_to_five_submissions_per_ten_minutes(): void
+    public function test_forms_are_limited_to_twenty_submissions_per_ten_minutes(): void
     {
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 0; $i < 20; $i++) {
             $this->postJson('/api/public/contact-messages', self::CONTACT)->assertCreated();
         }
 
         $this->postJson('/api/public/contact-messages', self::CONTACT)->assertTooManyRequests();
-        $this->assertDatabaseCount('contact_messages', 5);
+        $this->assertDatabaseCount('contact_messages', 20);
     }
 
     public function test_an_admission_request_is_stored_as_new(): void

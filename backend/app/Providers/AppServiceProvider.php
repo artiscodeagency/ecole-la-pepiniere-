@@ -42,6 +42,8 @@ class AppServiceProvider extends ServiceProvider
         // Per IP. The login also has a per-account limit (see LoginRequest).
         RateLimiter::for('login', fn (Request $request) => Limit::perMinute(20)->by($request->ip()));
         RateLimiter::for('password-reset', fn (Request $request) => Limit::perMinute(3)->by($request->ip()));
-        RateLimiter::for('public-forms', fn (Request $request) => Limit::perMinutes(10, 5)->by($request->ip()));
+        // Mobile networks in Cameroon put many phones behind one public IP: the
+        // limit must stop floods, not several families writing the same day.
+        RateLimiter::for('public-forms', fn (Request $request) => Limit::perMinutes(10, 20)->by($request->ip()));
     }
 }
