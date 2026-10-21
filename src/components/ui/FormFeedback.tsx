@@ -3,22 +3,6 @@ import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 import { useLanguage } from "@/i18n/useLanguage";
 import type { SchoolFormState } from "@/lib/useSchoolForm";
 
-/** Name of the trap field in the form; sent to the API as "website". */
-export const HONEYPOT_NAME = "hp_extra_note";
-
-/**
- * Hidden from people; a robot filling it is ignored by the server. Neutral
- * name, no label: browser autofill must never fill it, or real messages
- * would be silently dropped.
- */
-export function HoneypotField() {
-  return (
-    <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
-      <input type="text" name={HONEYPOT_NAME} tabIndex={-1} autoComplete="off" data-lpignore="true" data-1p-ignore defaultValue="" />
-    </div>
-  );
-}
-
 /** Submit button of a public form, disabled while sending. */
 export function FormSubmitButton({ state, label }: { state: SchoolFormState; label: string }) {
   const { t } = useLanguage();

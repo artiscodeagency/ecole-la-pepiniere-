@@ -8,6 +8,7 @@ use App\Http\Requests\Public\StoreContactMessageRequest;
 use App\Models\ContactMessage;
 use App\Support\IpHash;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 
 class ContactMessageController extends Controller
 {
@@ -20,6 +21,9 @@ class ContactMessageController extends Controller
                 'status' => MessageStatus::New,
                 'ip_hash' => IpHash::of($request->ip()),
             ]);
+        } else {
+            // Kept in the log: a real visitor wrongly taken for a robot must not go unnoticed.
+            Log::notice('Public contact form ignored as a robot (trap field filled).', ['ip_hash' => IpHash::of($request->ip())]);
         }
 
         return response()->json(['message' => 'Votre message a bien été transmis à l\'école.'], 201);

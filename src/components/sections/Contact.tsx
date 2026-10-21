@@ -2,7 +2,7 @@ import { Mail, MapPin, MessageCircle, Phone, Timer } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { Reveal } from "@/components/ui/Reveal";
-import { FormFeedback, FormSubmitButton, HoneypotField } from "@/components/ui/FormFeedback";
+import { FormFeedback, FormSubmitButton } from "@/components/ui/FormFeedback";
 import { schoolImages } from "@/data/galleryImages";
 import { useSchool } from "@/data/useSchool";
 import { useLanguage } from "@/i18n/useLanguage";
@@ -153,7 +153,6 @@ export function Contact() {
                 onSubmit={handleSubmit}
                 className="mt-8 grid gap-5 sm:grid-cols-2"
               >
-                <HoneypotField />
                 <label className="text-sm font-medium text-ink">
                   {t("Nom", "Name")}
                   <input

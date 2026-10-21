@@ -5,7 +5,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
-import { FormFeedback, FormSubmitButton, HoneypotField } from "@/components/ui/FormFeedback";
+import { FormFeedback, FormSubmitButton } from "@/components/ui/FormFeedback";
 import { useSchool } from "@/data/useSchool";
 import { useLanguage } from "@/i18n/useLanguage";
 import { usePageMeta } from "@/lib/usePageMeta";
@@ -184,7 +184,6 @@ export function ContactPage() {
                   onSubmit={handleSubmit}
                   className="mt-8 grid gap-5 sm:grid-cols-2"
                 >
-                  <HoneypotField />
                   <label className="text-sm font-medium text-ink">
                     {t("Nom", "Name")}
                     <input

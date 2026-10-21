@@ -10,7 +10,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 
 import { Reveal } from "@/components/ui/Reveal";
-import { FormFeedback, FormSubmitButton, HoneypotField } from "@/components/ui/FormFeedback";
+import { FormFeedback, FormSubmitButton } from "@/components/ui/FormFeedback";
 import { ADMISSION_LEVELS } from "@/data/admissionLevels";
 import { useSchool } from "@/data/useSchool";
 import { type Localized, tr } from "@/i18n/types";
@@ -250,8 +250,6 @@ export function Admissions() {
               onSubmit={handleSubmit}
               className="mt-8 grid gap-5 sm:grid-cols-2"
             >
-
-              <HoneypotField />
               <label className="text-sm font-medium text-ink">
                 {t("Nom du parent / tuteur", "Parent / guardian name")}
                 <input

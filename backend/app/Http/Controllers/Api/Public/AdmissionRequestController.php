@@ -9,6 +9,7 @@ use App\Models\AdmissionRequest;
 use App\Models\Setting;
 use App\Support\IpHash;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 
 class AdmissionRequestController extends Controller
 {
@@ -22,6 +23,9 @@ class AdmissionRequestController extends Controller
                 'status' => AdmissionStatus::New,
                 'ip_hash' => IpHash::of($request->ip()),
             ]);
+        } else {
+            // Kept in the log: a real visitor wrongly taken for a robot must not go unnoticed.
+            Log::notice('Public admission form ignored as a robot (trap field filled).', ['ip_hash' => IpHash::of($request->ip())]);
         }
 
         return response()->json(['message' => 'Votre demande d\'inscription a bien été transmise à l\'école.'], 201);
