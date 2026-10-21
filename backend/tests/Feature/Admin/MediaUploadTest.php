@@ -58,17 +58,24 @@ class MediaUploadTest extends TestCase
     {
         $this->actingAs(User::factory()->create());
         // A real file, as in a real upload: its type is read from the content, not the ".jpg" name.
+        // Harmless PHP on purpose: antivirus software (Windows Defender) blocks reading a
+        // temp file that looks like a webshell, which made this test fail for that reason only.
         $path = tempnam(sys_get_temp_dir(), 'upload');
-        file_put_contents($path, '<?php system($_GET["c"]); ?>');
+        file_put_contents($path, '<?php echo "pepiniere"; ?>');
 
-        $this->postJson('/api/admin/media', [
-            'file' => new UploadedFile($path, 'photo.jpg', null, null, true),
-        ])->assertStatus(422)
-            ->assertJsonPath('errors.file.0', 'Format non pris en charge : envoyez une photo JPEG, PNG ou WebP.');
+        try {
+            $this->assertSame('text/x-php', (new \finfo(FILEINFO_MIME_TYPE))->file($path));
 
-        $this->assertDatabaseCount('media', 0);
-        $this->assertSame([], Storage::disk('media')->allFiles());
-        @unlink($path);
+            $this->postJson('/api/admin/media', [
+                'file' => new UploadedFile($path, 'photo.jpg', null, null, true),
+            ])->assertStatus(422)
+                ->assertJsonPath('errors.file.0', 'Format non pris en charge : envoyez une photo JPEG, PNG ou WebP.');
+
+            $this->assertDatabaseCount('media', 0);
+            $this->assertSame([], Storage::disk('media')->allFiles());
+        } finally {
+            @unlink($path);
+        }
     }
 
     public function test_a_file_that_is_not_a_readable_image_is_refused(): void

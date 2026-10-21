@@ -51,8 +51,9 @@ class ApiErrorMessagesTest extends TestCase
             'name' => 'Parent', 'email' => 'parent@example.com', 'phone' => '694000000',
             'subject' => 'Visite', 'message' => 'Bonjour',
         ];
-        for ($i = 0; $i < 5; $i++) {
-            $this->postJson('/api/public/contact-messages', $contact);
+        // The public forms allow 20 sends per 10 minutes per IP (AppServiceProvider).
+        for ($i = 0; $i < 20; $i++) {
+            $this->postJson('/api/public/contact-messages', $contact)->assertCreated();
         }
 
         $this->postJson('/api/public/contact-messages', $contact)
