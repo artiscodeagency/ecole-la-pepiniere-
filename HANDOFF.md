@@ -123,6 +123,9 @@ User feedback of 2026-10-21 was handled in one commit:
 - Admin menu: red badges with the number of unread messages and new admission requests (`src/admin/lib/useDashboardStats.ts`, refreshed every minute and when an item is opened), plus a dot on the mobile menu button.
 - D13 testimonials hidden.
 
+- Public form limit raised to 20 sends / 10 min / IP (mobile networks share IPs); `php artisan cache:clear` resets it locally.
+- Live admin (2026-10-21): no push server on Hostinger, so `useDashboardStats` polls the counts (10 s visible, 30 s background, on tab focus). `src/admin/lib/useLiveInbox.ts`: when counts change, the message/admission lists reload, `InboxToast` shows "Nouveau message reçu · Voir", and the tab title shows "(n) …". Public site: queries refetch on tab focus when older than 1 min.
+
 **Next: stage 6 — prepare the deployment environment (Hostinger)**, as the user asked. Plan it, present it, stop for validation; never deploy automatically. To cover:
 - production build of the site + admin (two Vite entries), `.htaccess` for SPA routes (/notre-ecole, /maternelle, /primaire, /galerie, /actualites, /actualites/:slug via PHP share page, /contact, /admin/*) kept separate from /api, /sanctum, /media;
 - Laravel outside public_html, `.env` production values (APP_URL from the subdomain, no hardcoded domain, SESSION/SANCTUM domains, DB credentials from hPanel), `php artisan migrate --seed`, `pepiniere:create-director`, storage link for /media, permissions, cron for `schedule:run` (prune-media);

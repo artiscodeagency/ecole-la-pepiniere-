@@ -8,7 +8,9 @@ import { LanguageProvider } from './i18n/LanguageProvider.tsx'
 // Content published from the administration (news, announcements...).
 const queryClient = new QueryClient({
   defaultOptions: {
-    queries: { staleTime: 60_000, retry: 1, refetchOnWindowFocus: false },
+    // A visitor coming back to the tab sees content published meanwhile
+    // (only data older than a minute is fetched again).
+    queries: { staleTime: 60_000, retry: 1, refetchOnWindowFocus: true },
   },
 })
 

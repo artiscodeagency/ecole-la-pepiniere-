@@ -3,16 +3,16 @@ import { Suspense, useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 
 import { Sidebar } from "@/admin/components/Sidebar";
-import { useDashboardStats } from "@/admin/lib/useDashboardStats";
+import { InboxToast } from "@/admin/components/InboxToast";
+import { useLiveInbox } from "@/admin/lib/useLiveInbox";
 import officialLogo from "@/assets/logo-transparent.png";
 
 /** Frame of every signed-in page: sidebar on desktop, drawer menu on mobile. */
 export function AdminLayout() {
   const [menuOpen, setMenuOpen] = useState(false);
   const closeMenu = () => setMenuOpen(false);
-  const stats = useDashboardStats();
-  // A dot on the closed mobile menu when messages or requests are waiting.
-  const pending = (stats.data?.messages_unread ?? 0) + (stats.data?.admission_requests_new ?? 0);
+  // pending: a dot on the closed mobile menu when messages or requests are waiting.
+  const { pending, notice, dismissNotice } = useLiveInbox();
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -87,6 +87,7 @@ export function AdminLayout() {
           <Outlet />
         </Suspense>
       </main>
+      <InboxToast notice={notice} onClose={dismissNotice} />
     </div>
   );
 }
