@@ -88,12 +88,14 @@ export function GalleryPage() {
   const uploads = usePhotoUploads(refresh);
 
   const action = useMutation({
-    mutationFn: ({ path, method, body }: { path: string; method: "POST" | "PATCH" | "PUT" | "DELETE"; body?: unknown }) =>
+    meta: { success: (_data, variables) => (variables as { success?: string }).success ?? null },
+    mutationFn: ({ path, method, body }: { path: string; method: "POST" | "PATCH" | "PUT" | "DELETE"; body?: unknown; success?: string }) =>
       api(path, { method, body }),
     onSuccess: refresh,
   });
 
-  const run = (path: string, method: "POST" | "PATCH" | "PUT" | "DELETE", body?: unknown) => action.mutate({ path, method, body });
+  const run = (path: string, method: "POST" | "PATCH" | "PUT" | "DELETE", body?: unknown, success?: string) =>
+    action.mutate({ path, method, body, success });
 
   const handleFiles = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files?.length && albumId !== null) uploads.add(event.target.files, albumId);
@@ -253,7 +255,7 @@ export function GalleryPage() {
                       photo.can.restore && (
                         <Button
                           className="mt-2 w-full"
-                          onClick={() => run(`/admin/gallery/photos/${photo.id}/restore`, "POST")}
+                          onClick={() => run(`/admin/gallery/photos/${photo.id}/restore`, "POST", undefined, "Photo restaurée")}
                           pending={action.isPending}
                         >
                           <RotateCcw size={16} aria-hidden="true" />
@@ -279,13 +281,23 @@ export function GalleryPage() {
                           icon={photo.is_visible ? EyeOff : Eye}
                           label={photo.is_visible ? "Masquer sur le site" : "Afficher sur le site"}
                           disabled={action.isPending}
-                          onClick={() => run(`/admin/gallery/photos/${photo.id}`, "PATCH", { is_visible: !photo.is_visible })}
+                          onClick={() => run(
+                              `/admin/gallery/photos/${photo.id}`,
+                              "PATCH",
+                              { is_visible: !photo.is_visible },
+                              photo.is_visible ? "Photo masquée sur le site" : "Photo affichée sur le site",
+                            )}
                         />
                         <IconButton
                           icon={Star}
                           label="Choisir comme couverture de l'album"
                           disabled={isCover || action.isPending}
-                          onClick={() => run(`/admin/gallery/categories/${photo.category_id}`, "PUT", { cover_media_id: photo.media.id })}
+                          onClick={() => run(
+                              `/admin/gallery/categories/${photo.category_id}`,
+                              "PUT",
+                              { cover_media_id: photo.media.id },
+                              "Couverture de l'album changée",
+                            )}
                         />
                         {photo.can.delete && <IconButton icon={Trash2} label="Supprimer" onClick={() => setDeleting(photo)} />}
                       </div>
@@ -313,7 +325,7 @@ export function GalleryPage() {
         confirmLabel="Supprimer"
         pending={action.isPending}
         onConfirm={() => {
-          if (deleting) run(`/admin/gallery/photos/${deleting.id}`, "DELETE");
+          if (deleting) run(`/admin/gallery/photos/${deleting.id}`, "DELETE", undefined, "Photo supprimée");
           setDeleting(null);
         }}
         onCancel={() => setDeleting(null)}

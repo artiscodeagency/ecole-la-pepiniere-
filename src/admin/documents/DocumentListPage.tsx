@@ -15,6 +15,7 @@ import { useListParams } from "@/admin/lib/useListParams";
 import { documentEditPath, PATHS } from "@/admin/paths";
 import { api } from "@/lib/api/client";
 import { usePageMeta } from "@/lib/usePageMeta";
+import { NOUNS, restoredMessage } from "@/admin/toast/messages";
 
 function DocumentRow({ document, onRestore, restoring }: { document: AdminDocument; onRestore?: () => void; restoring?: boolean }) {
   const content = (
@@ -88,6 +89,7 @@ export function DocumentListPage() {
   });
 
   const restore = useMutation({
+    meta: { success: restoredMessage(NOUNS.document) },
     mutationFn: (id: number) => api(`/admin/documents/${id}/restore`, { method: "POST" }),
     onSuccess: () => void queryClient.invalidateQueries({ queryKey: DOCUMENTS_QUERY_KEY }),
   });

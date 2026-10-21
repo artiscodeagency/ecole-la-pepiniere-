@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import { ImagePreparationError, prepareImage } from "@/admin/lib/prepareImage";
+import { toast } from "@/admin/toast/store";
 import { api, ApiError } from "@/lib/api/client";
 
 export interface UploadItem {
@@ -37,6 +38,7 @@ export function usePhotoUploads(onUploaded: () => void) {
   const run = async () => {
     if (running.current) return;
     running.current = true;
+    let added = 0;
     while (queue.current.length > 0) {
       const { id, file, albumId } = queue.current.shift()!;
       update(id, { status: "uploading" });
@@ -46,6 +48,7 @@ export function usePhotoUploads(onUploaded: () => void) {
         form.append("category_id", String(albumId));
         await api("/admin/gallery/photos", { method: "POST", body: form });
         update(id, { status: "done" });
+        added++;
         onUploadedRef.current();
       } catch (caught) {
         const message =
@@ -55,9 +58,11 @@ export function usePhotoUploads(onUploaded: () => void) {
               ? (caught.field("file") ?? caught.message)
               : "L'envoi a échoué.";
         update(id, { status: "error", error: message });
+        toast.error("Photo non envoyée", `${file.name} : ${message}`);
       }
     }
     running.current = false;
+    if (added > 0) toast.success(added > 1 ? `${added} photos ajoutées à la galerie` : "Photo ajoutée à la galerie");
   };
 
   const add = (files: FileList | File[], albumId: number) => {

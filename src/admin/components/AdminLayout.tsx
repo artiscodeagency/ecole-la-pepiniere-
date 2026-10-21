@@ -3,7 +3,6 @@ import { Suspense, useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 
 import { Sidebar } from "@/admin/components/Sidebar";
-import { InboxToast } from "@/admin/components/InboxToast";
 import { useLiveInbox } from "@/admin/lib/useLiveInbox";
 import officialLogo from "@/assets/logo-transparent.png";
 
@@ -12,7 +11,7 @@ export function AdminLayout() {
   const [menuOpen, setMenuOpen] = useState(false);
   const closeMenu = () => setMenuOpen(false);
   // pending: a dot on the closed mobile menu when messages or requests are waiting.
-  const { pending, notice, dismissNotice } = useLiveInbox();
+  const { pending } = useLiveInbox();
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -87,7 +86,6 @@ export function AdminLayout() {
           <Outlet />
         </Suspense>
       </main>
-      <InboxToast notice={notice} onClose={dismissNotice} />
     </div>
   );
 }

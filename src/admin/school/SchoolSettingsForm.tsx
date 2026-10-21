@@ -155,6 +155,7 @@ export function SchoolSettingsForm({ settings }: { settings: SchoolSettingsRespo
     set("hours", { ...form.hours, [section]: { ...form.hours[section], [days]: { ...form.hours[section][days], [edge]: value } } });
 
   const save = useMutation({
+    meta: { success: "Informations de l'école enregistrées" },
     mutationFn: (values: FormState) =>
       api<{ data: SchoolSettingsResponse }>("/admin/school-info/settings", { method: "PUT", body: toPayload(values) }),
     onSuccess: ({ data }) => {

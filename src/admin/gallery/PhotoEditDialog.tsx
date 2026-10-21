@@ -27,6 +27,7 @@ export function PhotoEditDialog({ photo, albums, onClose, onSaved }: PhotoEditDi
   const set = (key: keyof typeof values, value: string) => setValues((current) => ({ ...current, [key]: value }));
 
   const save = useMutation({
+    meta: { success: "Photo mise à jour" },
     mutationFn: () =>
       api(`/admin/gallery/photos/${photo.id}`, {
         method: "PATCH",

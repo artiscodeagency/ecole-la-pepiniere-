@@ -28,6 +28,7 @@ function DetailsCard({ user }: { user: AdminUser }) {
   const dirty = name !== user.name || emailChanged;
 
   const save = useMutation({
+    meta: { success: "Profil mis à jour" },
     mutationFn: () =>
       api<{ data: AdminUser }>("/auth/profile", {
         method: "PUT",
@@ -110,6 +111,7 @@ function PasswordCard() {
   const [saved, setSaved] = useState(false);
 
   const save = useMutation({
+    meta: { success: "Mot de passe changé" },
     mutationFn: () =>
       api("/auth/password", {
         method: "PUT",

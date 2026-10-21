@@ -21,6 +21,7 @@ import type { Paginated } from "@/admin/types";
 import { api } from "@/lib/api/client";
 import { cn } from "@/lib/utils";
 import { usePageMeta } from "@/lib/usePageMeta";
+import { NOUNS, restoredMessage } from "@/admin/toast/messages";
 
 const FILTERS = [
   { value: "", label: "Toutes" },
@@ -119,6 +120,7 @@ export function NewsListPage() {
   });
 
   const restore = useMutation({
+    meta: { success: restoredMessage(NOUNS.news) },
     mutationFn: (id: number) => api(`/admin/news/${id}/restore`, { method: "POST" }),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: NEWS_QUERY_KEY });

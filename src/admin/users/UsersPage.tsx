@@ -43,6 +43,7 @@ function AccountDialog({ user, onClose }: { user: AdminUser | null; onClose: () 
   const [error, setError] = useState<ApiError | null>(null);
 
   const save = useMutation({
+    meta: { success: user ? "Compte mis à jour" : "Compte créé" },
     mutationFn: () =>
       isNew
         ? api("/admin/users", { method: "POST", body: { name, email, role, password, password_confirmation: confirmation } })
@@ -133,6 +134,7 @@ function PasswordDialog({ user, onClose, onDone }: { user: AdminUser; onClose: (
   const [error, setError] = useState<ApiError | null>(null);
 
   const save = useMutation({
+    meta: { success: "Mot de passe redéfini" },
     mutationFn: () => api(`/admin/users/${user.id}/password`, { method: "PUT", body: { password, password_confirmation: confirmation } }),
     onSuccess: onDone,
     onError: (caught) => setError(asApiError(caught)),
@@ -209,6 +211,7 @@ export function UsersPage() {
   });
 
   const remove = useMutation({
+    meta: { success: "Compte supprimé" },
     mutationFn: (id: number) => api(`/admin/users/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: USERS_QUERY_KEY });

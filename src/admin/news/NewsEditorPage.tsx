@@ -21,6 +21,7 @@ import { newsEditPath, PATHS } from "@/admin/paths";
 import type { Media } from "@/admin/types";
 import { api, ApiError } from "@/lib/api/client";
 import { usePageMeta } from "@/lib/usePageMeta";
+import { deletedMessage, NOUNS, savedMessage } from "@/admin/toast/messages";
 
 interface FormState {
   title_fr: string;
@@ -115,6 +116,7 @@ function NewsForm({ news }: { news?: AdminNews }) {
   };
 
   const save = useMutation({
+    meta: { success: (_data, values) => savedMessage(NOUNS.news, (values as FormState).status, isNew) },
     mutationFn: async (values: FormState) => {
       const cover = values.cover;
       if (cover && (values.cover_alt_fr !== (cover.alt.fr ?? "") || values.cover_alt_en !== (cover.alt.en ?? ""))) {
@@ -165,6 +167,7 @@ function NewsForm({ news }: { news?: AdminNews }) {
   });
 
   const remove = useMutation({
+    meta: { success: deletedMessage(NOUNS.news) },
     mutationFn: () => api(`/admin/news/${news!.id}`, { method: "DELETE" }),
     onSuccess: () => {
       refreshLists();

@@ -24,6 +24,7 @@ import { announcementEditPath, PATHS } from "@/admin/paths";
 import type { ContentStatus } from "@/admin/types";
 import { api, ApiError } from "@/lib/api/client";
 import { usePageMeta } from "@/lib/usePageMeta";
+import { deletedMessage, NOUNS, savedMessage } from "@/admin/toast/messages";
 
 interface FormState {
   title_fr: string;
@@ -107,6 +108,7 @@ function AnnouncementForm({ announcement }: { announcement?: AdminAnnouncement }
   };
 
   const save = useMutation({
+    meta: { success: (_data, values) => savedMessage(NOUNS.announcement, (values as FormState).status, isNew) },
     mutationFn: (values: FormState) => {
       const payload = {
         title_fr: values.title_fr,
@@ -144,6 +146,7 @@ function AnnouncementForm({ announcement }: { announcement?: AdminAnnouncement }
   });
 
   const remove = useMutation({
+    meta: { success: deletedMessage(NOUNS.announcement) },
     mutationFn: () => api(`/admin/announcements/${announcement!.id}`, { method: "DELETE" }),
     onSuccess: () => {
       refreshLists();

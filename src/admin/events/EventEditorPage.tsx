@@ -21,6 +21,7 @@ import { eventEditPath, PATHS } from "@/admin/paths";
 import type { Media } from "@/admin/types";
 import { api, ApiError } from "@/lib/api/client";
 import { usePageMeta } from "@/lib/usePageMeta";
+import { deletedMessage, NOUNS, savedMessage } from "@/admin/toast/messages";
 
 interface FormState {
   title_fr: string;
@@ -108,6 +109,7 @@ function EventForm({ event }: { event?: AdminEvent }) {
   };
 
   const save = useMutation({
+    meta: { success: (_data, values) => savedMessage(NOUNS.event, (values as FormState).status, isNew) },
     mutationFn: async (values: FormState) => {
       const image = values.image;
       if (image && values.image_alt_fr !== (image.alt.fr ?? "")) {
@@ -153,6 +155,7 @@ function EventForm({ event }: { event?: AdminEvent }) {
   });
 
   const remove = useMutation({
+    meta: { success: deletedMessage(NOUNS.event) },
     mutationFn: () => api(`/admin/events/${event!.id}`, { method: "DELETE" }),
     onSuccess: () => {
       refreshLists();

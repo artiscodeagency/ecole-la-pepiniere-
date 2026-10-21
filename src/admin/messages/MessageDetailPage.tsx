@@ -44,6 +44,7 @@ function MessageView({ message }: { message: AdminContactMessage }) {
   useEffect(refreshLists, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const save = useMutation({
+    meta: { success: "Message mis à jour" },
     mutationFn: () =>
       api<{ data: AdminContactMessage }>(`/admin/contact-messages/${message.id}`, {
         method: "PUT",
@@ -57,6 +58,7 @@ function MessageView({ message }: { message: AdminContactMessage }) {
   });
 
   const remove = useMutation({
+    meta: { success: "Message supprimé" },
     mutationFn: () => api(`/admin/contact-messages/${message.id}`, { method: "DELETE" }),
     onSuccess: () => {
       refreshLists();

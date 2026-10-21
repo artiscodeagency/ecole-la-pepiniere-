@@ -22,6 +22,7 @@ function AlbumNameDialog({ album, onClose, onSaved }: { album: AdminGalleryAlbum
   const [nameFr, setNameFr] = useState(album?.name.fr ?? "");
   const [nameEn, setNameEn] = useState(album?.name.en ?? "");
   const save = useMutation({
+    meta: { success: album ? "Album renommé" : "Album créé" },
     mutationFn: () => {
       const body = { name_fr: nameFr, name_en: nameEn || null };
       return album
@@ -89,7 +90,8 @@ export function AlbumsPage() {
 
   const refresh = () => void queryClient.invalidateQueries({ queryKey: GALLERY_QUERY_KEY });
   const action = useMutation({
-    mutationFn: ({ path, method, body }: { path: string; method: "PUT" | "DELETE"; body?: unknown }) => api(path, { method, body }),
+    meta: { success: (_data, variables) => (variables as { success?: string }).success ?? null },
+    mutationFn: ({ path, method, body }: { path: string; method: "PUT" | "DELETE"; body?: unknown; success?: string }) => api(path, { method, body }),
     onSuccess: refresh,
   });
 
@@ -171,7 +173,12 @@ export function AlbumsPage() {
                   aria-label={album.is_visible ? `Masquer ${album.name.fr} sur le site` : `Afficher ${album.name.fr} sur le site`}
                   title={album.is_visible ? "Masquer sur le site" : "Afficher sur le site"}
                   disabled={action.isPending}
-                  onClick={() => action.mutate({ path: `/admin/gallery/categories/${album.id}`, method: "PUT", body: { is_visible: !album.is_visible } })}
+                  onClick={() => action.mutate({
+                      path: `/admin/gallery/categories/${album.id}`,
+                      method: "PUT",
+                      body: { is_visible: !album.is_visible },
+                      success: album.is_visible ? "Album masqué sur le site" : "Album affiché sur le site",
+                    })}
                 >
                   {album.is_visible ? <EyeOff size={17} aria-hidden="true" /> : <Eye size={17} aria-hidden="true" />}
                 </Button>
@@ -199,7 +206,7 @@ export function AlbumsPage() {
         confirmLabel="Supprimer"
         pending={action.isPending}
         onConfirm={() => {
-          if (deleting) action.mutate({ path: `/admin/gallery/categories/${deleting.id}`, method: "DELETE" });
+          if (deleting) action.mutate({ path: `/admin/gallery/categories/${deleting.id}`, method: "DELETE", success: "Album supprimé" });
           setDeleting(null);
         }}
         onCancel={() => setDeleting(null)}

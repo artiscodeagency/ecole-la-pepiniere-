@@ -9,6 +9,7 @@ import {
 } from "@/admin/auth/context";
 import type { AdminUser } from "@/admin/types";
 import { api, ApiError } from "@/lib/api/client";
+import { toast } from "@/admin/toast/store";
 
 /** The signed-in user, or null when there is no valid session. */
 async function fetchCurrentUser(): Promise<AdminUser | null> {
@@ -38,6 +39,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         body: { email, password },
       });
       queryClient.setQueryData(ME_QUERY_KEY, data);
+      toast.success(`Bienvenue, ${data.name}`);
       return data;
     },
     [queryClient],
@@ -50,6 +52,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Nothing from the previous session stays in memory.
       queryClient.clear();
       queryClient.setQueryData(ME_QUERY_KEY, null);
+      toast.info("Vous êtes déconnecté(e)");
     }
   }, [queryClient]);
 

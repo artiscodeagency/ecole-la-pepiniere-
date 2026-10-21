@@ -106,6 +106,7 @@ export function ListEditor({ definition, data }: { definition: ListDefinition; d
     });
 
   const save = useMutation({
+    meta: { success: "Modifications enregistrées" },
     mutationFn: (values: FormState) =>
       api<{ data: ListData }>(`/admin/school-info/lists/${definition.name}`, { method: "PUT", body: toPayload(definition, values) }),
     onSuccess: ({ data: next }) => {

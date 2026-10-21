@@ -22,6 +22,7 @@ import { formatDateTime } from "@/admin/lib/dates";
 import { documentEditPath, PATHS } from "@/admin/paths";
 import { api, ApiError } from "@/lib/api/client";
 import { usePageMeta } from "@/lib/usePageMeta";
+import { deletedMessage, NOUNS, savedMessage } from "@/admin/toast/messages";
 
 /** Same limit as the server: refused here first, without a long upload. */
 const MAX_BYTES = 20 * 1024 * 1024;
@@ -106,6 +107,7 @@ function DocumentForm({ document }: { document?: AdminDocument }) {
   };
 
   const save = useMutation({
+    meta: { success: savedMessage(NOUNS.document, undefined, isNew) },
     mutationFn: (values: FormState) => {
       const body = new FormData();
       body.set("type", values.type);
@@ -140,6 +142,7 @@ function DocumentForm({ document }: { document?: AdminDocument }) {
   });
 
   const remove = useMutation({
+    meta: { success: deletedMessage(NOUNS.document) },
     mutationFn: () => api(`/admin/documents/${document!.id}`, { method: "DELETE" }),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: DOCUMENTS_QUERY_KEY });

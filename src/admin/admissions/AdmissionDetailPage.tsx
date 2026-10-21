@@ -46,6 +46,7 @@ function AdmissionView({ admission }: { admission: AdminAdmissionRequest }) {
   };
 
   const save = useMutation({
+    meta: { success: "Demande mise à jour" },
     mutationFn: () =>
       api<{ data: AdminAdmissionRequest }>(`/admin/admission-requests/${admission.id}`, {
         method: "PUT",
@@ -59,6 +60,7 @@ function AdmissionView({ admission }: { admission: AdminAdmissionRequest }) {
   });
 
   const remove = useMutation({
+    meta: { success: "Demande supprimée" },
     mutationFn: () => api(`/admin/admission-requests/${admission.id}`, { method: "DELETE" }),
     onSuccess: () => {
       refreshLists();

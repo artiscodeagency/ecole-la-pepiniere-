@@ -20,6 +20,7 @@ import type { Paginated } from "@/admin/types";
 import { api } from "@/lib/api/client";
 import { cn } from "@/lib/utils";
 import { usePageMeta } from "@/lib/usePageMeta";
+import { NOUNS, restoredMessage } from "@/admin/toast/messages";
 
 const FILTERS = [
   { value: "", label: "Tous" },
@@ -109,6 +110,7 @@ export function EventListPage() {
   });
 
   const restore = useMutation({
+    meta: { success: restoredMessage(NOUNS.event) },
     mutationFn: (id: number) => api(`/admin/events/${id}/restore`, { method: "POST" }),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: EVENTS_QUERY_KEY });
