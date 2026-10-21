@@ -12,6 +12,7 @@ import {
   Users,
 } from "lucide-react";
 
+import type { DashboardStats } from "@/admin/lib/useDashboardStats";
 import { PATHS } from "@/admin/paths";
 import type { Ability, AdminUser } from "@/admin/types";
 
@@ -21,6 +22,8 @@ export interface NavItem {
   icon: LucideIcon;
   /** Hidden for users without this permission (the server refuses them anyway). */
   ability?: Ability;
+  /** Count shown as a badge next to the entry (e.g. unread messages). */
+  badge?: keyof DashboardStats;
   /** False until the module is built: shown greyed out. */
   available: boolean;
 }
@@ -47,8 +50,14 @@ export const NAVIGATION: NavGroup[] = [
   {
     title: "Demandes reçues",
     items: [
-      { label: "Messages", path: PATHS.messages, icon: Mail, available: true },
-      { label: "Demandes d'inscription", path: PATHS.admissions, icon: ClipboardList, available: true },
+      { label: "Messages", path: PATHS.messages, icon: Mail, badge: "messages_unread", available: true },
+      {
+        label: "Demandes d'inscription",
+        path: PATHS.admissions,
+        icon: ClipboardList,
+        badge: "admission_requests_new",
+        available: true,
+      },
     ],
   },
   {

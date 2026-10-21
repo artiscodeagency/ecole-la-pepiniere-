@@ -4,7 +4,7 @@ Running log of the work turning the static public site into an administrable
 site. **Read this first when a session starts**, then update it at every
 stop (new commit, validated step, decision, open problem).
 
-Last updated: 2026-10-20 — stage 4: all groups done except "Infos école". Work paused by the user; see **§8 RESUME HERE**.
+Last updated: 2026-10-21 — stage 4 finished (Infos école postponed by the user). Next: **stage 6, deployment preparation**. See §8.
 
 ---
 
@@ -80,7 +80,7 @@ Last updated: 2026-10-20 — stage 4: all groups done except "Infos école". Wor
 | Galerie (`/galerie` + home "Galerie" from the API; built-in photos as fallback while the API has none) | ✅ | `f900acc` |
 | Gallery photos import (stage 5 step, see open items) | ✅ | see log |
 | Formulaires (4 forms: home Contact + Admissions sections, /contact, /admissions → API; WhatsApp only as fallback when the server fails) | ✅ committed — **user's visual test still pending** (send one real test from /contact and /admissions, check the admin) | see log |
-| Infos école (contacts, fees, FAQ, team… from `/api/public/school-info` instead of `school.ts`) | to do — confirm scope with user | — |
+| Infos école (contacts, fees, FAQ, team… from the API) | ⏸ **postponed by the user (2026-10-21)**: the school will fill the admin after delivery; `school.ts` stays the source for now | — |
 
 Public pattern used so far: hooks in `src/lib/api/public*.ts` (React Query),
 `useApiText()` for FR/EN fallback, blocks that render **nothing** while
@@ -92,9 +92,9 @@ loading / on error / when empty so the page looks as before.
 ## 5. Open items / known issues
 
 - **Gallery import (done locally 2026-10-20)**: `php artisan pepiniere:import-gallery` imported 55 of the built-in photos into the albums (Bâtiments 6, Salles de classe 12, Maternelle 24, Espaces de jeux 12, Événements 1) → 30 MB of WebP instead of 233 MB. Neutral alt "Photo – <album>", no captions invented. **Must also be run on Hostinger** (stage 6) after uploading the photo folder.
-  - Left out on purpose, waiting for the user: the school logo (`WhatsApp Image 2026-09-20…`), the 3 `administrator-in-office*` photos and `teachers-outside-class-seated` (no matching album).
+  - Left out on purpose — user (2026-10-21): leave them as they are, do not import; revisit at the deployment stage: the school logo (`WhatsApp Image 2026-09-20…`), the 3 `administrator-in-office*` photos and `teachers-outside-class-seated` (no matching album).
   - `src/assets` cannot be deleted yet: `ImagePlaceholder` uses those photos all over the site (hero, pages). Shrinking them is a separate future step.
-- D13: the 3 fictitious testimonials still show on the home page (`Testimonials` in `src/App.tsx`) — separate isolated change, waiting for the user's go.
+- D13 done 2026-10-21: testimonials removed from the home page (component file `Testimonials.tsx` kept for future real ones).
 - Francophone primary levels not supplied by the school (D9). The public admission selects still use their existing lists (home: PS…CM2; /admissions: section names) and send the chosen text as `level_label`; switch to the admin's level list once it is complete.
 - Admission requests get `academic_year` from the setting `admissions.academic_year`, currently empty locally → the director should fill it in the admin.
 - `backend/app/Enums/enm.txt` = the user's pasted brief, untracked; not code, keep out of commits.
@@ -117,11 +117,16 @@ loading / on error / when empty so the page looks as before.
 
 ## 8. RESUME HERE (next session)
 
-1. Read this file and run `git log --oneline -8`; the working tree should be clean apart from the untracked `backend/app/Enums/enm.txt` (the user's brief, never commit it).
-2. Start the API if needed (§6). Vite on 5180 is usually already running.
-3. Ask the user for the result of the pending visual checks: the Agenda (home + /actualites), the Galerie (now from the API, 55 photos), and the 4 forms (send a test, check it arrives in the admin, then delete it). Fix anything reported first, each fix on its own.
-4. Ask before starting each next item, one at a time, and stop after each:
-   - **Infos école** (last stage 4 group): public pages read contacts / hours / fees / documents to provide / transport / FAQ / team / levels from `/api/public/school-info` instead of `src/data/school.ts`. Confirm the scope with the user first; keep `school.ts` as the fallback; don't invent missing data.
-   - **D13**: hide the 3 fictitious testimonials (`<Testimonials />` in `src/App.tsx`), as an isolated change.
-   - Decide the fate of the 5 photos not imported (see §5).
-   - Stage 5 (migrate the remaining confirmed data), then stage 6 (Hostinger prep, including running `pepiniere:import-gallery` on the server). Never deploy automatically.
+User feedback of 2026-10-21 was handled in one commit:
+- Contact forms (home + /contact) did not reach the admin while /admissions did. Cause: browser autofill filled the hidden anti-robot field "website" (contact forms carry name/email/tel autofill hints), so the API took them for robots (silent 201, nothing stored). Fix: the trap input is now `hp_extra_note` without label, autofill off (`HONEYPOT_NAME` in `src/components/ui/FormFeedback.tsx`), still sent to the API as `website`. **Ask the user to re-test /contact and the home contact form.**
+- /admissions "Niveau souhaité" now uses the same full class list as the home page (`src/data/admissionLevels.ts`, Petite Section → CM2).
+- Admin menu: red badges with the number of unread messages and new admission requests (`src/admin/lib/useDashboardStats.ts`, refreshed every minute and when an item is opened), plus a dot on the mobile menu button.
+- D13 testimonials hidden.
+
+**Next: stage 6 — prepare the deployment environment (Hostinger)**, as the user asked. Plan it, present it, stop for validation; never deploy automatically. To cover:
+- production build of the site + admin (two Vite entries), `.htaccess` for SPA routes (/notre-ecole, /maternelle, /primaire, /galerie, /actualites, /actualites/:slug via PHP share page, /contact, /admin/*) kept separate from /api, /sanctum, /media;
+- Laravel outside public_html, `.env` production values (APP_URL from the subdomain, no hardcoded domain, SESSION/SANCTUM domains, DB credentials from hPanel), `php artisan migrate --seed`, `pepiniere:create-director`, storage link for /media, permissions, cron for `schedule:run` (prune-media);
+- persistent media storage that a new frontend upload never deletes;
+- `pepiniere:import-gallery` on the server after uploading the photos folder; the 5 left-out photos stay as they are;
+- HTTPS, backups (DB + media), PHP 8.4 in hPanel (D1);
+- reminders: the school must check the admin for messages (no mailbox yet, D17) and set the admissions academic year.

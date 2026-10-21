@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 
 import { Reveal } from "@/components/ui/Reveal";
 import { FormFeedback, FormSubmitButton, HoneypotField } from "@/components/ui/FormFeedback";
+import { ADMISSION_LEVELS } from "@/data/admissionLevels";
 import { useSchool } from "@/data/useSchool";
 import { type Localized, tr } from "@/i18n/types";
 import { useLanguage } from "@/i18n/useLanguage";
@@ -86,17 +87,6 @@ const STEPS: [string, Localized, Localized][] = [
   ],
 ];
 
-const LEVELS = [
-  tr("Petite Section", "Small Section"),
-  tr("Moyenne Section", "Middle Section"),
-  tr("Grande Section", "Large Section"),
-  tr("SIL", "SIL"),
-  tr("CP", "CP"),
-  tr("CE1", "CE1"),
-  tr("CE2", "CE2"),
-  tr("CM1", "CM1"),
-  tr("CM2", "CM2"),
-];
 
 export function Admissions() {
   const { t } = useLanguage();
@@ -316,7 +306,7 @@ export function Admissions() {
                   <option value="" disabled>
                     {t("Choisir un niveau", "Choose a level")}
                   </option>
-                  {LEVELS.map((level) => (
+                  {ADMISSION_LEVELS.map((level) => (
                     <option key={level.fr} value={level.fr}>
                       {t(level)}
                     </option>

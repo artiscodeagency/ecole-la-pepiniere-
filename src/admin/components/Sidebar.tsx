@@ -3,6 +3,7 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 
 import { useAuth } from "@/admin/auth/useAuth";
+import { useDashboardStats } from "@/admin/lib/useDashboardStats";
 import { type NavItem, navigationFor } from "@/admin/navigation";
 import { PATHS } from "@/admin/paths";
 import { ROLE_LABELS } from "@/admin/types";
@@ -11,7 +12,16 @@ import { cn } from "@/lib/utils";
 
 const ITEM_CLASSES = "flex items-center gap-3 rounded-btn px-3 py-2.5 text-sm font-medium transition-colors";
 
-function NavEntry({ item, onNavigate }: { item: NavItem; onNavigate?: () => void }) {
+/** Number of new items (unread messages, new requests), like a notification. */
+function NavBadge({ count }: { count: number }) {
+  return (
+    <span className="ml-auto min-w-5 rounded-full bg-red-600 px-1.5 py-0.5 text-center text-[11px] font-bold leading-none text-white">
+      {count > 99 ? "99+" : count}
+    </span>
+  );
+}
+
+function NavEntry({ item, count, onNavigate }: { item: NavItem; count?: number; onNavigate?: () => void }) {
   const Icon = item.icon;
 
   if (!item.available) {
@@ -42,6 +52,12 @@ function NavEntry({ item, onNavigate }: { item: NavItem; onNavigate?: () => void
     >
       <Icon size={18} aria-hidden="true" />
       {item.label}
+      {count ? (
+        <>
+          <NavBadge count={count} />
+          <span className="sr-only"> ({count} non traités)</span>
+        </>
+      ) : null}
     </NavLink>
   );
 }
@@ -50,6 +66,7 @@ function NavEntry({ item, onNavigate }: { item: NavItem; onNavigate?: () => void
 export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   const { user, logout } = useAuth();
   const [signingOut, setSigningOut] = useState(false);
+  const stats = useDashboardStats(Boolean(user));
 
   if (!user) return null;
 
@@ -83,7 +100,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
             <ul className="space-y-1">
               {group.items.map((item) => (
                 <li key={item.path}>
-                  <NavEntry item={item} onNavigate={onNavigate} />
+                  <NavEntry item={item} count={item.badge ? stats.data?.[item.badge] : undefined} onNavigate={onNavigate} />
                 </li>
               ))}
             </ul>

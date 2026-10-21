@@ -1,4 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
 import {
   ArrowRight,
   CalendarDays,
@@ -15,19 +14,10 @@ import { useAuth } from "@/admin/auth/useAuth";
 import { FormAlert } from "@/admin/components/FormAlert";
 import { findNavItem } from "@/admin/navigation";
 import { PATHS } from "@/admin/paths";
+import { type DashboardStats, useDashboardStats } from "@/admin/lib/useDashboardStats";
 import { ROLE_LABELS } from "@/admin/types";
-import { api } from "@/lib/api/client";
 import { cn } from "@/lib/utils";
 import { usePageMeta } from "@/lib/usePageMeta";
-
-interface DashboardStats {
-  news_published: number;
-  announcements_active: number;
-  gallery_photos: number;
-  messages_unread: number;
-  admission_requests_new: number;
-  events_upcoming: number;
-}
 
 interface StatDefinition {
   key: keyof DashboardStats;
@@ -152,11 +142,7 @@ function StatSection({ id, title, stats, data, urgent = false, className }: Stat
 
 export function DashboardPage() {
   const { user } = useAuth();
-  const dashboard = useQuery({
-    queryKey: ["admin", "dashboard"],
-    queryFn: async () => (await api<{ data: DashboardStats }>("/admin/dashboard")).data,
-    staleTime: 30_000,
-  });
+  const dashboard = useDashboardStats();
 
   usePageMeta("Tableau de bord | Administration La Pépinière", "Espace d'administration de La Pépinière.");
 

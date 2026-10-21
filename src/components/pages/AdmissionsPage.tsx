@@ -14,6 +14,7 @@ import { Header } from "@/components/layout/Header";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
 import { FormFeedback, FormSubmitButton, HoneypotField } from "@/components/ui/FormFeedback";
+import { ADMISSION_LEVELS } from "@/data/admissionLevels";
 import { useSchool } from "@/data/useSchool";
 import { type Localized, tr } from "@/i18n/types";
 import { useLanguage } from "@/i18n/useLanguage";
@@ -94,7 +95,6 @@ export function AdmissionsPage() {
   const { t } = useLanguage();
   const school = useSchool();
   const documents = school.admissions.documents;
-  const levels = school.sections;
   const faq = school.admissions.faq;
   const [openQuestion, setOpenQuestion] = useState<number | null>(null);
   const { state: formState, handleSubmit } = useSchoolForm(
@@ -106,7 +106,7 @@ export function AdmissionsPage() {
       ["Email", "email", "email"],
       [t("Nom de l'enfant", "Child's name"), "childName", "child_name"],
       [t("Date de naissance", "Date of birth"), "birthDate", "child_birth_date"],
-      [t("Classe souhaitée", "Desired class"), "level", "level_label"],
+      [t("Niveau souhaité", "Desired level"), "level", "level_label"],
       ["Message", "message", "message"],
     ],
   );
@@ -466,7 +466,7 @@ export function AdmissionsPage() {
                   />
                 </label>
                 <label className="text-sm font-medium text-ink">
-                  {t("Classe souhaitée", "Desired class")}
+                  {t("Niveau souhaité", "Desired level")}
                   <select
                     required
                     name="level"
@@ -476,9 +476,9 @@ export function AdmissionsPage() {
                     <option value="" disabled>
                       {t("Choisir un niveau", "Choose a level")}
                     </option>
-                    {levels.map((level, index) => (
-                      <option key={index} value={index}>
-                        {level}
+                    {ADMISSION_LEVELS.map((level) => (
+                      <option key={level.fr} value={level.fr}>
+                        {t(level)}
                       </option>
                     ))}
                   </select>

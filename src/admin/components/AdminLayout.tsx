@@ -3,12 +3,16 @@ import { Suspense, useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 
 import { Sidebar } from "@/admin/components/Sidebar";
+import { useDashboardStats } from "@/admin/lib/useDashboardStats";
 import officialLogo from "@/assets/logo-transparent.png";
 
 /** Frame of every signed-in page: sidebar on desktop, drawer menu on mobile. */
 export function AdminLayout() {
   const [menuOpen, setMenuOpen] = useState(false);
   const closeMenu = () => setMenuOpen(false);
+  const stats = useDashboardStats();
+  // A dot on the closed mobile menu when messages or requests are waiting.
+  const pending = (stats.data?.messages_unread ?? 0) + (stats.data?.admission_requests_new ?? 0);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -40,9 +44,12 @@ export function AdminLayout() {
           onClick={() => setMenuOpen(true)}
           aria-label="Ouvrir le menu"
           aria-expanded={menuOpen}
-          className="flex h-10 w-10 items-center justify-center rounded-btn text-ink transition-colors hover:bg-surface-alt"
+          className="relative flex h-10 w-10 items-center justify-center rounded-btn text-ink transition-colors hover:bg-surface-alt"
         >
           <Menu size={22} />
+          {pending > 0 && (
+            <span className="absolute right-1.5 top-1.5 h-2.5 w-2.5 rounded-full bg-red-600 ring-2 ring-white" aria-hidden="true" />
+          )}
         </button>
       </header>
 

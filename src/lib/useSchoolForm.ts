@@ -1,5 +1,6 @@
 import { type FormEvent, useState } from "react";
 
+import { HONEYPOT_NAME } from "@/components/ui/FormFeedback";
 import { useSchool } from "@/data/useSchool";
 import { useLanguage } from "@/i18n/useLanguage";
 import { api, ApiError } from "@/lib/api/client";
@@ -54,7 +55,7 @@ export function useSchoolForm(kind: keyof typeof ENDPOINTS, whatsappTitle: strin
     const form = event.currentTarget;
     if (state.status === "sending") return;
 
-    const body: Record<string, string> = { website: apiValue(form, "website") };
+    const body: Record<string, string> = { website: apiValue(form, HONEYPOT_NAME) };
     for (const [, name, apiName] of fields) body[apiName] = apiValue(form, name);
 
     setState({ status: "sending" });

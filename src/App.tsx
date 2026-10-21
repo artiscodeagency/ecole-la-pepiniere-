@@ -20,7 +20,6 @@ import { Hero } from "@/components/sections/Hero";
 import { News } from "@/components/sections/News";
 import { Programs } from "@/components/sections/Programs";
 import { Stats } from "@/components/sections/Stats";
-import { Testimonials } from "@/components/sections/Testimonials";
 import { Welcome } from "@/components/sections/Welcome";
 import { WhyUs } from "@/components/sections/WhyUs";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
@@ -51,7 +50,6 @@ function HomePage() {
         <Stats />
         <Activities />
         <Gallery />
-        <Testimonials />
         <AnnouncementsSection className="border-t border-border-soft bg-surface" />
         <AgendaSection limit={3} className="border-t border-border-soft bg-surface" />
         <News />
