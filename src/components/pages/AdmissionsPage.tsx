@@ -1,5 +1,4 @@
 import {
-  CheckCircle2,
   ChevronDown,
   FileText,
   Heart,
@@ -7,17 +6,20 @@ import {
   Sparkles,
   Users,
 } from "lucide-react";
-import { type FormEvent, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
+import { FormFeedback, FormSubmitButton } from "@/components/ui/FormFeedback";
+import { ADMISSION_LEVELS } from "@/data/admissionLevels";
 import { useSchool } from "@/data/useSchool";
 import { type Localized, tr } from "@/i18n/types";
 import { useLanguage } from "@/i18n/useLanguage";
 import { usePageMeta } from "@/lib/usePageMeta";
+import { useSchoolForm } from "@/lib/useSchoolForm";
 
 const BENEFITS = [
   {
@@ -89,16 +91,25 @@ const STEPS: [string, Localized, Localized][] = [
   ],
 ];
 
-type FormStatus = "idle" | "loading" | "success";
-
 export function AdmissionsPage() {
   const { t } = useLanguage();
   const school = useSchool();
   const documents = school.admissions.documents;
-  const levels = school.sections;
   const faq = school.admissions.faq;
-  const [status, setStatus] = useState<FormStatus>("idle");
   const [openQuestion, setOpenQuestion] = useState<number | null>(null);
+  const { state: formState, handleSubmit } = useSchoolForm(
+    "admission",
+    t("Demande d'inscription", "Enrolment request"),
+    [
+      [t("Nom du parent / tuteur", "Parent / guardian name"), "parentName", "parent_name"],
+      [t("Téléphone", "Phone"), "phone", "phone"],
+      ["Email", "email", "email"],
+      [t("Nom de l'enfant", "Child's name"), "childName", "child_name"],
+      [t("Date de naissance", "Date of birth"), "birthDate", "child_birth_date"],
+      [t("Niveau souhaité", "Desired level"), "level", "level_label"],
+      ["Message", "message", "message"],
+    ],
+  );
 
   usePageMeta(
     `Admissions | ${school.shortName} — ${school.location.city}, ${school.location.country}`,
@@ -107,12 +118,6 @@ export function AdmissionsPage() {
       "2026–2027 admissions at La Pépinière Bilingual Private School Group in Bertoua: required documents and official fees.",
     ),
   );
-
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setStatus("loading");
-    window.setTimeout(() => setStatus("success"), 700);
-  };
 
   return (
     <>
@@ -460,7 +465,7 @@ export function AdmissionsPage() {
                   />
                 </label>
                 <label className="text-sm font-medium text-ink">
-                  {t("Classe souhaitée", "Desired class")}
+                  {t("Niveau souhaité", "Desired level")}
                   <select
                     required
                     name="level"
@@ -470,9 +475,9 @@ export function AdmissionsPage() {
                     <option value="" disabled>
                       {t("Choisir un niveau", "Choose a level")}
                     </option>
-                    {levels.map((level, index) => (
-                      <option key={index} value={index}>
-                        {level}
+                    {ADMISSION_LEVELS.map((level) => (
+                      <option key={level.fr} value={level.fr}>
+                        {t(level)}
                       </option>
                     ))}
                   </select>
@@ -487,27 +492,17 @@ export function AdmissionsPage() {
                   />
                 </label>
                 <div className="flex flex-col gap-4 sm:col-span-2 sm:flex-row sm:items-center sm:justify-between">
-                  <button
-                    disabled={status === "loading"}
-                    type="submit"
-                    className="rounded-btn bg-primary px-6 py-3.5 text-sm font-medium text-white shadow-soft transition-colors hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-60"
-                  >
-                    {status === "loading"
-                      ? t("Envoi en cours...", "Sending...")
-                      : t("Envoyer une demande", "Send request")}
-                  </button>
-                  {status === "success" && (
-                    <p
-                      role="status"
-                      className="flex items-center gap-2 text-sm text-secondary"
-                    >
-                      <CheckCircle2 size={17} />
-                      {t(
-                        "Demande enregistrée pour démonstration.",
-                        "Request saved for demonstration.",
-                      )}
-                    </p>
-                  )}
+                  <FormSubmitButton
+                    state={formState}
+                    label={t("Envoyer la demande", "Send the request")}
+                  />
+                  <FormFeedback
+                    state={formState}
+                    sentMessage={t(
+                      "Merci ! Votre demande d'inscription a bien été transmise à l'école. Nous vous recontacterons.",
+                      "Thank you! Your enrolment request has been sent to the school. We will get back to you.",
+                    )}
+                  />
                 </div>
               </form>
             </div>

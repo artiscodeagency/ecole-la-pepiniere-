@@ -1,0 +1,63 @@
+<?php
+
+// French messages for the validation rules used by the API. Any other rule
+// falls back to English (APP_FALLBACK_LOCALE), never to a raw key.
+return [
+    'after' => 'Le champ :attribute doit être une date postérieure au :date.',
+    'array' => 'Le champ :attribute doit être une liste.',
+    'before' => 'Le champ :attribute doit être une date antérieure au :date.',
+    'boolean' => 'Le champ :attribute doit être vrai ou faux.',
+    'confirmed' => 'La confirmation du champ :attribute ne correspond pas.',
+    'current_password' => 'Le mot de passe actuel est incorrect.',
+    'date' => 'Le champ :attribute doit être une date valide.',
+    'email' => 'Le champ :attribute doit être une adresse email valide.',
+    'enum' => 'La valeur du champ :attribute est invalide.',
+    'exists' => 'La valeur du champ :attribute est invalide.',
+    'in' => 'La valeur du champ :attribute est invalide.',
+    'integer' => 'Le champ :attribute doit être un nombre entier.',
+    'max' => [
+        'array' => 'Le champ :attribute ne doit pas contenir plus de :max éléments.',
+        'file' => 'Le fichier :attribute ne doit pas dépasser :max kilo-octets.',
+        'numeric' => 'Le champ :attribute ne doit pas dépasser :max.',
+        'string' => 'Le champ :attribute ne doit pas dépasser :max caractères.',
+    ],
+    'min' => [
+        'array' => 'Le champ :attribute doit contenir au moins :min éléments.',
+        'file' => 'Le fichier :attribute doit faire au moins :min kilo-octets.',
+        'numeric' => 'Le champ :attribute doit être au moins :min.',
+        'string' => 'Le champ :attribute doit contenir au moins :min caractères.',
+    ],
+    'password' => [
+        'letters' => 'Le mot de passe doit contenir au moins une lettre.',
+        'mixed' => 'Le mot de passe doit contenir au moins une majuscule et une minuscule.',
+        'numbers' => 'Le mot de passe doit contenir au moins un chiffre.',
+        'symbols' => 'Le mot de passe doit contenir au moins un symbole.',
+        'uncompromised' => 'Ce mot de passe est apparu dans une fuite de données. Choisissez-en un autre.',
+    ],
+    'regex' => 'Le format du champ :attribute est invalide.',
+    'required' => 'Le champ :attribute est obligatoire.',
+    'required_if' => 'Le champ :attribute est obligatoire.',
+    'required_without' => 'Le champ :attribute est obligatoire.',
+    'string' => 'Le champ :attribute doit être un texte.',
+    'unique' => 'Cette valeur du champ :attribute est déjà utilisée.',
+
+    'attributes' => [
+        'name' => 'nom',
+        'email' => 'email',
+        'phone' => 'téléphone',
+        'subject' => 'sujet',
+        'message' => 'message',
+        'password' => 'mot de passe',
+        'current_password' => 'mot de passe actuel',
+        'role' => 'rôle',
+        'is_active' => 'actif',
+        'parent_name' => 'nom du parent / tuteur',
+        'child_name' => "nom de l'enfant",
+        'child_birth_date' => 'date de naissance',
+        'level_id' => 'niveau',
+        'level_label' => 'niveau',
+        'category' => 'catégorie',
+        'section' => 'section',
+        'period' => 'période',
+    ],
+];

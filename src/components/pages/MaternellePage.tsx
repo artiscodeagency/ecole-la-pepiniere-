@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
+import { AnnouncementsSection } from "@/components/announcements/AnnouncementsSection";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
@@ -317,6 +318,7 @@ export function MaternellePage() {
           </div>
         </section>
 
+        <AnnouncementsSection sections={["maternelle"]} className="bg-surface-alt" />
         <section className="relative overflow-hidden bg-linear-to-r from-primary to-primary-dark px-6 py-20 text-white lg:px-10">
           <div
             aria-hidden

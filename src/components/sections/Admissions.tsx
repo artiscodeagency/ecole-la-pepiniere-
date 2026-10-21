@@ -1,5 +1,4 @@
 import {
-  CheckCircle2,
   ChevronDown,
   FileText,
   Heart,
@@ -7,13 +6,16 @@ import {
   Sparkles,
   Users,
 } from "lucide-react";
-import { type FormEvent, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 import { Reveal } from "@/components/ui/Reveal";
+import { FormFeedback, FormSubmitButton } from "@/components/ui/FormFeedback";
+import { ADMISSION_LEVELS } from "@/data/admissionLevels";
 import { useSchool } from "@/data/useSchool";
 import { type Localized, tr } from "@/i18n/types";
 import { useLanguage } from "@/i18n/useLanguage";
+import { useSchoolForm } from "@/lib/useSchoolForm";
 
 const BENEFITS = [
   {
@@ -85,33 +87,26 @@ const STEPS: [string, Localized, Localized][] = [
   ],
 ];
 
-const LEVELS = [
-  tr("Petite Section", "Small Section"),
-  tr("Moyenne Section", "Middle Section"),
-  tr("Grande Section", "Large Section"),
-  tr("SIL", "SIL"),
-  tr("CP", "CP"),
-  tr("CE1", "CE1"),
-  tr("CE2", "CE2"),
-  tr("CM1", "CM1"),
-  tr("CM2", "CM2"),
-];
-
-type FormStatus = "idle" | "loading" | "success" | "error";
 
 export function Admissions() {
   const { t } = useLanguage();
   const school = useSchool();
   const documents = school.admissions.documents;
   const faq = school.admissions.faq;
-  const [status, setStatus] = useState<FormStatus>("idle");
   const [openQuestion, setOpenQuestion] = useState<number | null>(null);
-
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setStatus("loading");
-    window.setTimeout(() => setStatus("success"), 700);
-  };
+  const { state: formState, handleSubmit } = useSchoolForm(
+    "admission",
+    t("Demande d'inscription", "Enrolment request"),
+    [
+      [t("Nom du parent / tuteur", "Parent / guardian name"), "parentName", "parent_name"],
+      [t("Téléphone", "Phone"), "phone", "phone"],
+      ["Email", "email", "email"],
+      [t("Nom de l'enfant", "Child's name"), "childName", "child_name"],
+      [t("Date de naissance", "Date of birth"), "birthDate", "child_birth_date"],
+      [t("Niveau souhaité", "Desired level"), "level", "level_label"],
+      ["Message", "message", "message"],
+    ],
+  );
 
   return (
     <section
@@ -309,7 +304,7 @@ export function Admissions() {
                   <option value="" disabled>
                     {t("Choisir un niveau", "Choose a level")}
                   </option>
-                  {LEVELS.map((level) => (
+                  {ADMISSION_LEVELS.map((level) => (
                     <option key={level.fr} value={level.fr}>
                       {t(level)}
                     </option>
@@ -326,35 +321,17 @@ export function Admissions() {
                 />
               </label>
               <div className="sm:col-span-2 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <button
-                  disabled={status === "loading"}
-                  type="submit"
-                  className="rounded-btn bg-primary px-6 py-3.5 text-sm font-medium text-white shadow-soft transition-colors hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {status === "loading"
-                    ? t("Envoi en cours...", "Sending...")
-                    : t("Envoyer une demande", "Send request")}
-                </button>
-                {status === "success" && (
-                  <p
-                    role="status"
-                    className="flex items-center gap-2 text-sm text-secondary"
-                  >
-                    <CheckCircle2 size={17} />{" "}
-                    {t(
-                      "Demande enregistrée pour démonstration.",
-                      "Request saved for demonstration.",
-                    )}
-                  </p>
-                )}
-                {status === "error" && (
-                  <p role="alert" className="text-sm text-accent-coral">
-                    {t(
-                      "Une erreur est survenue. Réessayez.",
-                      "An error occurred. Please try again.",
-                    )}
-                  </p>
-                )}
+                <FormSubmitButton
+                  state={formState}
+                  label={t("Envoyer la demande", "Send the request")}
+                />
+                <FormFeedback
+                  state={formState}
+                  sentMessage={t(
+                    "Merci ! Votre demande d'inscription a bien été transmise à l'école. Nous vous recontacterons.",
+                    "Thank you! Your enrolment request has been sent to the school. We will get back to you.",
+                  )}
+                />
               </div>
             </form>
           </div>

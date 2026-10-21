@@ -1,31 +1,57 @@
 import { ArrowUpRight, ImagePlus, X } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
 import { Reveal } from "@/components/ui/Reveal";
 import { useSchool } from "@/data/useSchool";
 import { useLanguage } from "@/i18n/useLanguage";
+import { useGalleryCategories } from "@/lib/api/publicGallery";
+import { useApiText } from "@/lib/api/useApiText";
 import { cn } from "@/lib/utils";
 
-/** "all", or the index of a category in `school.gallery.categories`. */
+/** "all", or the index of a category in the list shown. */
 type GalleryFilter = "all" | number;
+
+interface GalleryTile {
+  label: string;
+  /** Cover from the admin; otherwise a built-in photo matching the label. */
+  src?: string;
+  /** Categories from the admin open the gallery page on that category. */
+  href?: string;
+  count?: number;
+}
 
 export function Gallery() {
   const { t } = useLanguage();
+  const text = useApiText();
   const school = useSchool();
-  const categories = school.gallery.categories;
+  const apiCategories = useGalleryCategories();
   const [activeFilter, setActiveFilter] = useState<GalleryFilter>("all");
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
 
+  // The categories filled in the admin, or the official list with built-in
+  // photos until the school has added its own (or the server is unreachable).
+  const tiles: GalleryTile[] = apiCategories.data?.length
+    ? apiCategories.data.map((category) => ({
+        label: text(category.name),
+        src: category.cover
+          ? (category.cover.urls.medium ?? category.cover.urls.original)
+          : undefined,
+        href: `/galerie?categorie=${encodeURIComponent(category.slug)}`,
+        count: category.photos_count,
+      }))
+    : school.gallery.categories.map((label) => ({ label }));
+
   const filters: { id: GalleryFilter; label: string }[] = [
     { id: "all", label: t("Toutes", "All") },
-    ...categories.map((label, index) => ({ id: index, label })),
+    ...tiles.map((tile, index) => ({ id: index, label: tile.label })),
   ];
-  const visibleCategories = categories
-    .map((label, index) => ({ label, index }))
+  const visibleCategories = tiles
+    .map((tile, index) => ({ tile, index }))
     .filter(({ index }) => activeFilter === "all" || index === activeFilter);
   const selectedLabel =
-    selectedCategory === null ? null : categories[selectedCategory];
+    selectedCategory === null ? null : tiles[selectedCategory]?.label;
 
   return (
     <section id="galerie" className="bg-surface px-6 py-24 lg:px-10 lg:py-32">
@@ -66,32 +92,47 @@ export function Gallery() {
       </Reveal>
       <Reveal delay={0.18}>
         <div className="mx-auto mt-12 grid max-w-6xl grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:auto-rows-45">
-          {visibleCategories.map(({ label, index: categoryIndex }, index) => (
-            <button
-              key={categoryIndex}
-              type="button"
-              onClick={() => setSelectedCategory(categoryIndex)}
-              className={cn(
-                "group relative overflow-hidden rounded-image text-left shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-soft-lg",
-                index === 0 && "sm:col-span-2 lg:col-span-2",
-                index === 3 && "lg:row-span-2",
-              )}
-            >
-              <ImagePlaceholder
-                className="h-full min-h-60 w-full transition-transform duration-500 group-hover:scale-[1.04]"
-                content={label}
-              />
-              <div className="absolute inset-0 bg-linear-to-t from-ink/75 via-ink/15 to-transparent" />
-              <span className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-ink shadow-sm transition-transform duration-300 group-hover:scale-105">
-                <ArrowUpRight size={18} />
-              </span>
-              <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
-                <span className="inline-flex rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-medium text-ink">
-                  {label}
+          {visibleCategories.map(({ tile, index: categoryIndex }, index) => {
+            const className = cn(
+              "group relative overflow-hidden rounded-image text-left shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-soft-lg",
+              index === 0 && "sm:col-span-2 lg:col-span-2",
+              index === 3 && "lg:row-span-2",
+            );
+            const content = (
+              <>
+                <ImagePlaceholder
+                  className="h-full min-h-60 w-full transition-transform duration-500 group-hover:scale-[1.04]"
+                  content={tile.label}
+                  src={tile.src}
+                />
+                <div className="absolute inset-0 bg-linear-to-t from-ink/75 via-ink/15 to-transparent" />
+                <span className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-ink shadow-sm transition-transform duration-300 group-hover:scale-105">
+                  <ArrowUpRight size={18} />
                 </span>
-              </div>
-            </button>
-          ))}
+                <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
+                  <span className="inline-flex rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-medium text-ink">
+                    {tile.label}
+                    {tile.count !== undefined && ` · ${tile.count}`}
+                  </span>
+                </div>
+              </>
+            );
+
+            return tile.href ? (
+              <Link key={tile.href} to={tile.href} className={className}>
+                {content}
+              </Link>
+            ) : (
+              <button
+                key={categoryIndex}
+                type="button"
+                onClick={() => setSelectedCategory(categoryIndex)}
+                className={className}
+              >
+                {content}
+              </button>
+            );
+          })}
         </div>
       </Reveal>
       {selectedLabel && (

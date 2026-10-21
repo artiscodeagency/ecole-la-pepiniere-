@@ -2,6 +2,7 @@ import { Menu } from "lucide-react";
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 
+import { AnnouncementBanner } from "@/components/announcements/AnnouncementBanner";
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
 import { Logo } from "@/components/layout/Logo";
 import { MobileMenu } from "@/components/layout/MobileMenu";
@@ -22,66 +23,69 @@ export function Header() {
   }, []);
 
   return (
-    <header
-      className={cn(
-        "sticky top-0 z-40 border-b transition-all duration-300",
-        scrolled
-          ? "border-border-soft bg-white shadow-soft"
-          : "border-transparent bg-white",
-      )}
-    >
-      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-2 px-4 min-[360px]:gap-4 min-[360px]:px-6 lg:px-10">
-        <Logo className="shrink-0" />
+    <>
+      <header
+        className={cn(
+          "sticky top-0 z-40 border-b transition-all duration-300",
+          scrolled
+            ? "border-border-soft bg-white shadow-soft"
+            : "border-transparent bg-white",
+        )}
+      >
+        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-2 px-4 min-[360px]:gap-4 min-[360px]:px-6 lg:px-10">
+          <Logo className="shrink-0" />
 
-        <nav className="hidden items-center gap-6 xl:flex 2xl:gap-8">
-          {NAV_LINKS.map((link) => (
+          <nav className="hidden items-center gap-6 xl:flex 2xl:gap-8">
+            {NAV_LINKS.map((link) => (
+              <NavLink
+                key={link.href}
+                to={link.href}
+                className={({ isActive }) =>
+                  `whitespace-nowrap text-sm font-medium transition-colors hover:text-primary ${isActive ? "text-primary" : "text-ink-soft"}`
+                }
+              >
+                {t(link.label)}
+              </NavLink>
+            ))}
+          </nav>
+
+          <div className="hidden shrink-0 items-center gap-3 xl:flex">
             <NavLink
-              key={link.href}
-              to={link.href}
-              className={({ isActive }) =>
-                `whitespace-nowrap text-sm font-medium transition-colors hover:text-primary ${isActive ? "text-primary" : "text-ink-soft"}`
-              }
+              to="/contact"
+              className="px-2 text-sm font-medium text-ink transition-colors hover:text-primary"
             >
-              {t(link.label)}
+              Contact
             </NavLink>
-          ))}
-        </nav>
+            <NavLink
+              to="/admissions"
+              className="rounded-btn bg-primary px-5 py-2.5 text-sm font-medium text-white shadow-soft transition-colors hover:bg-primary-dark"
+            >
+              Admissions
+            </NavLink>
+            <span aria-hidden className="mx-1 h-6 w-px bg-border-soft" />
+            <LanguageSwitcher />
+          </div>
 
-        <div className="hidden shrink-0 items-center gap-3 xl:flex">
-          <NavLink
-            to="/contact"
-            className="px-2 text-sm font-medium text-ink transition-colors hover:text-primary"
-          >
-            Contact
-          </NavLink>
-          <NavLink
-            to="/admissions"
-            className="rounded-btn bg-primary px-5 py-2.5 text-sm font-medium text-white shadow-soft transition-colors hover:bg-primary-dark"
-          >
-            Admissions
-          </NavLink>
-          <span aria-hidden className="mx-1 h-6 w-px bg-border-soft" />
-          <LanguageSwitcher />
+          <div className="flex shrink-0 items-center gap-1 min-[360px]:gap-2 xl:hidden">
+            <LanguageSwitcher />
+            <button
+              type="button"
+              aria-label={t("Ouvrir le menu", "Open menu")}
+              onClick={() => setMenuOpen(true)}
+              className="flex h-10 w-10 items-center justify-center rounded-btn text-ink transition-colors hover:bg-surface-alt"
+            >
+              <Menu size={22} />
+            </button>
+          </div>
         </div>
 
-        <div className="flex shrink-0 items-center gap-1 min-[360px]:gap-2 xl:hidden">
-          <LanguageSwitcher />
-          <button
-            type="button"
-            aria-label={t("Ouvrir le menu", "Open menu")}
-            onClick={() => setMenuOpen(true)}
-            className="flex h-10 w-10 items-center justify-center rounded-btn text-ink transition-colors hover:bg-surface-alt"
-          >
-            <Menu size={22} />
-          </button>
-        </div>
-      </div>
-
-      <MobileMenu
-        open={menuOpen}
-        onClose={() => setMenuOpen(false)}
-        navLinks={NAV_LINKS}
-      />
-    </header>
+        <MobileMenu
+          open={menuOpen}
+          onClose={() => setMenuOpen(false)}
+          navLinks={NAV_LINKS}
+        />
+      </header>
+      <AnnouncementBanner />
+    </>
   );
 }

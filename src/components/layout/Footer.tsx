@@ -13,6 +13,7 @@ import officialLogo from "@/assets/logo-transparent.png";
 import { useSchool } from "@/data/useSchool";
 import { useLanguage } from "@/i18n/useLanguage";
 import { tr } from "@/i18n/types";
+import { telUrl } from "@/lib/whatsapp";
 
 const NAV_GROUPS = {
   school: [
@@ -42,8 +43,8 @@ export function Footer() {
   const phoneNumbers = (school.contacts.mainPhone ?? []).filter(Boolean).join(" / ");
 
   const contactItems = [
-    { icon: Phone, text: phoneNumbers, href: `tel:${phoneNumbers}` },
-    { icon: Mail, text: school.contacts.email, href: "mailto:contact@lapepiniere.cm" },
+    { icon: Phone, text: phoneNumbers, href: telUrl(school.contacts.mainPhone[0]) },
+    { icon: Mail, text: school.contacts.email, href: `mailto:${school.contacts.email}` },
     { icon: MapPin, text: school.location.address, href: "/contact" },
     {
       icon: Timer,

@@ -1,29 +1,30 @@
-import {
-  CheckCircle2,
-  Clock3,
-  Mail,
-  MapPin,
-  MessageCircle,
-  Phone,
-  Send,
-} from "lucide-react";
-import { type FormEvent, useState } from "react";
+import { Clock3, Mail, MapPin, MessageCircle, Phone, Send } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
+import { FormFeedback, FormSubmitButton } from "@/components/ui/FormFeedback";
 import { useSchool } from "@/data/useSchool";
 import { useLanguage } from "@/i18n/useLanguage";
 import { usePageMeta } from "@/lib/usePageMeta";
-
-type FormStatus = "idle" | "loading" | "success" | "error";
+import { useSchoolForm } from "@/lib/useSchoolForm";
 
 export function ContactPage() {
   const { t } = useLanguage();
   const school = useSchool();
-  const [status, setStatus] = useState<FormStatus>("idle");
+  const { state: formState, handleSubmit } = useSchoolForm(
+    "contact",
+    t("Message depuis le site web", "Message from the website"),
+    [
+      [t("Nom", "Name"), "name", "name"],
+      ["Email", "email", "email"],
+      [t("Téléphone", "Phone"), "phone", "phone"],
+      [t("Sujet", "Subject"), "subject", "subject"],
+      ["Message", "message", "message"],
+    ],
+  );
 
   const whatsappNumber = school.contacts.whatsapp.join(" · ");
   const phoneNumber = school.contacts.phone.join(" · ");
@@ -61,12 +62,6 @@ export function ContactPage() {
       "Contact details of La Pépinière Bilingual Private School Group in Bertoua, Cameroon.",
     ),
   );
-
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setStatus("loading");
-    window.setTimeout(() => setStatus("success"), 700);
-  };
 
   return (
     <>
@@ -181,8 +176,8 @@ export function ContactPage() {
                 </h2>
                 <p className="mt-3 text-sm leading-relaxed text-ink-soft">
                   {t(
-                    "Ce formulaire est prêt à être relié au service d'envoi de l'école.",
-                    "This form is ready to be connected to the school's sending service.",
+                    "Votre message sera transmis directement à l'administration de l'école.",
+                    "Your message will be sent directly to the school administration.",
                   )}
                 </p>
                 <form
@@ -236,35 +231,17 @@ export function ContactPage() {
                     />
                   </label>
                   <div className="flex flex-col gap-4 sm:col-span-2 sm:flex-row sm:items-center sm:justify-between">
-                    <button
-                      disabled={status === "loading"}
-                      type="submit"
-                      className="rounded-btn bg-primary px-6 py-3.5 text-sm font-medium text-white shadow-soft transition-colors hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-60"
-                    >
-                      {status === "loading"
-                        ? t("Envoi en cours...", "Sending...")
-                        : t("Envoyer le message", "Send message")}
-                    </button>
-                    {status === "success" && (
-                      <p
-                        role="status"
-                        className="flex items-center gap-2 text-sm text-secondary"
-                      >
-                        <CheckCircle2 size={17} />
-                        {t(
-                          "Message enregistré pour démonstration.",
-                          "Message saved for demonstration.",
-                        )}
-                      </p>
-                    )}
-                    {status === "error" && (
-                      <p role="alert" className="text-sm text-accent-coral">
-                        {t(
-                          "Une erreur est survenue. Réessayez.",
-                          "An error occurred. Please try again.",
-                        )}
-                      </p>
-                    )}
+                    <FormSubmitButton
+                      state={formState}
+                      label={t("Envoyer", "Send")}
+                    />
+                    <FormFeedback
+                      state={formState}
+                      sentMessage={t(
+                        "Merci ! Votre message a bien été transmis à l'école. Nous vous répondrons rapidement.",
+                        "Thank you! Your message has been sent to the school. We will reply shortly.",
+                      )}
+                    />
                   </div>
                 </form>
               </div>
