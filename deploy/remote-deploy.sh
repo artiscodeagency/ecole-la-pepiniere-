@@ -79,7 +79,9 @@ on_exit() {
 trap on_exit EXIT
 mkdir -p "$NEW"
 tar -xzf "$ARCHIVE" -C "$NEW"
-for f in backend/artisan backend/vendor/autoload.php web/index.html web/admin.html web/index.php web/.htaccess \
+# resources/views: no Blade view of our own, but `optimize` (view:cache) needs the folder.
+for f in backend/artisan backend/vendor/autoload.php backend/resources/views \
+         web/index.html web/admin.html web/index.php web/.htaccess \
          deploy/preflight.php deploy/mysql-defaults.php deploy/rollback.sh; do
   [ -e "$NEW/$f" ] || die "incomplete package: $f missing"
 done
