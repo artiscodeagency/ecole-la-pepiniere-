@@ -150,6 +150,8 @@ jobs:
           /admin 200
           /admin/connexion 200
           /up 200
+          /robots.txt 200
+          /sitemap.xml 200
           /api/public/school-info 200
           PATHS
           exit $fail

@@ -17,6 +17,7 @@ DirectoryIndex index.html
     # Laravel: API, Sanctum, per-article share pages (meta tags).
     RewriteRule ^(api|sanctum)(/.*)?$ index.php [L]
     RewriteRule ^up/?$ index.php [L]
+    RewriteRule ^(robots\.txt|sitemap\.xml)$ index.php [L]
     RewriteRule ^actualites/[^/]+/?$ index.php [L]
 
     # Uploaded media (symlink to persistent storage): real files only.

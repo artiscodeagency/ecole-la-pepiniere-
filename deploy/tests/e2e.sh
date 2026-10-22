@@ -133,6 +133,8 @@ expect /admin 200 admin
 expect /admin/connexion 200 admin
 expect /admin/actualites/12 200 admin
 expect /up 200 any
+expect /robots.txt 200 "text:Disallow: /admin"
+expect /sitemap.xml 200 text:<urlset
 expect /api/public/school-info 200 json
 expect /api/route-inexistante 404 json
 expect /sanctum/csrf-cookie 204 any
