@@ -80,6 +80,10 @@ jobs:
             --exclude=/public/media --exclude=/database/database.sqlite \
             backend/ pkg/backend/
           test ! -e pkg/backend/.env
+          # Folders Laravel needs at runtime (git does not keep empty ones).
+          for d in pkg/backend/resources/views pkg/backend/bootstrap/cache pkg/backend/vendor pkg/web/assets; do
+            test -d "$d" || { echo "missing in package: $d"; exit 1; }
+          done
           tar -czf release.tgz -C pkg .
           ls -lh release.tgz
       - uses: actions/upload-artifact@v4
