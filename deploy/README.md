@@ -42,7 +42,7 @@ Routing (`public_html/.htaccess`): `/api`, `/sanctum`, `/up`, `/actualites/{slug
    under its own name (an existing `.env` is never overwritten):
 
    ```
-   ssh -p 65002 u133979320@<host> 'umask 077 && mkdir -p ~/domains/lapepiniere.artischools.com/app/shared'
+   ssh -p 65002 u133979320@<host> 'mkdir -p ~/domains/lapepiniere.artischools.com/app/shared && chmod 711 ~/domains/lapepiniere.artischools.com/app ~/domains/lapepiniere.artischools.com/app/shared'
    scp -P 65002 deploy/env.production.example u133979320@<host>:domains/lapepiniere.artischools.com/app/shared/env.production.example
    ```
 
@@ -52,7 +52,7 @@ Routing (`public_html/.htaccess`): `/api`, `/sanctum`, `/up`, `/actualites/{slug
 
    ```
    cd ~/domains/lapepiniere.artischools.com/app/shared
-   chmod 700 .
+   chmod 711 .                            # the web server must cross it to reach media; .env stays 600
    if [ -e .env ]; then echo "STOP: .env already exists, not replaced"; else cp env.production.example .env && chmod 600 .env; fi
    if grep -q '^APP_KEY=base64:' .env; then echo "APP_KEY already set: not changed"; else sed -i "s|^APP_KEY=.*|APP_KEY=base64:$(php -r 'echo base64_encode(random_bytes(32));')|" .env; fi
    grep -c '^APP_KEY=base64:' .env       # must print 1 (prints a count, not the key)
