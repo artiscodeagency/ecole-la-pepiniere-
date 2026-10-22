@@ -64,7 +64,10 @@ class PublicFormsTest extends TestCase
             $this->postJson('/api/public/contact-messages', self::CONTACT)->assertCreated();
         }
 
-        $this->postJson('/api/public/contact-messages', self::CONTACT)->assertTooManyRequests();
+        $this->postJson('/api/public/contact-messages', self::CONTACT)
+            ->assertTooManyRequests()
+            ->assertHeader('Retry-After')
+            ->assertJsonPath('message', 'Trop de tentatives. Patientez un instant avant de réessayer.');
         $this->assertDatabaseCount('contact_messages', 20);
     }
 

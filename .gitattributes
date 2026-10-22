@@ -1,0 +1,6 @@
+# Scripts and server files run on Linux: always LF, even from a Windows checkout
+# (core.autocrlf=true would otherwise give "$'\r': command not found").
+*.sh            text eol=lf
+.htaccess       text eol=lf
+deploy/**       text eol=lf
+.github/**      text eol=lf
